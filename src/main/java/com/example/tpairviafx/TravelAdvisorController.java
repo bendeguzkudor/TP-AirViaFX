@@ -46,6 +46,8 @@ public class TravelAdvisorController implements Initializable {
     @FXML
     private TableView flightsTableView;
 
+    private ResultSet rs;
+
 
     @FXML
     private TableColumn<FlightModel, Integer> flightNumberColumn;
@@ -73,7 +75,7 @@ public class TravelAdvisorController implements Initializable {
         initializeDate();
         cart = new Cart();
         DBConnect db = new DBConnect();
-        ResultSet rs;
+//        ResultSet rs;
         String sql = "SELECT flighNumber, departure, arrival,date,time,price FROM flights"; //query for dynamic search
         String sql2 = "SELECT * FROM flights WHERE departure = \"London\" AND arrival = \"budapest\" AND date = \"23-05-10\"";
         try{
@@ -129,6 +131,8 @@ public class TravelAdvisorController implements Initializable {
 
         } catch (SQLException e){
             throw new RuntimeException(e);
+        }finally {
+            db.closeConnection();
         }
     }
 
@@ -169,12 +173,13 @@ public class TravelAdvisorController implements Initializable {
     public void printCart(){
         cart.printCart();
     }
-    public void searchFlight() {
+    public void searchFlight() throws SQLException {
         departure = departureTextField.getText();
         arrival = arrivalTextField.getText();
         date = datePicker.getValue();
+        flightsTableView.getItems().clear();
         DBConnect db = new DBConnect();
-        ResultSet rs;
+//        ResultSet rs;
         String sql = "SELECT flighNumber, departure, arrival,date,time,price FROM flights"; //query for dynamic search
         String sql2 = "SELECT * FROM flights WHERE departure = '" + departure + "' AND  arrival = '"+arrival+"' AND date = '"+ date +"' ";
         Integer queryflightNumber = null;
@@ -215,6 +220,9 @@ public class TravelAdvisorController implements Initializable {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            rs.close();
+            db.closeConnection();
         }
         System.out.println("sadv" + "  " + date);
         System.out.println(queryflightNumber + querydeparture + queryarrival + querydate + querytime + queryprice);

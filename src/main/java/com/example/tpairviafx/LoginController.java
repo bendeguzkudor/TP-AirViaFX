@@ -18,6 +18,7 @@ import java.sql.SQLException;
 
 public class LoginController {
     private String username;
+    private ResultSet rs;
 
     private int role;
     private int userID;
@@ -43,7 +44,7 @@ public class LoginController {
     }
 
     @FXML
-    protected void loginButtonOnAction() throws IOException {
+    protected void loginButtonOnAction() throws IOException, SQLException {
 
         if (usernameTextField.getText().isBlank() == false && passwordField.getText().isBlank() == false){
             if(authenticateLogin(usernameTextField.getText(), passwordField.getText())){
@@ -96,10 +97,9 @@ public class LoginController {
         stage.show();
 
     }
-    public boolean authenticateLogin(String username, String password) {
+    public boolean authenticateLogin(String username, String password) throws SQLException {
 
         String sql = "SELECT * FROM useraccount WHERE username='" + username + "' AND password='" + password + "'";
-        ResultSet rs;
         DBConnect db = new DBConnect();
         try{
             db.connect();
@@ -115,8 +115,12 @@ public class LoginController {
                 System.out.println("wrong credentials");
                 return false;
             }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            rs.close();
+            db.closeConnection();
         }
 
     }
