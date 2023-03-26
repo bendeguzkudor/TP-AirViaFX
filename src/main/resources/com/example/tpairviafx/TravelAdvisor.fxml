@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.TravelAdvisorController">
+   <children>
+      <Pane layoutX="713.0" prefHeight="133.0" prefWidth="304.0" style="-fx-background-color: B8f7f1;">
+         <children>
+            <Label layoutX="8.0" layoutY="23.0" text="Logged in: ">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="nameLabel" alignment="CENTER" layoutX="76.0" layoutY="19.0" prefHeight="28.0" prefWidth="156.0" text="Logged in ">
+               <font>
+                  <Font name="Verdana Bold" size="22.0" />
+               </font>
+            </Label>
+            <Label fx:id="roleLabel" alignment="CENTER" layoutX="36.0" layoutY="59.0" prefHeight="57.0" prefWidth="233.0" text="Logged in ">
+               <font>
+                  <Font name="System Bold Italic" size="22.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Button fx:id="closeButton" layoutX="963.0" maxHeight="46.0" maxWidth="54.0" minHeight="25.0" minWidth="38.0" mnemonicParsing="false" onAction="#closeWindow" prefHeight="36.0" prefWidth="47.0" style="-fx-background-color: black;">
+         <font>
+            <Font name="System Bold" size="59.0" />
+         </font>
+      </Button>
+      <Label layoutX="982.0" layoutY="1.0" text="X" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="26.0" />
+         </font>
+      </Label>
+      <AnchorPane layoutX="-1.0" prefHeight="134.0" prefWidth="713.0" style="-fx-background-color: grey;">
+         <children>
+            <Label layoutX="9.0" layoutY="44.0" text="Departure" />
+            <TextField fx:id="departureTextField" layoutX="35.0" layoutY="74.0" />
+            <Label layoutX="183.0" layoutY="43.0" text="Destination" />
+            <TextField fx:id="arrivalTextField" layoutX="240.0" layoutY="75.0" />
+            <Label layoutX="385.0" layoutY="41.0" text="Date" />
+            <DatePicker fx:id="datePicker" layoutX="424.0" layoutY="75.0" promptText="Choose a date" />
+            <Label layoutX="3.0" layoutY="8.0" text="Search for flight" />
+            <Button fx:id="searchButton" alignment="CENTER" layoutX="629.0" layoutY="73.0" mnemonicParsing="false" onAction="#searchFlight" style="-fx-background-color: black;" text="Search" />
+         </children>
+      </AnchorPane>
+      <Pane layoutX="-2.0" layoutY="134.0" prefHeight="229.0" prefWidth="718.0" style="-fx-background-color: red;">
+         <children>
+            <TableView fx:id="flightsTableView" prefHeight="217.0" prefWidth="709.0">
+              <columns>
+                  <TableColumn fx:id="flightNumberColumn" prefWidth="101.19294917583466" text="Flight Number" />
+                <TableColumn fx:id="departureColumn" prefWidth="135.8070831298828" text="Departure" />
+                <TableColumn fx:id="arrivalColumn" prefWidth="110.95918273925781" text="Arrival" />
+                  <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="64.30435180664062" text="Date" />
+                  <TableColumn fx:id="timeColumn" prefWidth="55.39300537109375" text="Time" />
+                  <TableColumn fx:id="priceColumn" prefWidth="64.29156494140625" text="Price" />
+              </columns>
+            </TableView>
+         </children>
+      </Pane>
+      <Button fx:id="addtocartButton" layoutX="734.0" layoutY="163.0" mnemonicParsing="false" onAction="#addToCart" text="AddtoCart" />
+      <Button fx:id="printButton" layoutX="745.0" layoutY="236.0" mnemonicParsing="false" onAction="#printCart" text="print" />
+      <Button fx:id="sellButton" layoutX="838.0" layoutY="224.0" mnemonicParsing="false" onAction="#sell" text="Sell" />
+   </children>
+</AnchorPane>
