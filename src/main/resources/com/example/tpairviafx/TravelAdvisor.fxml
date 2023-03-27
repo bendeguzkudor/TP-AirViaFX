@@ -70,5 +70,6 @@
       <Button fx:id="addtocartButton" layoutX="734.0" layoutY="163.0" mnemonicParsing="false" onAction="#addToCart" text="AddtoCart" />
       <Button fx:id="printButton" layoutX="745.0" layoutY="236.0" mnemonicParsing="false" onAction="#printCart" text="print" />
       <Button fx:id="sellButton" layoutX="838.0" layoutY="224.0" mnemonicParsing="false" onAction="#sell" text="Sell" />
+      <Button fx:id="printBlanksButton" layoutX="718.0" layoutY="309.0" mnemonicParsing="false" onAction="#printBlanks" text="printblanks" />
    </children>
 </AnchorPane>

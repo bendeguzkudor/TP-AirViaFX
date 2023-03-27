@@ -1,6 +1,5 @@
 package com.example.tpairviafx;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -9,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -21,7 +19,7 @@ public class LoginController {
     private ResultSet rs;
 
     private int role;
-    private int userID;
+    private int staffID;
     @FXML
     private Button cancelButton;
     @FXML
@@ -76,7 +74,7 @@ public class LoginController {
         stage.setScene(scene);
         TravelAdvisorController travelAdvisorController = fxmlLoader.getController();
         travelAdvisorController.displayNameAndRole(username, role);
-        travelAdvisorController.setUserID(userID);
+        travelAdvisorController.setStaffID(staffID);
 
         stage.show();
 
@@ -99,14 +97,14 @@ public class LoginController {
     }
     public boolean authenticateLogin(String username, String password) throws SQLException {
 
-        String sql = "SELECT * FROM useraccount WHERE username='" + username + "' AND password='" + password + "'";
+        String sql = "SELECT * FROM staff WHERE username='" + username + "' AND password='" + password + "'";
         DBConnect db = new DBConnect();
         try{
             db.connect();
             rs = db.statement.executeQuery(sql);
             if(rs.next()){
                 role = rs.getInt("role");
-                userID = rs.getInt("userID");
+                staffID = rs.getInt("staffID");
                 System.out.println("succesful login");
                 this.username = rs.getString("username");
                 return true;
@@ -119,7 +117,10 @@ public class LoginController {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
-            rs.close();
+            if(rs != null){
+                rs.close();
+            }
+
             db.closeConnection();
         }
 

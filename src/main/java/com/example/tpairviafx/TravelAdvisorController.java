@@ -29,7 +29,7 @@ public class TravelAdvisorController implements Initializable {
 
     @FXML
     private Label nameLabel;
-    private int userID;
+    private int staffID;
     @FXML
     private Label roleLabel;
     @FXML
@@ -90,6 +90,7 @@ public class TravelAdvisorController implements Initializable {
                 String querytime = rs.getString("time");
                 Integer queryprice = rs.getInt("price");
                 //Populate the list
+
                 flightModelObservableList.add(new FlightModel(queryflightNumber,querydeparture,
                         queryarrival,querydate,querytime,queryprice));
             }
@@ -136,6 +137,28 @@ public class TravelAdvisorController implements Initializable {
         }
     }
 
+    //method to test blanks;
+    public void printBlanks() throws SQLException {
+        DBConnect db = new DBConnect();
+        try {
+            db.connect();;
+            String sql = "SELECT * FROM blanks WHERE staffID = '" + staffID + "'";
+            rs = db.statement.executeQuery(sql);
+            while (rs.next()) {
+                System.out.println(rs.getLong("blankID"));
+                System.out.println(rs.getInt("staffID"));
+                System.out.println(rs.getString("dateAssigned"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            rs.close();
+            db.closeConnection();
+        }
+
+
+    }
+
 
 
     public void getDate(){
@@ -153,17 +176,19 @@ public class TravelAdvisorController implements Initializable {
 
     }
 
-    public void addToCart(){
+    public void addToCart() throws SQLException {
         cart.addFlightToCart(selectedFlightsList.get(0));
     }
-    public void sell(){
+    public void sell() throws SQLException {
         Random rand = new Random();
         int saleID = rand.nextInt(100,500);
         String date = now.toString();
         int price = cart.sumCart();
         Customer customer = new Customer("bedi", 88);
 
-        Sale sale = new Sale(userID, price, date, saleID, customer, commisionRate, 0, true, discount );
+        Blank blank = new Blank(staffID, cart.count, cart.getFlights().get(0).getFlightType());
+
+        Sale sale = new Sale(staffID, price, date, saleID, customer, commisionRate, 0, true, discount,blank.getBlankID()  );
         System.out.println(sale);
         sale.printSale();
         //int userID, int price,String date, int saleID, Customer customer, int commisionRate, int type, boolean latePayment, int discount//
@@ -245,8 +270,8 @@ public class TravelAdvisorController implements Initializable {
         }
         nameLabel.setText(name);
     }
-    public void setUserID(int userID){
-        this.userID = userID;
+    public void setStaffID(int staffID){
+        this.staffID = staffID;
 
     }
 
