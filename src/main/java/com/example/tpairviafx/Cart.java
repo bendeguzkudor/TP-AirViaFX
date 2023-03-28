@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class Cart {
     public int count = 0;
+    private ArrayList blanks;
     private int cartType; //Interline
                                     // 444 – used for international destinations automatic ticketing with up to 4 flight coupons; each coupon is used for a particular leg of the journey,
                                     //440 – the same as 444 but for manual processing (the flying details are filled in manually by a travel advisor),
@@ -20,6 +21,7 @@ public class Cart {
     private ArrayList<FlightModel> flights;
 
     public Cart(){
+//        blanks = new ArrayList();
         flights = new ArrayList<>();
 
     }
@@ -38,6 +40,9 @@ public class Cart {
             x.printFlightDetails();
         }
 
+    }
+    public void addBlanks(Blank _blank){
+        this.blanks.add(_blank);
     }
     public int sumCart(){
         int sum = 0;

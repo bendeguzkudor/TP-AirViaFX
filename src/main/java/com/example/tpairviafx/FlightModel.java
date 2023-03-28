@@ -29,6 +29,7 @@ public class FlightModel {
 
     }
     public void retrieveFlightType() throws SQLException {
+        String ft ;
         DBConnect db = new DBConnect();
         try {
             db.connect();;
@@ -36,6 +37,7 @@ public class FlightModel {
             rs = db.statement.executeQuery(sql);
             if (rs.next()) {
                 this.flightType=rs.getString("type");
+                ft = rs.getString("type");
                 System.out.println(rs.getString("type"));
             }
         } catch (SQLException e) {

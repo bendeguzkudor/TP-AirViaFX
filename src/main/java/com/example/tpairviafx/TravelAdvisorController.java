@@ -16,11 +16,13 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.ResourceBundle;
 
 public class TravelAdvisorController implements Initializable {
     private DateTimeFormatter dtf;
+
     private LocalDateTime now;
 
     private double commisionRate = 0.1;
@@ -64,6 +66,9 @@ public class TravelAdvisorController implements Initializable {
 
     private ObservableList<FlightModel> selectedFlightsList;
     private Cart cart;
+    private ArrayList<Blank> blanks;
+//    private Blank blank;
+    private ArrayList<FlightModel> flightsToBlank;
 
     ObservableList<FlightModel> flightModelObservableList = FXCollections.observableArrayList();
 
@@ -74,6 +79,8 @@ public class TravelAdvisorController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle){
         initializeDate();
         cart = new Cart();
+        flightsToBlank = new ArrayList<>();
+        blanks = new ArrayList<>();
         DBConnect db = new DBConnect();
 //        ResultSet rs;
         String sql = "SELECT flighNumber, departure, arrival,date,time,price FROM flights"; //query for dynamic search
@@ -137,6 +144,7 @@ public class TravelAdvisorController implements Initializable {
         }
     }
 
+
     //method to test blanks;
     public void printBlanks() throws SQLException {
         DBConnect db = new DBConnect();
@@ -156,9 +164,7 @@ public class TravelAdvisorController implements Initializable {
             db.closeConnection();
         }
 
-
     }
-
 
 
     public void getDate(){
@@ -177,7 +183,40 @@ public class TravelAdvisorController implements Initializable {
     }
 
     public void addToCart() throws SQLException {
-        cart.addFlightToCart(selectedFlightsList.get(0));
+//        cart.addFlightToCart(selectedFlightsList.get(0));
+        for(Blank x: blanks){
+            System.out.println(x);
+        }
+    }
+    public void addToBlank() throws SQLException {
+//        blanks.add(new Blank())
+        Blank blank1 = new Blank(staffID, flightsToBlank.get(0).getFlightType(), 200, 15,
+                10, 1, 0.09, "bedi");
+
+        for(FlightModel x: flightsToBlank){
+            blank1.addFlightToBlank(x);
+
+        }
+
+        blank1.printBlankDetails();
+        flightsToBlank.clear();
+        blanks.add(blank1);
+
+
+
+    }
+    public void addFlightsToFlights() throws SQLException {
+        flightsToBlank.add(selectedFlightsList.get(0));
+        selectedFlightsList.get(0).retrieveFlightType();
+
+
+    }
+    public void addBlankToCart(Blank blank) throws SQLException {
+        blank.setBlankID(blank.getFlights().get(0).getFlightType());
+        blank.setBlankType(blank.getFlights().get(0).getFlightType());
+
+
+
     }
     public void sell() throws SQLException {
         Random rand = new Random();
@@ -186,9 +225,9 @@ public class TravelAdvisorController implements Initializable {
         int price = cart.sumCart();
         Customer customer = new Customer("bedi", 88);
 
-        Blank blank = new Blank(staffID, cart.count, cart.getFlights().get(0).getFlightType());
+//        Blank blank = new Blank();
 
-        Sale sale = new Sale(staffID, price, date, saleID, customer, commisionRate, 0, true, discount,blank.getBlankID()  );
+        Sale sale = new Sale(staffID, price, date, saleID, customer, commisionRate, 0, true, discount,0 );
         System.out.println(sale);
         sale.printSale();
         //int userID, int price,String date, int saleID, Customer customer, int commisionRate, int type, boolean latePayment, int discount//
@@ -196,7 +235,7 @@ public class TravelAdvisorController implements Initializable {
 
     }
     public void printCart(){
-        cart.printCart();
+//        blank.printFlights();
     }
     public void searchFlight() throws SQLException {
         departure = departureTextField.getText();

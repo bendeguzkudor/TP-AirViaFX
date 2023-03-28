@@ -2,6 +2,7 @@ package com.example.tpairviafx;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Blank {
     public long getBlankID() {
@@ -9,16 +10,102 @@ public class Blank {
     }
 
     private long blankID;
+
     private String sql;
-    private int noOfFlights;
+    public int noOfFlights;
     private int staffID;
+    private int localCurrency;
+    private int price;
+    private int taxLocal;
+    private int taxOther;
+    private int paymentType; // 0 for card, 1 for cash
+    private double commisionRate;
+    private String customer;
+
     private ResultSet rs;
 
-    public Blank(int staffID, int noOfFlights, String flightType) throws SQLException {
-        this.noOfFlights = noOfFlights;
+    public ArrayList<FlightModel> getFlights() {
+        return flights;
+    }
+
+    public void setFlights(ArrayList<FlightModel> flights) {
+        this.flights = flights;
+    }
+
+    private ArrayList<FlightModel> flights;
+
+    public String getBlankType() {
+        return blankType;
+    }
+
+    public void setBlankType(String blankType) {
+        this.blankType = blankType;
+    }
+
+    private String blankType;
+
+    public Blank(int staffID, String blankType, int localCurrency, int taxLocal,
+                 int taxOther, int paymentType, double commisionRate, String customer) throws SQLException {
+
+        flights = new ArrayList();
         this.staffID = staffID;
+        this.blankType = blankType;
+        this.localCurrency = localCurrency;// for each loop in the other class to summarize dollar
+                                            // price then convert it into local currency then feed it to the constructor
+
+        this.taxLocal = taxLocal;
+        this.taxOther = taxOther;
+        this.paymentType = paymentType;
+        this.commisionRate = commisionRate;
+        this.customer = customer;
+
+
+//        flights.get(0).getDeparture();
+        retrieveBlankID(blankType);
+
+    }
+    public void setBlankID(String flightType) throws SQLException {
         retrieveBlankID(flightType);
 
+    }
+    public void printBlankDetails(){
+        for(FlightModel x : flights){
+            x.printFlightDetails();
+        }
+        System.out.println("StaffID:  "+this.staffID+
+                    "  blankType:  "+this.blankType+
+                    "  blankID:  "+this.blankID+
+                    "  Local Currency:  "+this.localCurrency+
+                    "  Tax Local:  "+this.taxLocal+
+                    "  Tax Other:  "+this.taxOther+
+                    "  paymentType:  "+paymentTypeT(this.paymentType)+
+                    "  CommissionRate : "+this.commisionRate+
+                    "  Customer:  "+this.customer);
+    }
+//    public void finalizeBlank(int userID, String flightType, long blankID, ){
+
+
+//    }
+    public void addFlightToBlank(FlightModel flight) {
+        if(flights.size() < 4){
+
+            flights.add(flight);
+            noOfFlights++;
+        }else{
+            //tooManyLegsError(); // throw an error when trying to add more flight legs than 4;
+        }
+    }
+    public String paymentTypeT(int i){
+        String s = "";
+        switch (i){
+            case 1:
+                s= "Cash";
+                break;
+            case 0:
+                s= "Card";
+                break;
+        }
+        return s;
     }
 
 
@@ -61,8 +148,8 @@ public class Blank {
     }
 
     public static void main(String[] args) throws SQLException {
-        Blank blank = new Blank(888, 1, "Interline");
-        System.out.println(blank.blankID);
+//        Blank blank = new Blank(888, 1, "Interline");
+//        System.out.println(blank.blankID);
 
 
     }

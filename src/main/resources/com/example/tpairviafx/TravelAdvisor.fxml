@@ -71,5 +71,8 @@
       <Button fx:id="printButton" layoutX="745.0" layoutY="236.0" mnemonicParsing="false" onAction="#printCart" text="print" />
       <Button fx:id="sellButton" layoutX="838.0" layoutY="224.0" mnemonicParsing="false" onAction="#sell" text="Sell" />
       <Button fx:id="printBlanksButton" layoutX="718.0" layoutY="309.0" mnemonicParsing="false" onAction="#printBlanks" text="printblanks" />
+      <Button fx:id="addToBlankButton" layoutX="838.0" layoutY="151.0" mnemonicParsing="false" onAction="#addToBlank" text="AddtoBlank" />
+      <Button fx:id="aftf" layoutX="811.0" layoutY="328.0" mnemonicParsing="false" onAction="#addFlightsToFlights" text="addFLgithsToFLights" />
+      <Button fx:id="fcb" layoutX="745.0" layoutY="427.0" mnemonicParsing="false" onAction="#addToBlank" text="finalizeCurrentBlank" />
    </children>
 </AnchorPane>
