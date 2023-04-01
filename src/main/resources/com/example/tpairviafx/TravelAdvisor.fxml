@@ -12,7 +12,7 @@
 
 <AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.TravelAdvisorController">
    <children>
-      <Pane layoutX="713.0" prefHeight="133.0" prefWidth="304.0" style="-fx-background-color: B8f7f1;">
+      <Pane layoutX="713.0" prefHeight="133.0" prefWidth="304.0" style="-fx-background-color: \;">
          <children>
             <Label layoutX="8.0" layoutY="23.0" text="Logged in: ">
                <font>
@@ -54,9 +54,9 @@
             <Label layoutX="409.0" layoutY="112.0" text="Current legs on blank" />
          </children>
       </AnchorPane>
-      <Pane layoutX="-2.0" layoutY="134.0" prefHeight="229.0" prefWidth="718.0" style="-fx-background-color: red;">
+      <Pane layoutX="-2.0" layoutY="134.0" prefHeight="256.0" prefWidth="1022.0" style="-fx-background-color: red;">
          <children>
-            <TableView fx:id="flightsTableView" prefHeight="229.0" prefWidth="402.0" style="-fx-background-color: grey;">
+            <TableView fx:id="flightsTableView" layoutX="10.0" layoutY="10.0" prefHeight="230.0" prefWidth="400.0">
               <columns>
                   <TableColumn fx:id="flightNumberColumn" prefWidth="41.5" text="Flight Number" />
                 <TableColumn fx:id="departureColumn" prefWidth="83.0" text="Departure" />
@@ -66,7 +66,7 @@
                   <TableColumn fx:id="priceColumn" prefWidth="50.5" text="Price" />
               </columns>
             </TableView>
-            <TableView fx:id="currentBlankTableView" layoutX="402.0" prefHeight="229.0" prefWidth="358.0" style="-fx-background-color: #31AED1;">
+            <TableView fx:id="currentBlankTableView" layoutX="422.0" layoutY="10.0" prefHeight="230.0" prefWidth="360.0" style="-fx-background-color: #31AED1;">
                <columns>
                   <TableColumn fx:id="blankflightNumberColumn" prefWidth="41.5" text="Flight Number" />
                   <TableColumn fx:id="blankdepartureColumn" prefWidth="83.0" text="Departure" />
@@ -75,20 +75,35 @@
                   <TableColumn fx:id="blankpriceColumn" prefWidth="50.5" text="Price" />
                </columns>
             </TableView>
+            <TableView fx:id="cartTable" layoutX="795.0" layoutY="10.0" prefHeight="230.0" prefWidth="220.0" style="-fx-background-color: #31AED1;">
+               <columns>
+                  <TableColumn fx:id="cartBlankIDColumn" prefWidth="153.3133544921875" text="Blank " />
+               </columns>
+            </TableView>
          </children>
       </Pane>
-      <Button fx:id="addtocartButton" layoutX="61.0" layoutY="388.0" mnemonicParsing="false" onAction="#addToCart" text="AddtoCart" />
-      <Button fx:id="printButton" layoutX="385.0" layoutY="388.0" mnemonicParsing="false" onAction="#printCart" text="print" />
-      <Button fx:id="sellButton" layoutX="287.0" layoutY="388.0" mnemonicParsing="false" onAction="#sell" text="Sell" />
-      <Button fx:id="printBlanksButton" layoutX="488.0" layoutY="389.0" mnemonicParsing="false" onAction="#printBlanks" text="printblanks" />
-      <Button fx:id="addToBlankButton" layoutX="166.0" layoutY="386.0" mnemonicParsing="false" onAction="#addToBlank" text="AddtoBlank" />
-      <Button fx:id="aftf" layoutX="620.0" layoutY="385.0" mnemonicParsing="false" onAction="#addFlightsToFlights" text="addFLgithsToFLights" />
-      <Button fx:id="fcb" layoutX="831.0" layoutY="391.0" mnemonicParsing="false" onAction="#addToBlank" text="finalizeCurrentBlank" />
-      <TableView fx:id="cartTable" layoutX="781.0" layoutY="142.0" prefHeight="220.0" prefWidth="211.0" style="-fx-background-color: #31AED1;">
-         <columns>
-            <TableColumn fx:id="cartBlankIDColumn" prefWidth="83.56900024414062" text="Blank " />
-         </columns>
-      </TableView>
+      <Button fx:id="addtocartButton" layoutX="40.0" layoutY="392.0" mnemonicParsing="false" onAction="#addToCart" text="AddtoCart" />
+      <Button fx:id="printButton" layoutX="325.0" layoutY="392.0" mnemonicParsing="false" onAction="#printCart" text="print" />
+      <Button fx:id="printBlanksButton" layoutX="409.0" layoutY="393.0" mnemonicParsing="false" onAction="#printBlanks" text="printblanks" />
+      <Button fx:id="addToBlankButton" layoutX="138.0" layoutY="391.0" mnemonicParsing="false" onAction="#addToBlank" text="AddtoBlank" />
+      <Button fx:id="aftf" layoutX="593.0" layoutY="393.0" mnemonicParsing="false" onAction="#addFlightsToFlights" text="addFLgithsToFLights" />
+      <Button fx:id="fcb" layoutX="766.0" layoutY="400.0" mnemonicParsing="false" onAction="#addToBlank" text="finalizeCurrentBlank" />
       <Label layoutX="779.0" layoutY="127.0" text="Cart" />
+      <Button fx:id="sellButton" layoutX="921.0" layoutY="407.0" mnemonicParsing="false" onAction="#sell" text="sell" />
+      <Pane layoutY="443.0" prefHeight="358.0" prefWidth="436.0" style="-fx-background-color: grey;">
+         <children>
+            <TextField fx:id="searchCustomerField" layoutX="155.0" layoutY="39.0" />
+            <Label fx:id="searchCustomerLabel" layoutX="8.0" layoutY="16.0" text="Enter Customer Name: " />
+            <TableView fx:id="customerTableView" layoutX="4.0" layoutY="86.0" prefHeight="203.0" prefWidth="270.0">
+              <columns>
+                <TableColumn fx:id="customerFirstameColumn" maxWidth="1.7976931348623157E308" prefWidth="100.0" text="First Name" />
+                <TableColumn fx:id="customerLastnameColumn" prefWidth="94.44461059570312" text="Last Name" />
+                  <TableColumn fx:id="customerIDColumn" prefWidth="76.55537414550781" text="Customer ID" />
+              </columns>
+            </TableView>
+            <Button fx:id="selectCustomerButton" layoutX="283.0" layoutY="255.0" mnemonicParsing="false" onAction="#selectCustomer" text="Select Customer" />
+         </children>
+      </Pane>
+      <Button fx:id="recordCustomerButton" layoutX="482.0" layoutY="484.0" mnemonicParsing="false" onAction="#recordNewCustomer" text="RecordNewCustoner" />
    </children>
 </AnchorPane>

@@ -5,11 +5,16 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+import javax.xml.transform.Result;
+import java.io.IOException;
+import java.sql.Statement;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.net.URL;
@@ -32,21 +37,29 @@ public class TravelAdvisorController implements Initializable {
     @FXML
     private Label nameLabel;
     private int staffID;
+    private FXMLLoader fxmlLoader;
     @FXML
     private Label roleLabel;
     @FXML
     private DatePicker datePicker;
     @FXML
+    private Button recordCustomerButton;
+    @FXML
     private TextField departureTextField;
     @FXML
     private TextField arrivalTextField;
+    @FXML
+    private TextField searchCustomerField;
     @FXML
     private Button closeButton;
     private String departure;
     private String arrival;
     private LocalDate date;
+    private Scene scene;
     @FXML
     private TableView flightsTableView;
+    @FXML
+    private TableView customerTableView;
 
     @FXML
     private TableView currentBlankTableView;
@@ -55,6 +68,15 @@ public class TravelAdvisorController implements Initializable {
 
 
     private ResultSet rs;
+    //Columns for customer table
+
+    @FXML
+    private TableColumn<Customer, Integer> customerIDColumn;
+    @FXML
+    private TableColumn<Customer, String> customerFirstameColumn;
+    @FXML
+    private TableColumn<Customer, String> customerLastnameColumn;
+
 
     //Columns for cart
     @FXML
@@ -92,16 +114,22 @@ public class TravelAdvisorController implements Initializable {
     private TableColumn<FlightModel, String> priceColumn;
 
     private ObservableList<FlightModel> selectedFlightsList;
+    private ObservableList<Customer> selectedCustomerList;
 //    private ObservableList<FlightModel> flightsOnBlankList;
     private Cart cart;
 
 //    private Blank blank;
     private ArrayList<FlightModel> flightsToBlank;
+    private ArrayList<Blank> blankArrayList;
 
     ObservableList<FlightModel> flightModelObservableList = FXCollections.observableArrayList();
 
     ObservableList<FlightModel> flightsOnBlankList = FXCollections.observableArrayList();
+    ObservableList<Customer> customerObservableList = FXCollections.observableArrayList();
     ObservableList<Blank> blanks = FXCollections.observableArrayList();
+
+    private Customer customer;
+
 
 
 
@@ -109,14 +137,30 @@ public class TravelAdvisorController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
+//        selectMaxSaleID();
         currentBlankTableView.setPlaceholder(new Label("No flights selected"));
         initializeDate();
         cart = new Cart();
         flightsToBlank = new ArrayList<>();
+        blankArrayList = new ArrayList<>();
+        DBConnect db = new DBConnect();
+        populateFlightsTable();
+        populateCustomerTable();
+    }
+    public void recordNewCustomer() throws IOException {
+        Stage stage = new Stage();
+        fxmlLoader = new FXMLLoader(Application.class.getResource("CustomerRegisterForm.fxml"));
+        scene = new Scene(fxmlLoader.load(), 600, 400);
+        stage.setScene(scene);
+        CustomerRegisterFormController customerRegisterFormController = new CustomerRegisterFormController();
+        customerRegisterFormController.setPreviousScene(this.scene);
+        stage.show();
+    }
+    public void populateFlightsTable(){
         DBConnect db = new DBConnect();
 //        ResultSet rs;
         String sql = "SELECT flighNumber, departure, arrival,date,time,price FROM flights"; //query for dynamic search
-        String sql2 = "SELECT * FROM flights WHERE departure = \"London\" AND arrival = \"budapest\" AND date = \"23-05-10\"";
+//        String sql2 = "SELECT * FROM flights WHERE departure = \"London\" AND arrival = \"budapest\" AND date = \"23-05-10\"";
         try{
             db.connect();
             rs = db.statement.executeQuery(sql);
@@ -175,7 +219,67 @@ public class TravelAdvisorController implements Initializable {
         }finally {
             db.closeConnection();
         }
+
     }
+    public  void populateCustomerTable(){
+        DBConnect db = new DBConnect();
+//        ResultSet rs;
+        String sql = "SELECT * FROM customer"; //query for dynamic search
+//        String sql2 = "SELECT * FROM flights WHERE departure = \"London\" AND arrival = \"budapest\" AND date = \"23-05-10\"";
+        try{
+            db.connect();
+            rs = db.statement.executeQuery(sql);
+            while(rs.next()){
+                Integer queryCustomerID = rs.getInt("customerID");
+                String queryFirtsName = rs.getString("firstName");
+                String queryLastName = rs.getString("lastName");
+                Double queryFlexibleDiscount = rs.getDouble("flexibleDiscount");
+                Double queryFixedDiscount = rs.getDouble("fixedDiscount");
+                Integer queryDiscount = rs.getInt("discount");
+
+                //Populate the list
+                customerObservableList.add(new Customer(queryFirtsName, queryLastName,queryCustomerID ,queryFlexibleDiscount,queryFixedDiscount, queryDiscount ));
+            }
+            customerFirstameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+            customerLastnameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+            customerIDColumn.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+
+
+            customerTableView .setItems(customerObservableList);
+
+            FilteredList<Customer> filteredData = new FilteredList<>(customerObservableList, b->true);
+            searchCustomerField.textProperty().addListener((observable, oldValue, newValue)->{
+                filteredData.setPredicate(customerSearchModel -> {
+                    if(newValue.isEmpty() || newValue.isBlank() || newValue == null){
+                        return true;
+
+                    }
+                    String searchkeyword = newValue.toLowerCase();
+                    if(customerSearchModel.getFirstName().toLowerCase().indexOf(searchkeyword) > -1){
+                        return true;
+
+                    }else if(customerSearchModel.getLastName().toLowerCase().indexOf(searchkeyword) > -1){
+                        return true;
+
+                    }else{
+                        return false;
+                    }
+                });
+            });
+            SortedList<Customer> sortedData = new SortedList<>(filteredData);
+            sortedData.comparatorProperty().bind(customerTableView.comparatorProperty());
+            customerTableView.setItems(sortedData);
+//            selectedCustomerList = customerTableView.getSelectionModel().getSelectedItems();
+//            System.out.println("selected customer");
+
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }finally {
+            db.closeConnection();
+        }
+    }
+
+
 
 
     //method to test blanks;
@@ -197,6 +301,11 @@ public class TravelAdvisorController implements Initializable {
             db.closeConnection();
         }
 
+    }
+    public void selectCustomer(){
+        selectedCustomerList = customerTableView.getSelectionModel().getSelectedItems();
+        customer = selectedCustomerList.get(0);
+        System.out.println(customer.getCustomerID());
     }
 
 
@@ -224,8 +333,7 @@ public class TravelAdvisorController implements Initializable {
     public void addToBlank() throws SQLException {
 //        blanks.add(new Blank())
         if(!flightsToBlank.isEmpty()) {
-            Blank blank1 = new Blank(staffID, flightsToBlank.get(0).getFlightType(), 200, 15,
-                    10, 1, 0.09, "bedi",flightsToBlank);
+            Blank blank1 = new Blank(staffID, flightsToBlank.get(0).getFlightType(), flightsToBlank);
 
             blank1.printBlankDetails();
             flightsToBlank.clear();
@@ -234,8 +342,6 @@ public class TravelAdvisorController implements Initializable {
             currentBlankTableView.refresh();
             addBlankToCartTable(blank1);
             blank1.markBlankAsUsed(blank1);
-
-
         }
 
     }
@@ -246,26 +352,26 @@ public class TravelAdvisorController implements Initializable {
 
         addToBlankTable(selectedFlightsList.get(0));
         }
-
-
     }
-//    public void addBlankToCart(Blank blank) throws SQLException {
-//        blank.setBlankID(blank.getFlights().get(0).getFlightType());
-//        blank.setBlankType(blank.getFlights().get(0).getFlightType());
-//
-//    }
+
     public void sell() throws SQLException {
-        Random rand = new Random();
-        int saleID = rand.nextInt(100,500);
+        for(Blank x : blanks){
+            System.out.println(x);
+            blankArrayList.add(x);
+
+        }
+
         String date = now.toString();
-        int price = cart.sumCart();
-        Customer customer = new Customer("bedi", 88);
+//        Customer customer = new Customer("bedi", 88);
+        Sale sale = new Sale(staffID, date,customer,"USD", blankArrayList);
+        sale.setSaleID(sale.selectMaxSaleID()+sale.getSaleID());
 
-//        Blank blank = new Blank();
 
-//        Sale sale = new Sale(staffID, price, date,  commisionRate, 0, true, discount,0 );
-//        System.out.println(sale);
-//        sale.printSale();
+        sale.printSale();
+        blankArrayList.clear();
+        blanks.clear();
+        cartTable.refresh();
+        sale.pushToDatabase();
         //int userID, int price,String date, int saleID, Customer customer, int commisionRate, int type, boolean latePayment, int discount//
 
 
@@ -345,6 +451,7 @@ public class TravelAdvisorController implements Initializable {
 
     }
 
+
     public void displayNameAndRole(String name, int role){
 
         switch (role){
@@ -367,4 +474,5 @@ public class TravelAdvisorController implements Initializable {
     }
 
 }
+
 
