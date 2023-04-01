@@ -5,19 +5,16 @@ import java.util.ArrayList;
 
 public class Sale {
     private int staffID;
-    private Blank blank;
+    private static int  counter = 0;
+
     private int price; // set in dollars
-    private ArrayList flights; // not sure if needed//
     private String date;
     private int saleID;
-
     // need array for blankIDs
     //need array for flights.
-
     private int localCurrency;
     private int exchangeRate;
     private long blankID;
-    private ArrayList blanks;
 
     private Customer customer; // customer object  // need a second constructor for non-member sales
     private double commisionRate; // rate set by the airline , set by the admin?
@@ -26,14 +23,15 @@ public class Sale {
     private int airportTax;
     private boolean latePayment; // date string if allowed and date represents the deadline, null if no late payment is issued
     private double discount; // percentage dependant on the customer
+    private ArrayList<Blank> blanks;
 
-    public Sale(int staffID, int price, String date, int saleID, Customer customer, double commisionRate, int type, boolean latePayment, double discount, long blankID){
-        flights = new ArrayList<FlightModel>();
+    public Sale(int staffID, int price, String date, Customer customer, double commisionRate, int type, boolean latePayment, double discount, long blankID, ArrayList<Blank> blanks){
+        this.saleID = ++counter;
+        this.blanks = blanks;
         commisionSum = commisionRate * price;
         this.staffID = staffID;
         this.price = price;
         this.date = date;
-        this.saleID = saleID;
         this.customer = customer;
         this.commisionRate = commisionRate;
         this.type = type;

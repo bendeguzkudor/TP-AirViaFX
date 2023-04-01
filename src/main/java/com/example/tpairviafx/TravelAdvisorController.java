@@ -48,9 +48,36 @@ public class TravelAdvisorController implements Initializable {
     @FXML
     private TableView flightsTableView;
 
+    @FXML
+    private TableView currentBlankTableView;
+    @FXML
+    private TableView cartTable;
+
+
     private ResultSet rs;
 
+    //Columns for cart
+    @FXML
+    private TableColumn<Blank, Integer> cartBlankIDColumn;
+//    private TableColumn<Blank, Integer> cartDeparture;
+//    private TableColumn<Blank, Integer> cartArrival;
 
+
+    // Columns for table that list the current items on the current blank
+    @FXML
+    private TableColumn<FlightModel, Integer> blankflightNumberColumn;
+    @FXML
+    private TableColumn<FlightModel, String>  blankdepartureColumn;
+    @FXML
+    private TableColumn<FlightModel, String>blankarrivalColumn;
+    @FXML
+    private TableColumn<FlightModel, String> blankdateColumn;
+    @FXML
+    private TableColumn<FlightModel, String> blankpriceColumn;
+
+
+
+    //Flights tables columns
     @FXML
     private TableColumn<FlightModel, Integer> flightNumberColumn;
     @FXML
@@ -65,22 +92,27 @@ public class TravelAdvisorController implements Initializable {
     private TableColumn<FlightModel, String> priceColumn;
 
     private ObservableList<FlightModel> selectedFlightsList;
+//    private ObservableList<FlightModel> flightsOnBlankList;
     private Cart cart;
-    private ArrayList<Blank> blanks;
+
 //    private Blank blank;
     private ArrayList<FlightModel> flightsToBlank;
 
     ObservableList<FlightModel> flightModelObservableList = FXCollections.observableArrayList();
+
+    ObservableList<FlightModel> flightsOnBlankList = FXCollections.observableArrayList();
+    ObservableList<Blank> blanks = FXCollections.observableArrayList();
+
 
 
 //
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
+        currentBlankTableView.setPlaceholder(new Label("No flights selected"));
         initializeDate();
         cart = new Cart();
         flightsToBlank = new ArrayList<>();
-        blanks = new ArrayList<>();
         DBConnect db = new DBConnect();
 //        ResultSet rs;
         String sql = "SELECT flighNumber, departure, arrival,date,time,price FROM flights"; //query for dynamic search
@@ -96,8 +128,8 @@ public class TravelAdvisorController implements Initializable {
                 String querydate = rs.getString("date");
                 String querytime = rs.getString("time");
                 Integer queryprice = rs.getInt("price");
-                //Populate the list
 
+                //Populate the list
                 flightModelObservableList.add(new FlightModel(queryflightNumber,querydeparture,
                         queryarrival,querydate,querytime,queryprice));
             }
@@ -136,6 +168,7 @@ public class TravelAdvisorController implements Initializable {
             sortedData.comparatorProperty().bind(flightsTableView.comparatorProperty());
             flightsTableView.setItems(sortedData);
             selectedFlightsList = flightsTableView.getSelectionModel().getSelectedItems();
+            System.out.println("selected flight");
 
         } catch (SQLException e){
             throw new RuntimeException(e);
@@ -190,34 +223,37 @@ public class TravelAdvisorController implements Initializable {
     }
     public void addToBlank() throws SQLException {
 //        blanks.add(new Blank())
-        Blank blank1 = new Blank(staffID, flightsToBlank.get(0).getFlightType(), 200, 15,
-                10, 1, 0.09, "bedi");
+        if(!flightsToBlank.isEmpty()) {
+            Blank blank1 = new Blank(staffID, flightsToBlank.get(0).getFlightType(), 200, 15,
+                    10, 1, 0.09, "bedi",flightsToBlank);
 
-        for(FlightModel x: flightsToBlank){
-            blank1.addFlightToBlank(x);
+            blank1.printBlankDetails();
+            flightsToBlank.clear();
+            blanks.add(blank1);
+            flightsOnBlankList.clear();
+            currentBlankTableView.refresh();
+            addBlankToCartTable(blank1);
+            blank1.markBlankAsUsed(blank1);
+
 
         }
 
-        blank1.printBlankDetails();
-        flightsToBlank.clear();
-        blanks.add(blank1);
-
-
-
     }
     public void addFlightsToFlights() throws SQLException {
+        if(!selectedFlightsList.isEmpty()){
         flightsToBlank.add(selectedFlightsList.get(0));
         selectedFlightsList.get(0).retrieveFlightType();
 
-
-    }
-    public void addBlankToCart(Blank blank) throws SQLException {
-        blank.setBlankID(blank.getFlights().get(0).getFlightType());
-        blank.setBlankType(blank.getFlights().get(0).getFlightType());
-
+        addToBlankTable(selectedFlightsList.get(0));
+        }
 
 
     }
+//    public void addBlankToCart(Blank blank) throws SQLException {
+//        blank.setBlankID(blank.getFlights().get(0).getFlightType());
+//        blank.setBlankType(blank.getFlights().get(0).getFlightType());
+//
+//    }
     public void sell() throws SQLException {
         Random rand = new Random();
         int saleID = rand.nextInt(100,500);
@@ -227,15 +263,31 @@ public class TravelAdvisorController implements Initializable {
 
 //        Blank blank = new Blank();
 
-        Sale sale = new Sale(staffID, price, date, saleID, customer, commisionRate, 0, true, discount,0 );
-        System.out.println(sale);
-        sale.printSale();
+//        Sale sale = new Sale(staffID, price, date,  commisionRate, 0, true, discount,0 );
+//        System.out.println(sale);
+//        sale.printSale();
         //int userID, int price,String date, int saleID, Customer customer, int commisionRate, int type, boolean latePayment, int discount//
 
 
     }
     public void printCart(){
 //        blank.printFlights();
+    }
+    public void addToBlankTable(FlightModel flightModel){
+
+        flightsOnBlankList.add(flightModel);
+        blankflightNumberColumn.setCellValueFactory(new PropertyValueFactory<>("flightNumber"));
+        blankdepartureColumn.setCellValueFactory(new PropertyValueFactory<>("departure"));
+        blankarrivalColumn.setCellValueFactory(new PropertyValueFactory<>("arrival"));
+        blankdateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        blankpriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        currentBlankTableView.setItems(flightsOnBlankList);
+
+    }
+    public void addBlankToCartTable(Blank blank){
+        cartBlankIDColumn.setCellValueFactory(new PropertyValueFactory<>("blankID"));
+        cartTable.setItems(blanks);
+
     }
     public void searchFlight() throws SQLException {
         departure = departureTextField.getText();

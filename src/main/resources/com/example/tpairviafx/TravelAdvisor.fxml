@@ -51,28 +51,44 @@
             <DatePicker fx:id="datePicker" layoutX="424.0" layoutY="75.0" promptText="Choose a date" />
             <Label layoutX="3.0" layoutY="8.0" text="Search for flight" />
             <Button fx:id="searchButton" alignment="CENTER" layoutX="629.0" layoutY="73.0" mnemonicParsing="false" onAction="#searchFlight" style="-fx-background-color: black;" text="Search" />
+            <Label layoutX="409.0" layoutY="112.0" text="Current legs on blank" />
          </children>
       </AnchorPane>
       <Pane layoutX="-2.0" layoutY="134.0" prefHeight="229.0" prefWidth="718.0" style="-fx-background-color: red;">
          <children>
-            <TableView fx:id="flightsTableView" prefHeight="217.0" prefWidth="709.0">
+            <TableView fx:id="flightsTableView" prefHeight="229.0" prefWidth="402.0" style="-fx-background-color: grey;">
               <columns>
-                  <TableColumn fx:id="flightNumberColumn" prefWidth="101.19294917583466" text="Flight Number" />
-                <TableColumn fx:id="departureColumn" prefWidth="135.8070831298828" text="Departure" />
-                <TableColumn fx:id="arrivalColumn" prefWidth="110.95918273925781" text="Arrival" />
-                  <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="64.30435180664062" text="Date" />
-                  <TableColumn fx:id="timeColumn" prefWidth="55.39300537109375" text="Time" />
-                  <TableColumn fx:id="priceColumn" prefWidth="64.29156494140625" text="Price" />
+                  <TableColumn fx:id="flightNumberColumn" prefWidth="41.5" text="Flight Number" />
+                <TableColumn fx:id="departureColumn" prefWidth="83.0" text="Departure" />
+                <TableColumn fx:id="arrivalColumn" prefWidth="79.0" text="Arrival" />
+                  <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="75.5" text="Date" />
+                  <TableColumn fx:id="timeColumn" prefWidth="54.5" text="Time" />
+                  <TableColumn fx:id="priceColumn" prefWidth="50.5" text="Price" />
               </columns>
+            </TableView>
+            <TableView fx:id="currentBlankTableView" layoutX="402.0" prefHeight="229.0" prefWidth="358.0" style="-fx-background-color: #31AED1;">
+               <columns>
+                  <TableColumn fx:id="blankflightNumberColumn" prefWidth="41.5" text="Flight Number" />
+                  <TableColumn fx:id="blankdepartureColumn" prefWidth="83.0" text="Departure" />
+                  <TableColumn fx:id="blankarrivalColumn" prefWidth="79.0" text="Arrival" />
+                  <TableColumn fx:id="blankdateColumn" minWidth="0.0" prefWidth="75.5" text="Date" />
+                  <TableColumn fx:id="blankpriceColumn" prefWidth="50.5" text="Price" />
+               </columns>
             </TableView>
          </children>
       </Pane>
-      <Button fx:id="addtocartButton" layoutX="734.0" layoutY="163.0" mnemonicParsing="false" onAction="#addToCart" text="AddtoCart" />
-      <Button fx:id="printButton" layoutX="745.0" layoutY="236.0" mnemonicParsing="false" onAction="#printCart" text="print" />
-      <Button fx:id="sellButton" layoutX="838.0" layoutY="224.0" mnemonicParsing="false" onAction="#sell" text="Sell" />
-      <Button fx:id="printBlanksButton" layoutX="718.0" layoutY="309.0" mnemonicParsing="false" onAction="#printBlanks" text="printblanks" />
-      <Button fx:id="addToBlankButton" layoutX="838.0" layoutY="151.0" mnemonicParsing="false" onAction="#addToBlank" text="AddtoBlank" />
-      <Button fx:id="aftf" layoutX="811.0" layoutY="328.0" mnemonicParsing="false" onAction="#addFlightsToFlights" text="addFLgithsToFLights" />
-      <Button fx:id="fcb" layoutX="745.0" layoutY="427.0" mnemonicParsing="false" onAction="#addToBlank" text="finalizeCurrentBlank" />
+      <Button fx:id="addtocartButton" layoutX="61.0" layoutY="388.0" mnemonicParsing="false" onAction="#addToCart" text="AddtoCart" />
+      <Button fx:id="printButton" layoutX="385.0" layoutY="388.0" mnemonicParsing="false" onAction="#printCart" text="print" />
+      <Button fx:id="sellButton" layoutX="287.0" layoutY="388.0" mnemonicParsing="false" onAction="#sell" text="Sell" />
+      <Button fx:id="printBlanksButton" layoutX="488.0" layoutY="389.0" mnemonicParsing="false" onAction="#printBlanks" text="printblanks" />
+      <Button fx:id="addToBlankButton" layoutX="166.0" layoutY="386.0" mnemonicParsing="false" onAction="#addToBlank" text="AddtoBlank" />
+      <Button fx:id="aftf" layoutX="620.0" layoutY="385.0" mnemonicParsing="false" onAction="#addFlightsToFlights" text="addFLgithsToFLights" />
+      <Button fx:id="fcb" layoutX="831.0" layoutY="391.0" mnemonicParsing="false" onAction="#addToBlank" text="finalizeCurrentBlank" />
+      <TableView fx:id="cartTable" layoutX="781.0" layoutY="142.0" prefHeight="220.0" prefWidth="211.0" style="-fx-background-color: #31AED1;">
+         <columns>
+            <TableColumn fx:id="cartBlankIDColumn" prefWidth="83.56900024414062" text="Blank " />
+         </columns>
+      </TableView>
+      <Label layoutX="779.0" layoutY="127.0" text="Cart" />
    </children>
 </AnchorPane>
