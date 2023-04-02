@@ -85,8 +85,6 @@ public class LoginController {
         travelAdvisorController = fxmlLoader.getController();
         travelAdvisorController.displayNameAndRole(username, role);
         travelAdvisorController.setStaffID(staffID);
-
-
         stage.show();
 
     }

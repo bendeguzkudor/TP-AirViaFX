@@ -58,14 +58,14 @@
       <Pane layoutX="-2.0" layoutY="134.0" prefHeight="256.0" prefWidth="1022.0" style="-fx-background-color: grey;">
          <children>
             <TableView fx:id="flightsTableView" layoutX="10.0" layoutY="10.0" prefHeight="230.0" prefWidth="400.0" style="-fx-background-color: #31AED1;">
-              <columns>
+               <columns>
                   <TableColumn fx:id="flightNumberColumn" prefWidth="41.5" text="Flight Number" />
-                <TableColumn fx:id="departureColumn" prefWidth="83.0" text="Departure" />
-                <TableColumn fx:id="arrivalColumn" prefWidth="79.0" text="Arrival" />
+                  <TableColumn fx:id="departureColumn" prefWidth="83.0" text="Departure" />
+                  <TableColumn fx:id="arrivalColumn" prefWidth="79.0" text="Arrival" />
                   <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="75.5" text="Date" />
                   <TableColumn fx:id="timeColumn" prefWidth="54.5" text="Time" />
                   <TableColumn fx:id="priceColumn" prefWidth="50.5" text="Price" />
-              </columns>
+               </columns>
             </TableView>
             <TableView fx:id="currentBlankTableView" layoutX="422.0" layoutY="10.0" prefHeight="230.0" prefWidth="360.0" style="-fx-background-color: #31AED1;">
                <columns>
@@ -109,11 +109,11 @@
             <TextField fx:id="searchCustomerField" layoutX="155.0" layoutY="39.0" />
             <Label fx:id="searchCustomerLabel" layoutX="8.0" layoutY="16.0" text="Enter Customer Name: " />
             <TableView fx:id="customerTableView" layoutX="4.0" layoutY="86.0" prefHeight="203.0" prefWidth="270.0">
-              <columns>
-                <TableColumn fx:id="customerFirstameColumn" maxWidth="1.7976931348623157E308" prefWidth="100.0" text="First Name" />
-                <TableColumn fx:id="customerLastnameColumn" prefWidth="94.44461059570312" text="Last Name" />
+               <columns>
+                  <TableColumn fx:id="customerFirstameColumn" maxWidth="1.7976931348623157E308" prefWidth="100.0" text="First Name" />
+                  <TableColumn fx:id="customerLastnameColumn" prefWidth="94.44461059570312" text="Last Name" />
                   <TableColumn fx:id="customerIDColumn" prefWidth="76.55537414550781" text="Customer ID" />
-              </columns>
+               </columns>
             </TableView>
             <Button fx:id="selectCustomerButton" layoutX="283.0" layoutY="255.0" mnemonicParsing="false" onAction="#selectCustomer" style="-fx-background-color: #31AED1;" text="Select Customer" />
             <Button fx:id="recordCustomerButton" layoutX="279.0" layoutY="108.0" mnemonicParsing="false" onAction="#recordNewCustomer" style="-fx-background-color: #31AED1;" text="RecordNewCustoner" />
