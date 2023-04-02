@@ -18,10 +18,8 @@ public class Blank {
     private int staffID;
     private int localCurrency;
     private int price;
-    private int taxLocal;
-    private int taxOther;
     private int paymentType; // 0 for card, 1 for cash
-    private double commisionRate;
+    private static double commisionRate;
     private String customer;
 
     private ResultSet rs;
@@ -46,32 +44,71 @@ public class Blank {
 
     private String blankType;
 
+    public double getCommissionSum() {
+        return commissionSum;
+    }
 
-    public Blank(int staffID, String blankType, int localCurrency, int taxLocal,
-                 int taxOther, int paymentType, double commisionRate, String customer, ArrayList<FlightModel> flights) throws SQLException {
+    private double commissionSum;
+
+    public int getPriceUSD() {
+        return priceUSD;
+    }
+
+    private int priceUSD;
+
+
+    public Blank(int staffID, String blankType, ArrayList<FlightModel> flights) throws SQLException {
 
         this.flights = flights;
         this.staffID = staffID;
         this.blankType = blankType;
-        this.localCurrency = localCurrency;// for each loop in the other class to summarize dollar
-                                            // price then convert it into local currency then feed it to the constructor
+//        this.localCurrency = localCurrency;// for each loop in the other class to summarize dollar
+        noOfFlights = flights.size();
+        retrieveBlankID(blankType);
+        System.out.println(noOfFlights);
+        calcSum(flights);
+        System.out.println(priceUSD);
+        this.commisionRate = findCommissionRate(this.blankType);
+        calculateCommission();
 
-        this.taxLocal = taxLocal;
-        this.taxOther = taxOther;
-        this.paymentType = paymentType;
-        this.commisionRate = commisionRate;
-        this.customer = customer;
 
+
+
+
+//        this.taxLocal = taxLocal;
+//        this.taxOther = taxOther;
+//        this.paymentType = paymentType;
+//        this.commisionRate = commisionRate;
+//        this.customer = customer;
 
 //        flights.get(0).getDeparture();
-        retrieveBlankID(blankType);
 
     }
     public void setBlankID(String flightType) throws SQLException {
         retrieveBlankID(flightType);
 
+
     }
-    public void printBlankDetails(){
+    public double findCommissionRate(String type){
+        String blankid =Long.toString(blankID);
+        if(blankid.charAt(0)== 4){
+            return Application.interlineCommissionRate;
+        }else{
+            return Application.domesticCommisionRate;
+
+        }
+    }
+    public void calculateCommission(){
+        this.commissionSum = priceUSD * commisionRate;
+
+    }
+    public void calcSum(ArrayList<FlightModel> flights){
+        for(FlightModel x : flights){
+            this.priceUSD += x.getPrice();
+        }
+
+
+    }    public void printBlankDetails(){
         for(FlightModel x : flights){
             x.printFlightDetails();
         }
@@ -79,8 +116,6 @@ public class Blank {
                     "  blankType:  "+this.blankType+
                     "  blankID:  "+this.blankID+
                     "  Local Currency:  "+this.localCurrency+
-                    "  Tax Local:  "+this.taxLocal+
-                    "  Tax Other:  "+this.taxOther+
                     "  paymentType:  "+paymentTypeT(this.paymentType)+
                     "  CommissionRate : "+this.commisionRate+
                     "  Customer:  "+this.customer);
@@ -117,7 +152,7 @@ public class Blank {
         switch (flightType){
             case "Interline":
                 if(noOfFlights > 2){
-                    sql = "SELECT blankID FROM blanks WHERE SUBSTR(blankID, 1, 3) = '440' AND staffID ='"+ staffID +"' AND sold != 1";
+                    sql = "SELECT blankID FROM blanks WHERE SUBSTR(blankID, 1, 3) = '444' AND staffID ='"+ staffID +"' AND sold != 1";
                 }else if (noOfFlights <= 2){
                     sql = "SELECT blankID FROM blanks WHERE SUBSTR(blankID, 1, 3) = '420' AND staffID ='"+ staffID +"'AND sold != 1";
                 }

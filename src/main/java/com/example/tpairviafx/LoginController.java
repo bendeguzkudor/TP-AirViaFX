@@ -18,6 +18,16 @@ public class LoginController {
     private String username;
     private ResultSet rs;
 
+    public TravelAdvisorController getTravelAdvisorController() {
+        return travelAdvisorController;
+    }
+
+    public void setTravelAdvisorController(TravelAdvisorController travelAdvisorController) {
+        this.travelAdvisorController = travelAdvisorController;
+    }
+
+    public static TravelAdvisorController travelAdvisorController;
+
     private int role;
     private int staffID;
     @FXML
@@ -72,9 +82,10 @@ public class LoginController {
         fxmlLoader = new FXMLLoader(Application.class.getResource("TravelAdvisor.fxml"));
         scene = new Scene(fxmlLoader.load(), 1000, 800);
         stage.setScene(scene);
-        TravelAdvisorController travelAdvisorController = fxmlLoader.getController();
+        travelAdvisorController = fxmlLoader.getController();
         travelAdvisorController.displayNameAndRole(username, role);
         travelAdvisorController.setStaffID(staffID);
+
 
         stage.show();
 
