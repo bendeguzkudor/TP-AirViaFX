@@ -55,6 +55,7 @@ public class TravelAdvisorController implements Initializable {
     private String departure;
     private String arrival;
     private LocalDate date;
+    private String dateString;
     private Scene scene;
     @FXML
     private TableView flightsTableView;
@@ -97,6 +98,9 @@ public class TravelAdvisorController implements Initializable {
     @FXML
     private TableColumn<FlightModel, String> blankpriceColumn;
 
+    @FXML
+    private RadioButton cardRadioButton, cashRadioButton;
+
 
 
     //Flights tables columns
@@ -116,7 +120,9 @@ public class TravelAdvisorController implements Initializable {
     private ObservableList<FlightModel> selectedFlightsList;
     private ObservableList<Customer> selectedCustomerList;
 //    private ObservableList<FlightModel> flightsOnBlankList;
-    private Cart cart;
+
+
+    private String salePayment;
 
 //    private Blank blank;
     private ArrayList<FlightModel> flightsToBlank;
@@ -140,12 +146,19 @@ public class TravelAdvisorController implements Initializable {
 //        selectMaxSaleID();
         currentBlankTableView.setPlaceholder(new Label("No flights selected"));
         initializeDate();
-        cart = new Cart();
+//        cart = new Cart();
         flightsToBlank = new ArrayList<>();
         blankArrayList = new ArrayList<>();
         DBConnect db = new DBConnect();
         populateFlightsTable();
         populateCustomerTable();
+    }
+    public void getPayment(){
+        if (cashRadioButton.isSelected()){
+            salePayment = "Cash";
+        }else {
+            salePayment = "Card";
+        }
     }
     public void recordNewCustomer() throws IOException {
         Stage stage = new Stage();
@@ -222,6 +235,7 @@ public class TravelAdvisorController implements Initializable {
 
     }
     public  void populateCustomerTable(){
+        customerObservableList.clear();
         DBConnect db = new DBConnect();
 //        ResultSet rs;
         String sql = "SELECT * FROM customer"; //query for dynamic search
@@ -318,9 +332,9 @@ public class TravelAdvisorController implements Initializable {
         stage.close();
     }
     public void initializeDate(){
-        dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
         now = LocalDateTime.now();
-        System.out.println(dtf.format(now));
+        dateString = now.toString();
 
     }
 
@@ -355,25 +369,24 @@ public class TravelAdvisorController implements Initializable {
     }
 
     public void sell() throws SQLException {
-        for(Blank x : blanks){
-            System.out.println(x);
-            blankArrayList.add(x);
+       if(customer != null && salePayment != null) {
+           for (Blank x : blanks) {
+               System.out.println(x);
+               blankArrayList.add(x);
+           }
 
-        }
-
-        String date = now.toString();
 //        Customer customer = new Customer("bedi", 88);
-        Sale sale = new Sale(staffID, date,customer,"USD", blankArrayList);
-        sale.setSaleID(sale.selectMaxSaleID()+sale.getSaleID());
+           Sale sale = new Sale(staffID, dateString, customer, "USD", blankArrayList,salePayment);
+           sale.setSaleID(sale.selectMaxSaleID() + sale.getSaleID());
+           sale.pushToDatabase();
+           sale.pushSaleToSoldBlanks();
+//           sale.printSale();
+           blankArrayList.clear();
+           blanks.clear();
+           cartTable.refresh();
 
-
-        sale.printSale();
-        blankArrayList.clear();
-        blanks.clear();
-        cartTable.refresh();
-        sale.pushToDatabase();
-        //int userID, int price,String date, int saleID, Customer customer, int commisionRate, int type, boolean latePayment, int discount//
-
+           //int userID, int price,String date, int saleID, Customer customer, int commisionRate, int type, boolean latePayment, int discount//
+       }
 
     }
     public void printCart(){

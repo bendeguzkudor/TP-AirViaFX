@@ -49,7 +49,6 @@ public class CustomerRegisterFormController {
 
 
 public void record(){
-    if(valuedRadioButton.isSelected()){
         if(fixedDiscountRadioButton.isSelected()){
             Customer.recordCustomer(new Customer(firstNameTextField.getText(), lastNameTextField.getText(),queryCustomerID(),Double.parseDouble(discountTextField.getText()),0,0));
 
@@ -57,14 +56,14 @@ public void record(){
         }else if(flexibleDiscountRadioButton.isSelected()) {
             Customer.recordCustomer(new Customer(firstNameTextField.getText(), lastNameTextField.getText(), queryCustomerID(), 0, Double.parseDouble(discountTextField.getText()), 1));
             _discount = 1;
-    } else if(regularRadioButton.isSelected()) {
+        }else if(regularRadioButton.isSelected()) {
             flexibleDiscountRadioButton.setSelected(false);
             fixedDiscountRadioButton.setSelected(false);
-        Customer.recordCustomer(new Customer(firstNameTextField.getText(), lastNameTextField.getText(),queryCustomerID(),0,0,-1));
+            Customer.recordCustomer(new Customer(firstNameTextField.getText(), lastNameTextField.getText(),queryCustomerID(),0,0,-1));
         }
-    }
     // Pass the scene when clicking the record customer button and then , in this class get tht class from that scene and repopulate the list
     Stage stage = (Stage) recordCustomerButton.getScene().getWindow();
+    LoginController.travelAdvisorController.populateCustomerTable();
 
     stage.close();
 

@@ -40,7 +40,6 @@ public class Sale {
     //need array for flights.
     private String localCurrency;
     private int exchangeRate;
-    private long blankID;
 
     private Customer customer; // customer object  // need a second constructor for non-member sales
 
@@ -51,9 +50,9 @@ public class Sale {
     private double discount; // percentage dependant on the customer
     private ArrayList<Blank> blanks;
     private int priceUSD;
-    public int idDiff;
+    private String paymentType;
 
-    public Sale(int staffID, String date, Customer customer,String localCurrency, ArrayList<Blank> blanks){
+    public Sale(int staffID, String date, Customer customer,String localCurrency, ArrayList<Blank> blanks, String paymentType){
         this.saleID = 1;
         this.blanks = blanks;
         this.localCurrency = localCurrency;
@@ -65,6 +64,7 @@ public class Sale {
         calcSum(blanks);
         commisionSum = calcCommissionSum(blanks);
         airportTax = Application.taxRate * priceUSD;
+        this.paymentType = paymentType;
 //        getSaleID(this);
 
     }
@@ -105,7 +105,7 @@ public class Sale {
             stmt.setString(4, localCurrency);
             stmt.setString(5, "05-05-2023");
             stmt.setInt(6, customer.getCustomerID());
-            stmt.setString(7, "Card");
+            stmt.setString(7, paymentType);
             stmt.setInt(8, 123);
             stmt.setString(9, "");
             stmt.setDouble(10, commisionSum);
@@ -122,7 +122,33 @@ public class Sale {
 
         }
     }
-    public int selectMaxSaleID() {
+    public void pushSaleToSoldBlanks(){
+        System.out.println("Pishintdasletoolsoldblanks");
+        String sql = "INSERT INTO soldBlanks (saleID, blankID) VALUES (?,?)";
+        try {
+            DBConnect db = new DBConnect();
+            db.connect();
+            PreparedStatement stmt = db.connection.prepareStatement(sql);
+
+            System.out.println(this.blanks.size());
+            for (Blank x : this.blanks) {
+                System.out.println("Sale ID; " + saleID +" BlankID: " +x.getBlankID());
+                // Set the values of the parameters in the prepared statement
+                stmt.setInt(1, saleID);
+                stmt.setLong(2, x.getBlankID());
+                int rowsInserted = stmt.executeUpdate();
+                System.out.println(rowsInserted + " rows inserted.");
+                System.out.println(sql);
+            }
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+    }
+
+
+        public int selectMaxSaleID() {
         String sql = "select max(saleID) from sale"; // "select max(saleID) as max_id from sale"
         DBConnect dbConnect = new DBConnect();
         int maxValue = 0;
