@@ -5,6 +5,8 @@ package com.example.tpairviafx;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -15,21 +17,33 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 public class Report {
+    Integer staffID = null;
+    Integer amount = null;
+    Long max_blankID = null;
+    Long min_blankID = null;
+    Cell cell;
+    Row row;
+    Workbook workbook;
+    Sheet sheet;
 
     public static void main(String[] args) throws Exception {
-        createTicketStockTurnOverReport();
+        Report report = new Report();
+//        report.queryAssignedBlanks();
+        report.createTicketStockTurnOverReport();
+
+//        report.createTicketStockTurnOverReport();
 
 
   }
-  public static void createTicketStockTurnOverReport(){
-      Workbook workbook = new XSSFWorkbook();
+  public  void createTicketStockTurnOverReport(){
+        workbook = new XSSFWorkbook();
 
       // Create a new sheet
-      Sheet sheet = workbook.createSheet("Table");
-      for (int i = 0; i < 13; i++) {
-          Row row = sheet.createRow(i);
+       sheet = workbook.createSheet("Table");
+      for (int i = 0; i < 20; i++) {
+           row = sheet.createRow(i);
           for (int j = 0; j < 16; j++) {
-              Cell cell = row.createCell(j);
+               cell = row.createCell(j);
               cell.setCellValue("Cell " + i + "," + j);
 
               // Set center alignment and autosize the column width
@@ -39,6 +53,7 @@ public class Report {
               sheet.autoSizeColumn(j);
           }
       }
+
 
       ////////////////////////////////////////////////
 
@@ -53,7 +68,7 @@ public class Report {
       sheet.addMergedRegion(new CellRangeAddress(1, 1, 11, 12)); //AGEMTS AMOUNT
       sheet.addMergedRegion(new CellRangeAddress(1, 1, 13, 15));
       sheet.getRow(0).getCell(0).setCellValue("NN");
-      sheet.getRow(12).getCell(0).setCellValue("Total: ");
+      sheet.getRow(19).getCell(0).setCellValue("Total: ");
       sheet.getRow(0).getCell(1).setCellValue("RECEIVED BLANKS");
       sheet.getRow(0).getCell(6).setCellValue("ASSIGNED/USED BLANKS ");
       sheet.getRow(0).getCell(11).setCellValue("FINAL AMOUNTS ");
@@ -78,21 +93,92 @@ public class Report {
       sheet.getRow(2).getCell(14).setCellValue("FROM/TO");
       sheet.getRow(2).getCell(15).setCellValue("AMOUNT");
 //
+      queryAssignedBlanks();
       for (int i = 0; i < 16; i++) {
           sheet.autoSizeColumn(i);
+
       }
       // Write the workbook to a file
-      try (FileOutputStream outputStream = new FileOutputStream("Table.xlsx")) {
+      try (FileOutputStream outputStream = new FileOutputStream("Table2.xlsx")) {
           workbook.write(outputStream);
       } catch (IOException e) {
           e.printStackTrace();
       }
 
+
       System.out.println("Table.xlsx created successfully!");
 
   }
+  public  void queryAssignedBlanks(){
+      DBConnect db = new DBConnect();
+      ResultSet rs;
+      String sql = "SELECT staffID, MAX(blankID) - MIN(blankID)+1 as amount, MIN(blankID) as min_blankID, MAX(blankID) as max_blankID\n" +
+              "FROM blanks\n" +
+              "WHERE staffID IS NOT NULL\n" +
+              "GROUP BY staffID,LEFT(blankID, 3);"; //query for dynamic search
+      String sql2 = "SELECT staffID, MAX(blankID) - MIN(blankID) + 1 AS amount, MIN(blankID) AS min_blankID, MAX(blankID) AS max_blankID\n" +
+              "FROM blanks\n" +
+              "WHERE staffID IS NOT NULL AND sold = 1\n" +
+              "GROUP BY staffID, LEFT(blankID, 3);";
 
-}
+      try {
+          db.connect();
+          System.out.println(sql);
+          rs = db.statement.executeQuery(sql);
+          int i = 3;
+          int j = 6;
+          int sum = 0;
+          while (rs.next()) {
+               staffID = rs.getInt(1);
+               amount = rs.getInt(2);
+               min_blankID = rs.getLong(3);
+               max_blankID = rs.getLong(4);
+               sum += amount;
+              System.out.print(rs.getInt(1)+ ":");
+              System.out.print(rs.getInt(2 )+ ":");
+              System.out.print(rs.getLong(3)+ ":");
+              System.out.print(rs.getLong(4)+ ":");
+              System.out.println("");
+              System.out.println(i+""+ j);
+              sheet.getRow(i).getCell(j).setCellValue(staffID);
+              j++;
+              sheet.getRow(i).getCell(j).setCellValue(min_blankID+ "-"+ max_blankID);
+              j++;
+              sheet.getRow(i).getCell(j).setCellValue(amount);
+              j = 6;
+              i++;
+          }
+          sheet.getRow(19).getCell(8).setCellValue(sum);
+          rs = db.statement.executeQuery(sql2);
+            i =3;
+            j=9;
+            sum = 0;
+          while(rs.next()){
+                  staffID = rs.getInt(1);
+                  amount = rs.getInt(2);
+                  min_blankID = rs.getLong(3);
+                  max_blankID = rs.getLong(4);
+                  sum += amount;
+                  System.out.print(rs.getInt(1)+ ":");
+                  System.out.print(rs.getInt(2 )+ ":");
+                  System.out.print(rs.getLong(3)+ ":");
+                  System.out.print(rs.getLong(4)+ ":");
+                  System.out.println("");
+                  System.out.println(i+""+ j);
+                  sheet.getRow(i).getCell(j).setCellValue(min_blankID+ "-"+ max_blankID);
+                  j++;
+                  sheet.getRow(i).getCell(j).setCellValue(amount);
+                  j = 9;
+                  i++;
+          }
+          sheet.getRow(19).getCell(10).setCellValue(sum);
+
+        }catch (SQLException e){
+          e.printStackTrace();
+      }
+    }
+    }
+
 
 
 

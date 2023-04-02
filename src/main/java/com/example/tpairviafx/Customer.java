@@ -114,4 +114,13 @@ public class Customer {
     public String getName(){
         return this.firstName;
     }
+
+    public static void main(String[] args) {
+        long start = 10100000001L;
+        long end = 10100000030L;
+
+        for (long i = start; i <= end; i++) {
+            System.out.println(i);
+        }
+    }
 }
