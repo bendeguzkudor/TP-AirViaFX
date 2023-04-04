@@ -66,11 +66,13 @@ public class AdminController implements Initializable {
             DBConnect db = new DBConnect();
             db.connect();
             PreparedStatement stmt = db.connection.prepareStatement(sql);
+
             // Set the values of the parameters in the prepared statement
             stmt.setLong(1, blankID + i);
             stmt.setInt(2, 0);
             stmt.setString(3, date);
             stmt.setInt(4, 0);
+                System.out.println(blankID);
             stmt.executeUpdate();
             System.out.println("ran");}
 
@@ -106,7 +108,7 @@ public class AdminController implements Initializable {
         try {
             db.connect();
             Statement statement = db.statement;
-            ResultSet rs = statement.executeQuery("SELECT MAX(blankID) FROM blanks");
+            ResultSet rs = statement.executeQuery(sql);
             rs.next();
             maxBlankID = rs.getLong(1);
             System.out.println("Max value is: " + maxBlankID);
