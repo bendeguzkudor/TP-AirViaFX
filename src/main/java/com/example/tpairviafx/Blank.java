@@ -191,6 +191,11 @@ public class Blank {
 
 
     public static void main(String[] args) throws SQLException {
+        long blankID = 44400000000L;
+        int amount = 10;
+        for (int i = 1; i <= amount; i++){
+            System.out.println(blankID+i);
+        }
 //        Blank blank = new Blank(888, 1, "Interline");
 //        System.out.println(blank.blankID);
     }
@@ -214,6 +219,8 @@ public class Blank {
             db.closeConnection();
         }
     }
+
+
 
 
 }
