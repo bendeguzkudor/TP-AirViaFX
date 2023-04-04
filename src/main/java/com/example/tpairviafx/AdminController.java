@@ -25,8 +25,6 @@ public class AdminController implements Initializable {
     private TextField amountTextField;
 
     @FXML
-    private ChoiceBox<String> choiceBox;
-    @FXML
     private ChoiceBox<String> choiceBox2;
 
     private String sql;
@@ -42,7 +40,7 @@ public class AdminController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle){
 
         date = Application.getDate();
-        choiceBox = new ChoiceBox<>();
+
         choiceBox2.getItems().addAll(blankTypes);
         choiceBox2.setOnAction(this::getBlankChosen);
 
@@ -61,6 +59,7 @@ public class AdminController implements Initializable {
     public void addBlanks(){
         System.out.println("addblanks");
         System.out.println(blankID);
+        Long rangeFrom = getMaxBlank();
 
         amount = Integer.parseInt(amountTextField.getText());
         try {
@@ -72,7 +71,7 @@ public class AdminController implements Initializable {
             PreparedStatement stmt = db.connection.prepareStatement(sql);
 
             // Set the values of the parameters in the prepared statement
-            stmt.setLong(1, getMaxBlank() + i);
+            stmt.setLong(1, rangeFrom + i);
             stmt.setInt(2, 0);
             stmt.setString(3, date);
             stmt.setInt(4, 0);
@@ -129,6 +128,7 @@ public class AdminController implements Initializable {
             e.printStackTrace();
         }
         System.out.println(maxBlankID);
-    return maxBlankID;
+
+        return maxBlankID;
     }
 }

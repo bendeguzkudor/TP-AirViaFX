@@ -27,6 +27,7 @@ public class LoginController {
     }
 
     public static TravelAdvisorController travelAdvisorController;
+    public static OfficeManagerController officeManagerController;
 
     private int role;
     private int staffID;
@@ -93,6 +94,9 @@ public class LoginController {
         fxmlLoader = new FXMLLoader(Application.class.getResource("OfficeManager.fxml"));
         scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setScene(scene);
+        officeManagerController = fxmlLoader.getController();
+//        officeManagerController.displayNameAndRole(username, role);
+        officeManagerController.setStaffID(staffID);
         stage.show();
 
     }
