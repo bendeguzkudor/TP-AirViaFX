@@ -1,5 +1,6 @@
 package com.example.tpairviafx;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -29,10 +30,12 @@ public class AdminController implements Initializable {
     private ChoiceBox<String> choiceBox2;
 
     private String sql;
+    private String sqlForMaxBlank;
     private Long blankID;
     private String date;
     private int staffID;
     private int amount;
+    private String chosenBlank;
     private String [] blankTypes = {"444", "440","420","201","101"};
 
     @Override
@@ -40,12 +43,13 @@ public class AdminController implements Initializable {
 
         date = Application.getDate();
         choiceBox = new ChoiceBox<>();
-        choiceBox.getItems().add("safg");
         choiceBox2.getItems().addAll(blankTypes);
-        amountTextField.setText("sdf");
-        System.out.println("asidhbviasldbvashlb");
-        choiceBox.setValue("Blanks");
+        choiceBox2.setOnAction(this::getBlankChosen);
 
+
+    }
+    public void getBlankChosen(ActionEvent e){
+        chosenBlank = choiceBox2.getValue();
     }
 
 
@@ -56,7 +60,7 @@ public class AdminController implements Initializable {
     }
     public void addBlanks(){
         System.out.println("addblanks");
-        blankID = getMaxBlank(choiceBox.getValue());
+        System.out.println(blankID);
 
         amount = Integer.parseInt(amountTextField.getText());
         try {
@@ -68,7 +72,7 @@ public class AdminController implements Initializable {
             PreparedStatement stmt = db.connection.prepareStatement(sql);
 
             // Set the values of the parameters in the prepared statement
-            stmt.setLong(1, blankID + i);
+            stmt.setLong(1, getMaxBlank() + i);
             stmt.setInt(2, 0);
             stmt.setString(3, date);
             stmt.setInt(4, 0);
@@ -83,24 +87,30 @@ public class AdminController implements Initializable {
     public static void main(String[] args) {
 
     }
-    public Long getMaxBlank(String type){
+    public Long getMaxBlank(){
         long maxBlankID = 0;
-        String sql ="";
-        switch (type){
+//        System.out.println(type);
+
+        switch (chosenBlank){
             case "444":
-                sql = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '444'";
+                sqlForMaxBlank = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '444'";
+                System.out.println(sql);
                 break;
             case "440":
-                sql = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '440'";
+                sqlForMaxBlank = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '440'";
+                System.out.println(sql);
                 break;
             case "420":
-                sql = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '420'";
+                sqlForMaxBlank = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '420'";
+                System.out.println(sql);
                 break;
             case "201":
-                sql = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '201'";
+                sqlForMaxBlank = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '201'";
+                System.out.println(sql);
                 break;
             case "101":
-                sql = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '101'";
+                sqlForMaxBlank = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '101'";
+                System.out.println(sql);
                 break;
 
         }
@@ -108,7 +118,8 @@ public class AdminController implements Initializable {
         try {
             db.connect();
             Statement statement = db.statement;
-            ResultSet rs = statement.executeQuery(sql);
+            System.out.println(sqlForMaxBlank);
+            ResultSet rs = statement.executeQuery(sqlForMaxBlank);
             rs.next();
             maxBlankID = rs.getLong(1);
             System.out.println("Max value is: " + maxBlankID);
@@ -117,6 +128,7 @@ public class AdminController implements Initializable {
             System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
         }
+        System.out.println(maxBlankID);
     return maxBlankID;
     }
 }
