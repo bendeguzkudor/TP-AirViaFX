@@ -88,28 +88,34 @@ public class AdminController implements Initializable {
     }
     public Long getMaxBlank(){
         long maxBlankID = 0;
+        long initialize = 0;
 //        System.out.println(type);
 
         switch (chosenBlank){
             case "444":
                 sqlForMaxBlank = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '444'";
                 System.out.println(sql);
+                initialize = 44400000000L;
                 break;
             case "440":
                 sqlForMaxBlank = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '440'";
                 System.out.println(sql);
+                initialize = 44000000000L;
                 break;
             case "420":
                 sqlForMaxBlank = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '420'";
                 System.out.println(sql);
+                initialize = 42000000000L;
                 break;
             case "201":
                 sqlForMaxBlank = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '201'";
                 System.out.println(sql);
+                initialize = 20100000000L;
                 break;
             case "101":
                 sqlForMaxBlank = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '101'";
                 System.out.println(sql);
+                initialize = 10100000000L;
                 break;
 
         }
@@ -120,6 +126,7 @@ public class AdminController implements Initializable {
             System.out.println(sqlForMaxBlank);
             ResultSet rs = statement.executeQuery(sqlForMaxBlank);
             rs.next();
+
             maxBlankID = rs.getLong(1);
             System.out.println("Max value is: " + maxBlankID);
             db.closeConnection();
@@ -128,7 +135,9 @@ public class AdminController implements Initializable {
             e.printStackTrace();
         }
         System.out.println(maxBlankID);
-
+        if(maxBlankID == 0){
+            return initialize;
+        }
         return maxBlankID;
     }
 }
