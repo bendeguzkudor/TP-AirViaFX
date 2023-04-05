@@ -114,7 +114,7 @@ public class Report {
       ResultSet rs;
       String sql = "SELECT staffID, MAX(blankID) - MIN(blankID)+1 as amount, MIN(blankID) as min_blankID, MAX(blankID) as max_blankID\n" +
               "FROM blanks\n" +
-              "WHERE staffID IS NOT NULL\n" +
+              "WHERE staffID != 0\n" +
               "GROUP BY staffID,LEFT(blankID, 3);"; //query for dynamic search
       String sql2 = "SELECT staffID, MAX(blankID) - MIN(blankID) + 1 AS amount, MIN(blankID) AS min_blankID, MAX(blankID) AS max_blankID\n" +
               "FROM blanks\n" +

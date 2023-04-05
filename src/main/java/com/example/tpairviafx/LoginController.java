@@ -92,7 +92,7 @@ public class LoginController {
     public void loadOfficeManager() throws IOException {
         Stage stage = (Stage) loginButton.getScene().getWindow();
         fxmlLoader = new FXMLLoader(Application.class.getResource("OfficeManager.fxml"));
-        scene = new Scene(fxmlLoader.load(), 600, 400);
+        scene = new Scene(fxmlLoader.load(), 1000, 800);
         stage.setScene(scene);
         officeManagerController = fxmlLoader.getController();
 //        officeManagerController.displayNameAndRole(username, role);
@@ -103,7 +103,7 @@ public class LoginController {
     public void loadAdmin() throws IOException {
         Stage stage = (Stage) loginButton.getScene().getWindow();
         fxmlLoader = new FXMLLoader(Application.class.getResource("Admin.fxml"));
-        scene = new Scene(fxmlLoader.load(), 600, 400);
+        scene = new Scene(fxmlLoader.load(), 1000, 800);
         stage.setScene(scene);
         stage.show();
 

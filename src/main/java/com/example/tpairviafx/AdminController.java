@@ -1,13 +1,16 @@
 package com.example.tpairviafx;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 
+import javax.xml.transform.Result;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,9 +26,23 @@ public class AdminController implements Initializable {
 
     @FXML
     private TextField amountTextField;
+    @FXML
+    private TextField searchBlankIDTextField;
 
     @FXML
     private ChoiceBox<String> choiceBox2;
+    @FXML
+    private TableColumn<Blank, Long> blankIDColumn;
+    @FXML
+    private TableColumn<Blank, Integer> assignedToColumn;
+    @FXML
+    private TableColumn<Blank, Integer> soldColumn;
+    @FXML
+    private TableColumn<Blank, String> dateAddedColumn;
+    @FXML
+    private TableColumn<Blank, String> dateAssignedColumn;
+    @FXML
+    private TableView blanksTableView;
 
     private String sql;
     private String sqlForMaxBlank;
@@ -35,6 +52,10 @@ public class AdminController implements Initializable {
     private int amount;
     private String chosenBlank;
     private String [] blankTypes = {"444", "440","420","201","101"};
+    private ResultSet rs;
+
+    ObservableList<Blank> blankObservableList = FXCollections.observableArrayList();
+    private ObservableList<Blank> selectedBlanksList;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
@@ -43,6 +64,7 @@ public class AdminController implements Initializable {
 
         choiceBox2.getItems().addAll(blankTypes);
         choiceBox2.setOnAction(this::getBlankChosen);
+        populateBlankTable();
 
 
     }
@@ -64,7 +86,7 @@ public class AdminController implements Initializable {
         amount = Integer.parseInt(amountTextField.getText());
         try {
             for (int i = 1; i <= amount; i++) {
-                sql = "INSERT INTO blanks (blankID, staffID, dateAssigned, sold) VALUES (?,?,?,?)";
+                sql = "INSERT INTO blanks (blankID, staffID, sold, dateAdded) VALUES (?,?,?,?)";
 
             DBConnect db = new DBConnect();
             db.connect();
@@ -73,8 +95,8 @@ public class AdminController implements Initializable {
             // Set the values of the parameters in the prepared statement
             stmt.setLong(1, rangeFrom + i);
             stmt.setInt(2, 0);
-            stmt.setString(3, date);
-            stmt.setInt(4, 0);
+            stmt.setInt(3, 0);
+            stmt.setString(4, date);
                 System.out.println(blankID);
             stmt.executeUpdate();
             System.out.println("ran");}
@@ -117,7 +139,6 @@ public class AdminController implements Initializable {
                 System.out.println(sql);
                 initialize = 10100000000L;
                 break;
-
         }
         DBConnect db = new DBConnect();
         try {
@@ -139,5 +160,65 @@ public class AdminController implements Initializable {
             return initialize;
         }
         return maxBlankID;
+    }
+    public void populateBlankTable(){
+        DBConnect db = new DBConnect();
+//        ResultSet rs;
+        String sql = "SELECT * FROM blanks"; //query for dynamic search
+//        String sql2 = "SELECT * FROM flights WHERE departure = \"London\" AND arrival = \"budapest\" AND date = \"23-05-10\"";
+        try{
+            db.connect();
+            rs = db.statement.executeQuery(sql);
+            while(rs.next()){
+                Long queryBlankID = rs.getLong("blankID");
+                Integer queryStaffID = rs.getInt("staffID");
+                String querydateAssinged = rs.getString("dateAssigned");
+                Integer querySold = rs.getInt("sold");
+                String querydateAdded = rs.getString("dateAdded");
+
+
+                //Populate the list
+                blankObservableList.add(new Blank(queryBlankID,queryStaffID,
+                        querydateAssinged,querySold,querydateAdded));
+            }
+
+            blankIDColumn.setCellValueFactory(new PropertyValueFactory<>("blankID"));
+            assignedToColumn.setCellValueFactory(new PropertyValueFactory<>("staffID"));
+            dateAssignedColumn.setCellValueFactory(new PropertyValueFactory<>("dateAssigned"));
+            soldColumn.setCellValueFactory(new PropertyValueFactory<>("sold"));
+            dateAddedColumn.setCellValueFactory(new PropertyValueFactory<>("dateAdded"));
+
+            blanksTableView .setItems(blankObservableList);
+
+            FilteredList<Blank> filteredData = new FilteredList<>(blankObservableList, b->true);
+            searchBlankIDTextField.textProperty().addListener((observable, oldValue, newValue)->{
+                filteredData.setPredicate(blankSearchModel -> {
+                    if(newValue.isEmpty() || newValue.isBlank() || newValue == null){
+                        return true;
+                    //NEEDS FIXING//
+                    }
+                    if(blankSearchModel.getBlankID() > -1){
+                        return true;
+
+                    }else{
+                        return false;
+                    }
+
+                });
+
+            });
+            SortedList<Blank> sortedData = new SortedList<>(filteredData);
+            sortedData.comparatorProperty().bind(blanksTableView.comparatorProperty());
+            blanksTableView.setItems(sortedData);
+            selectedBlanksList = blanksTableView.getSelectionModel().getSelectedItems();
+            System.out.println("selected flight");
+
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }finally {
+            db.closeConnection();
+        }
+
+
     }
 }
