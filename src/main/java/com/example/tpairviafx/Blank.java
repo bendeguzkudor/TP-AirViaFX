@@ -56,6 +56,46 @@ public class Blank {
 
     private int priceUSD;
 
+    public int getSold() {
+        return sold;
+    }
+
+    public void setSold(int sold) {
+        this.sold = sold;
+    }
+
+    private int sold;
+    public void setBlankID(long blankID) {
+        this.blankID = blankID;
+    }
+
+    public int getStaffID() {
+        return staffID;
+    }
+
+    public void setStaffID(int staffID) {
+        this.staffID = staffID;
+    }
+
+    public String getDateAssigned() {
+        return dateAssigned;
+    }
+
+    public void setDateAssigned(String dateAssigned) {
+        this.dateAssigned = dateAssigned;
+    }
+
+    public String getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(String dateAdded) {
+        this.dateAdded = dateAdded;
+    }
+
+    private String dateAssigned;
+    private String dateAdded;
+
 
     public Blank(int staffID, String blankType, ArrayList<FlightModel> flights) throws SQLException {
 
@@ -84,7 +124,16 @@ public class Blank {
 //        flights.get(0).getDeparture();
 
     }
-    public void setBlankID(String flightType) throws SQLException {
+    public Blank(Long blankID,int staffID,  String dateAssigned,int sold, String dateAdded ){
+        this.blankID = blankID;
+        this.staffID = staffID;
+        this.dateAssigned = dateAssigned;
+        this.sold = sold;
+        this.dateAdded = dateAdded;
+
+
+
+    }    public void setBlankID(String flightType) throws SQLException {
         retrieveBlankID(flightType);
 
 
