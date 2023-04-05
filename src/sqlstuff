@@ -1,0 +1,367 @@
+jdbc:mysql://smcse-stuproj00.city.ac.uk:3306/in2018g05
+{password=lPP1uVU0, user=in2018g05_a}
+
+
+
+CREATE TABLE staff (
+	staffID int(5)NOT NULL,
+	username VARCHAR(20) NOT NULL,
+	password VARCHAR(20) NOT NULL,
+    name VARCHAR(25) NOT NULL, 
+    role int(1),
+    PRIMARY KEY (staffID)
+);
+
+CREATE TABLE flights (
+	flightNumber int(6)NOT NULL,
+	departure VARCHAR(20) NOT NULL,
+    arrival VARCHAR(20) NOT NULL,
+    date VARCHAR(20) NOT NULL,
+    time VARCHAR(20) NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    PRIMARY KEY (flightNumber)
+);
+
+CREATE TABLE blanks (
+    blankID VARCHAR(40),
+    staffID int,
+    dateAssigned VARCHAR(10),
+    PRIMARY KEY (blankID),
+    FOREIGN KEY (staffID) REFERENCES staff (staffID)
+);
+    
+    
+CREATE TABLE sale (
+    saleID int(5) NOT NULL,
+	staffID int(5)NOT NULL,
+    price int(10)NOT NULL,
+    currency varchar(3)NOT NULL,
+    date varchar(10)NOT NULL,
+    customerID varchar(10),
+    paymentType varchar(10)not null, 
+    cardNumber int,
+    latePayment varchar(10),
+    commissionSum double(10, 2)not null,
+    taxSum double(10, 2) not null, 
+    PRIMARY KEY (saleID),
+    FOREIGN KEY (staffID) REFERENCES staff (staffID)
+);
+
+    
+CREATE TABLE customer (
+    customerID int(5) NOT NULL,
+	firstName varchar(15)NOT NULL,
+    lastName varchar(15)NOT NULL,
+    flexibleDiscount double(10, 2),
+    fixedDiscount double(10, 2),
+    discount double(10, 2),
+    PRIMARY KEY (customerID));
+
+INSERT INTO staff (staffID, username, password,name, role)
+VALUES
+    ("888","bedi","admin","Bedi Kudor", 1),
+    ("222","om","om","Office Manager", 2),
+    ("333","admin","admin","Admin ", 3);
+
+
+
+INSERT INTO blanks (blankID, staffID, dateAssigned, sold)
+VALUES
+    ("44400000001","888","27-03-2023",0),
+    ("44400000002","888","27-03-2023",0),
+    ("44400000003","888","27-03-2023",0),
+    ("42000000001","888","27-03-2023",0),
+    ("42000000002","888","27-03-2023",0),
+    ("20100000001","888","27-03-2023",0);
+
+
+SELECT blankID FROM blanks
+WHERE SUBSTR(blankID, 1, 3) = '440' AND staffID = 888;
+
+SELECT blankID FROM blanks
+WHERE SUBSTR(blankID, 1, 3) = '420' AND staffID = 888;
+
+SELECT blankID FROM blanks
+WHERE SUBSTR(blankID, 1, 3) = '420' AND staffID = 888;
+
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE blanks SET sold = 1 WHERE blankID = blankID;
+
+SELECT * FROM AirVia.blanks;
+INSERT INTO `AirVia`.`sale`
+(`saleID`,`staffID`,`price`,`currency`,`date`,`customerID`,`tax`,`paymentType`,`cardNumber`,`latePayment`,`commissionRate`,`commissionSum`,`taxSum`)
+VALUES
+(<{saleID: }>,<{staffID: }>,<{price: }>,<{currency: }>,<{date: }>,<{customerID: }>,<{tax: }>,<{paymentType: }>,<{cardNumber: }>,<{latePayment: }>,<{commissionRate: }>,<{commissionSum: }>,
+<{taxSum:}>);
+
+INSERT INTO customer (customerID, firstName, lastName, flexibleDiscount, fixedDiscount, discount)
+VALUES
+    (1,"John","Reed",null, 0.02,0),
+    (2,"Clark","Shit",0.1, null,1),
+    (3,"Coca","Cola",null, null,-1),
+    (4,"John","Cena",null, 0.01,0);
+
+INSERT INTO flights (flighNumber, departure, arrival, date, time, price, type)
+VALUES
+  (7,"London","Liverpool",2023-05-10,"11:20",50,"Domestic"),
+    (8,"Liverpool","London",2023-05-15,"14:20",40,"Domestic"),
+    (9,"London","Edinburgh",2023-05-20,"16:20",60,"Domestic"),
+    (10,"Edinburgh","London",2023-05-25,"18:20",50,"Domestic");
+
+
+
+INSERT INTO blanks (blankID, staffID, dateAssigned, sold)
+VALUES
+    ("44400000001","000","20230402",0),
+    ("44400000002","000","20230402",0),
+    ("44400000003","000","20230402",0),
+    ("44400000004","000","20230402",0),
+    ("44400000005","000","20230402",0),
+    ("44400000006","000","20230402",0),
+    ("44400000007","000","20230402",0),
+    ("44400000008","000","20230402",0),
+    ("44400000009","000","20230402",0),
+    ("44400000010","000","20230402",0),
+    ("44400000011","000","20230402",0),
+    ("44400000012","000","20230402",0),
+    ("44400000013","000","20230402",0),
+    ("44400000014","000","20230402",0),
+    ("44400000015","000","20230402",0),
+    ("44400000016","000","20230402",0),
+    ("44400000017","000","20230402",0),
+    ("44400000018","000","20230402",0),
+    ("44400000019","000","20230402",0),
+    ("44400000020","000","20230402",0),
+    ("44400000021","000","20230402",0),
+    ("44400000022","000","20230402",0),
+    ("44400000023","000","20230402",0),
+    ("44400000024","000","20230402",0),
+    ("44400000025","000","20230402",0),
+    ("44400000026","000","20230402",0),
+    ("44400000027","000","20230402",0),
+    ("44400000028","000","20230402",0),
+    ("44400000029","000","20230402",0),
+    ("44400000030","000","20230402",0),
+    ("42000000001","000","20230402",0),
+    ("42000000002","000","20230402",0),
+    ("42000000003","000","20230402",0),
+    ("42000000004","000","20230402",0),
+    ("42000000005","000","20230402",0),
+    ("42000000006","000","20230402",0),
+    ("42000000007","000","20230402",0),
+    ("42000000008","000","20230402",0),
+    ("42000000009","000","20230402",0),
+    ("42000000010","000","20230402",0),
+    ("42000000011","000","20230402",0),
+    ("42000000012","000","20230402",0),
+    ("42000000013","000","20230402",0),
+    ("42000000014","000","20230402",0),
+    ("42000000015","000","20230402",0),
+    ("42000000016","000","20230402",0),
+    ("42000000017","000","20230402",0),
+    ("42000000018","000","20230402",0),
+    ("42000000019","000","20230402",0),
+    ("42000000020","000","20230402",0),
+    ("42000000021","000","20230402",0),
+    ("42000000022","000","20230402",0),
+    ("42000000023","000","20230402",0),
+    ("42000000024","000","20230402",0),
+    ("42000000025","000","20230402",0),
+    ("42000000026","000","20230402",0),
+    ("42000000027","000","20230402",0),
+    ("42000000028","000","20230402",0),
+    ("42000000029","000","20230402",0),
+    ("42000000030","000","20230402",0),
+    ("20100000001","000","20230402",0),
+    ("20100000002","000","20230402",0),
+    ("20100000003","000","20230402",0),
+    ("20100000004","000","20230402",0),
+    ("20100000005","000","20230402",0),
+    ("20100000006","000","20230402",0),
+    ("20100000007","000","20230402",0),
+    ("20100000008","000","20230402",0),
+    ("20100000009","000","20230402",0),
+    ("20100000010","000","20230402",0),
+    ("20100000011","000","20230402",0),
+    ("20100000012","000","20230402",0),
+    ("20100000013","000","20230402",0),
+    ("20100000014","000","20230402",0),
+    ("20100000015","000","20230402",0),
+    ("20100000016","000","20230402",0),
+    ("20100000017","000","20230402",0),
+    ("20100000018","000","20230402",0),
+    ("20100000019","000","20230402",0),
+    ("20100000020","000","20230402",0),
+    ("20100000021","000","20230402",0),
+    ("20100000022","000","20230402",0),
+    ("20100000023","000","20230402",0),
+    ("20100000024","000","20230402",0),
+    ("20100000025","000","20230402",0),
+    ("20100000026","000","20230402",0),
+    ("20100000027","000","20230402",0),
+    ("20100000028","000","20230402",0),
+    ("20100000029","000","20230402",0),
+    ("20100000030","000","20230402",0),
+    ("10100000001","000","20230402",0),
+    ("10100000002","000","20230402",0),
+    ("10100000003","000","20230402",0),
+    ("10100000004","000","20230402",0),
+    ("10100000005","000","20230402",0),
+    ("10100000006","000","20230402",0),
+    ("10100000007","000","20230402",0),
+    ("10100000008","000","20230402",0),
+    ("10100000009","000","20230402",0),
+    ("10100000010","000","20230402",0),
+    ("10100000011","000","20230402",0),
+    ("10100000012","000","20230402",0),
+    ("10100000013","000","20230402",0),
+    ("10100000014","000","20230402",0),
+    ("10100000015","000","20230402",0),
+    ("10100000016","000","20230402",0),
+    ("10100000017","000","20230402",0),
+    ("10100000018","000","20230402",0),
+    ("10100000019","000","20230402",0),
+    ("10100000020","000","20230402",0),
+    ("10100000021","000","20230402",0),
+    ("10100000022","000","20230402",0),
+    ("10100000023","000","20230402",0),
+    ("10100000024","000","20230402",0),
+    ("10100000025","000","20230402",0),
+    ("10100000026","000","20230402",0),
+    ("10100000027","000","20230402",0),
+    ("10100000028","000","20230402",0),
+    ("10100000029","000","20230402",0),
+    ("10100000030","000","20230402",0);
+
+
+SET staffID = 888
+WHERE blankID >= 44400000001 AND blankID < 44400000010;
+
+Select blankID, staffID from blanks where staffID != null and sold = 0;
+
+
+SELECT staffID, LEFT(blankID, 3) as prefix, MAX(blankID) as max_blankID, MIN(blankID) as min_blankID
+FROM blanks 
+WHERE staffID IS NOT NULL AND LEFT(blankID, 3) = '444'
+GROUP BY staffID, prefix;
+
+
+//query for all blanks ranges
+SELECT staffID, LEFT(blankID, 3) as prefix, MAX(blankID) - MIN(blankID) as amount, MIN(blankID) as min_blankID, MAX(blankID) as max_blankID
+FROM blanks
+WHERE staffID IS NOT NULL AND LEFT(blankID, 3) = '444'
+GROUP BY staffID, prefix;
+
+//query for sold blanks range
+SELECT staffID, MAX(blankID) - MIN(blankID) + 1 AS amount, MIN(blankID) AS min_blankID, MAX(blankID) AS max_blankID
+FROM blanks
+WHERE staffID IS NOT NULL AND sold = 1
+GROUP BY staffID, LEFT(blankID, 3);
+
+
+SELECT staffID, MAX(blankID) - MIN(blankID) + 1 AS amount, MIN(blankID) AS min_blankID, MAX(blankID) AS max_blankID
+FROM blanks
+WHERE staffID IS NOT NULL AND sold = 1 and dateAssigned >= "20230402" and dateAssigned <="20230430"
+GROUP BY staffID, LEFT(blankID, 3);
+
+
+
+
+
+
+
+    <!--<?xml version="1.0" encoding="UTF-8"?>-->
+
+<!--<?import javafx.scene.control.Button?>-->
+<!--<?import javafx.scene.control.DatePicker?>-->
+<!--<?import javafx.scene.control.Label?>-->
+<!--<?import javafx.scene.control.TableColumn?>-->
+<!--<?import javafx.scene.control.TableView?>-->
+<!--<?import javafx.scene.control.TextField?>-->
+<!--<?import javafx.scene.layout.AnchorPane?>-->
+<!--<?import javafx.scene.layout.Pane?>-->
+<!--<?import javafx.scene.text.Font?>-->
+
+<!--<AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.TravelAdvisorController">-->
+<!--   <children>-->
+<!--      <Pane layoutX="713.0" prefHeight="133.0" prefWidth="304.0" style="-fx-background-color: B8f7f1;">-->
+<!--         <children>-->
+<!--            <Label layoutX="8.0" layoutY="23.0" text="Logged in: ">-->
+<!--               <font>-->
+<!--                  <Font size="15.0" />-->
+<!--               </font>-->
+<!--            </Label>-->
+<!--            <Label fx:id="nameLabel" alignment="CENTER" layoutX="76.0" layoutY="19.0" prefHeight="28.0" prefWidth="156.0" text="Logged in ">-->
+<!--               <font>-->
+<!--                  <Font name="Verdana Bold" size="22.0" />-->
+<!--               </font>-->
+<!--            </Label>-->
+<!--            <Label fx:id="roleLabel" alignment="CENTER" layoutX="36.0" layoutY="59.0" prefHeight="57.0" prefWidth="233.0" text="Logged in ">-->
+<!--               <font>-->
+<!--                  <Font name="System Bold Italic" size="22.0" />-->
+<!--               </font>-->
+<!--            </Label>-->
+<!--         </children>-->
+<!--      </Pane>-->
+<!--      <Button fx:id="closeButton" layoutX="963.0" maxHeight="46.0" maxWidth="54.0" minHeight="25.0" minWidth="38.0" mnemonicParsing="false" onAction="#closeWindow" prefHeight="36.0" prefWidth="47.0" style="-fx-background-color: black;">-->
+<!--         <font>-->
+<!--            <Font name="System Bold" size="59.0" />-->
+<!--         </font>-->
+<!--      </Button>-->
+<!--      <Label layoutX="982.0" layoutY="1.0" text="X" textFill="WHITE">-->
+<!--         <font>-->
+<!--            <Font name="System Bold" size="26.0" />-->
+<!--         </font>-->
+<!--      </Label>-->
+<!--      <AnchorPane layoutX="-1.0" prefHeight="134.0" prefWidth="713.0" style="-fx-background-color: grey;">-->
+<!--         <children>-->
+<!--            <Label layoutX="9.0" layoutY="44.0" text="Departure" />-->
+<!--            <TextField fx:id="departureTextField" layoutX="35.0" layoutY="74.0" />-->
+<!--            <Label layoutX="183.0" layoutY="43.0" text="Destination" />-->
+<!--            <TextField fx:id="arrivalTextField" layoutX="240.0" layoutY="75.0" />-->
+<!--            <Label layoutX="385.0" layoutY="41.0" text="Date" />-->
+<!--            <DatePicker fx:id="datePicker" layoutX="424.0" layoutY="75.0" promptText="Choose a date" />-->
+<!--            <Label layoutX="3.0" layoutY="8.0" text="Search for flight" />-->
+<!--            <Button fx:id="searchButton" alignment="CENTER" layoutX="629.0" layoutY="73.0" mnemonicParsing="false" onAction="#searchFlight" style="-fx-background-color: black;" text="Search" />-->
+<!--            <Label layoutX="409.0" layoutY="112.0" text="Current legs on blank" />-->
+<!--         </children>-->
+<!--      </AnchorPane>-->
+<!--      <Pane layoutX="-2.0" layoutY="134.0" prefHeight="229.0" prefWidth="718.0" style="-fx-background-color: red;">-->
+<!--         <children>-->
+<!--            <TableView fx:id="flightsTableView" prefHeight="229.0" prefWidth="402.0" style="-fx-background-color: grey;">-->
+<!--              <columns>-->
+<!--                  <TableColumn fx:id="flightNumberColumn" prefWidth="41.5" text="Flight Number" />-->
+<!--                <TableColumn fx:id="departureColumn" prefWidth="83.0" text="Departure" />-->
+<!--                <TableColumn fx:id="arrivalColumn" prefWidth="79.0" text="Arrival" />-->
+<!--                  <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="75.5" text="Date" />-->
+<!--                  <TableColumn fx:id="timeColumn" prefWidth="54.5" text="Time" />-->
+<!--                  <TableColumn fx:id="priceColumn" prefWidth="50.5" text="Price" />-->
+<!--              </columns>-->
+<!--            </TableView>-->
+<!--            <TableView fx:id="currentBlankTableView" layoutX="402.0" prefHeight="229.0" prefWidth="358.0" style="-fx-background-color: #31AED1;">-->
+<!--               <columns>-->
+<!--                  <TableColumn fx:id="blankflightNumberColumn" prefWidth="41.5" text="Flight Number" />-->
+<!--                  <TableColumn fx:id="blankdepartureColumn" prefWidth="83.0" text="Departure" />-->
+<!--                  <TableColumn fx:id="blankarrivalColumn" prefWidth="79.0" text="Arrival" />-->
+<!--                  <TableColumn fx:id="blankdateColumn" minWidth="0.0" prefWidth="75.5" text="Date" />-->
+<!--                  <TableColumn fx:id="blankpriceColumn" prefWidth="50.5" text="Price" />-->
+<!--               </columns>-->
+<!--            </TableView>-->
+<!--         </children>-->
+<!--      </Pane>-->
+<!--      <Button fx:id="addtocartButton" layoutX="61.0" layoutY="388.0" mnemonicParsing="false" onAction="#addToCart" text="AddtoCart" />-->
+<!--      <Button fx:id="printButton" layoutX="385.0" layoutY="388.0" mnemonicParsing="false" onAction="#printCart" text="print" />-->
+<!--      <Button fx:id="sellButton" layoutX="287.0" layoutY="388.0" mnemonicParsing="false" onAction="#sell" text="Sell" />-->
+<!--      <Button fx:id="printBlanksButton" layoutX="488.0" layoutY="389.0" mnemonicParsing="false" onAction="#printBlanks" text="printblanks" />-->
+<!--      <Button fx:id="addToBlankButton" layoutX="166.0" layoutY="386.0" mnemonicParsing="false" onAction="#addToBlank" text="AddtoBlank" />-->
+<!--      <Button fx:id="aftf" layoutX="620.0" layoutY="385.0" mnemonicParsing="false" onAction="#addFlightsToFlights" text="addFLgithsToFLights" />-->
+<!--      <Button fx:id="fcb" layoutX="831.0" layoutY="391.0" mnemonicParsing="false" onAction="#addToBlank" text="finalizeCurrentBlank" />-->
+<!--      <TableView fx:id="cartTable" layoutX="781.0" layoutY="142.0" prefHeight="220.0" prefWidth="211.0" style="-fx-background-color: #31AED1;">-->
+<!--         <columns>-->
+<!--            <TableColumn fx:id="cartBlankIDColumn" prefWidth="83.56900024414062" text="Blank " />-->
+<!--         </columns>-->
+<!--      </TableView>-->
+<!--      <Label layoutX="779.0" layoutY="127.0" text="Cart" />-->
+<!--   </children>-->
+<!--</AnchorPane>-->
