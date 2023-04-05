@@ -195,7 +195,7 @@ public class AdminController implements Initializable {
                 filteredData.setPredicate(blankSearchModel -> {
                     if(newValue.isEmpty() || newValue.isBlank() || newValue == null){
                         return true;
-
+                    //NEEDS FIXING//
                     }
                     if(blankSearchModel.getBlankID() > -1){
                         return true;
