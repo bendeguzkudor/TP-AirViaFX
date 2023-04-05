@@ -247,7 +247,7 @@ WHERE staffID IS NOT NULL AND LEFT(blankID, 3) = '444'
 GROUP BY staffID, prefix;
 
 
-//query for all blanks ranges
+
 SELECT staffID, LEFT(blankID, 3) as prefix, MAX(blankID) - MIN(blankID) as amount, MIN(blankID) as min_blankID, MAX(blankID) as max_blankID
 FROM blanks
 WHERE staffID IS NOT NULL AND LEFT(blankID, 3) = '444'
