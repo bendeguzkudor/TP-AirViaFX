@@ -131,7 +131,6 @@ public class OfficeManagerController implements Initializable {
         }finally {
             db.closeConnection();
         }
-
     }
     public void assignBlanks(){
         System.out.println("addblanks");

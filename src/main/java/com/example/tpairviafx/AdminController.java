@@ -117,7 +117,6 @@ public class AdminController implements Initializable {
                 System.out.println(sql);
                 initialize = 10100000000L;
                 break;
-
         }
         DBConnect db = new DBConnect();
         try {
