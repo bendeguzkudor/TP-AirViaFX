@@ -1,6 +1,7 @@
 package com.example.tpairviafx;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -25,6 +26,12 @@ public class Application extends javafx.application.Application {
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setScene(scene);
         stage.show();
+    }
+    public static void logOut(Stage stage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(Application.class.getResource("Login.fxml"));
+        Parent root = loader.load();
+        Scene loginScene = new Scene(root);
+        stage.setScene(loginScene);
     }
     public static String getDate(){
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");

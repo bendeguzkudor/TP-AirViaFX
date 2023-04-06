@@ -12,7 +12,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,6 +50,12 @@ public class OfficeManagerController implements Initializable {
     private String queryName;
     private int queryStaffID;
 
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    private Stage stage;
+
     public int getStaffID() {
         return staffID;
     }
@@ -55,6 +63,7 @@ public class OfficeManagerController implements Initializable {
     public void setStaffID(int staffID) {
         this.staffID = staffID;
     }
+
 
     private int staffID;
     private String chosenBlank;
@@ -201,6 +210,9 @@ public class OfficeManagerController implements Initializable {
         }
         System.out.println(minBlank);
         return minBlank;
+    }
+    public void logOut() throws IOException {
+        Application.logOut(stage);
     }
 
 

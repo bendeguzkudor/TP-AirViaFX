@@ -9,8 +9,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 import javax.xml.transform.Result;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,6 +55,12 @@ public class AdminController implements Initializable {
     private String chosenBlank;
     private String [] blankTypes = {"444", "440","420","201","101"};
     private ResultSet rs;
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    private Stage stage;
 
     ObservableList<Blank> blankObservableList = FXCollections.observableArrayList();
     private ObservableList<Blank> selectedBlanksList;
@@ -103,11 +111,20 @@ public class AdminController implements Initializable {
 
         }catch (SQLException e){
         e.printStackTrace();}
+        refreshTable();
+
+
     }
 
     public static void main(String[] args) {
 
     }
+    public void refreshTable(){
+        blankObservableList.clear();
+        populateBlankTable();
+        blanksTableView.refresh();
+    }
+
     public Long getMaxBlank(){
         long maxBlankID = 0;
         long initialize = 0;
@@ -219,6 +236,40 @@ public class AdminController implements Initializable {
             db.closeConnection();
         }
 
+
+    }
+    public void logOut() throws IOException {
+        Application.logOut(stage);
+    }
+    public void removeBlank() throws SQLException {
+
+        String sql = "DELETE FROM blanks WHERE blankID = ?";
+        System.out.println(blankID);
+        System.out.println(selectedBlanksList.get(0).getBlankID());
+
+// Create a PreparedStatement object
+        DBConnect db = new DBConnect();
+        db.connect();
+        PreparedStatement pstmt = db.connection.prepareStatement(sql);
+
+// Set the parameter value
+        pstmt.setLong(1, selectedBlanksList.get(0).getBlankID());
+
+// Execute the DELETE query
+        int rowsDeleted = pstmt.executeUpdate();
+
+// Check if any rows were deleted
+        if (rowsDeleted > 0) {
+            System.out.println("Rows deleted successfully!");
+        } else {
+            System.out.println("No rows were deleted.");
+        }
+// Close the resources
+        pstmt.close();
+        db.closeConnection();
+        int selectedIndex = blanksTableView.getSelectionModel().getSelectedIndex();
+//        blankObservableList.remove(selectedIndex);
+        refreshTable();
 
     }
 }

@@ -19,5 +19,6 @@
       <Button fx:id="assignButton" layoutX="272.0" layoutY="142.0" mnemonicParsing="false" onAction="#assignBlanks" text="Assign" />
       <TextField fx:id="searchTextField" layoutX="14.0" layoutY="35.0" promptText="Search Staff by name" />
       <ChoiceBox fx:id="blankChoiceBox" layoutX="232.0" layoutY="56.0" prefWidth="150.0" />
+      <Button fx:id="logoutButton" layoutX="496.0" layoutY="33.0" mnemonicParsing="false" onAction="#logOut" text="Log Out" />
    </children>
 </AnchorPane>

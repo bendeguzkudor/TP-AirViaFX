@@ -29,6 +29,8 @@ public class LoginController {
     public static TravelAdvisorController travelAdvisorController;
     public static OfficeManagerController officeManagerController;
 
+    public static AdminController adminController;
+
     private int role;
     private int staffID;
     @FXML
@@ -86,6 +88,7 @@ public class LoginController {
         travelAdvisorController = fxmlLoader.getController();
         travelAdvisorController.displayNameAndRole(username, role);
         travelAdvisorController.setStaffID(staffID);
+        travelAdvisorController.setStage(stage);
         stage.show();
 
     }
@@ -97,6 +100,7 @@ public class LoginController {
         officeManagerController = fxmlLoader.getController();
 //        officeManagerController.displayNameAndRole(username, role);
         officeManagerController.setStaffID(staffID);
+        officeManagerController.setStage(stage);
         stage.show();
 
     }
@@ -104,6 +108,8 @@ public class LoginController {
         Stage stage = (Stage) loginButton.getScene().getWindow();
         fxmlLoader = new FXMLLoader(Application.class.getResource("Admin.fxml"));
         scene = new Scene(fxmlLoader.load(), 1000, 800);
+        adminController = fxmlLoader.getController();
+        adminController.setStage(stage);
         stage.setScene(scene);
         stage.show();
 

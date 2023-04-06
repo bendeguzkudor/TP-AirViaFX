@@ -136,6 +136,12 @@ public class TravelAdvisorController implements Initializable {
 
     private Customer customer;
 
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    private Stage stage;
+
 
 
 
@@ -159,6 +165,9 @@ public class TravelAdvisorController implements Initializable {
         }else {
             salePayment = "Card";
         }
+    }
+    public void logOut() throws IOException {
+        Application.logOut(stage);
     }
     public void recordNewCustomer() throws IOException {
         Stage stage = new Stage();

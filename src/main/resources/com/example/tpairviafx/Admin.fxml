@@ -35,8 +35,9 @@
             </TableView>
             <TextField fx:id="searchBlankIDTextField" layoutX="62.0" layoutY="51.0" promptText="Search Blank ID" />
             <TextField fx:id="searchStaffIDBlankFIeld" layoutX="290.0" layoutY="51.0" promptText="Search Staff ID" />
-            <Button fx:id="removeBlankButton" layoutX="531.0" layoutY="155.0" mnemonicParsing="false" text="Remove Blank" />
+            <Button fx:id="removeBlankButton" layoutX="531.0" layoutY="155.0" mnemonicParsing="false" onAction="#removeBlank" text="Remove Blank" />
          </children>
       </AnchorPane>
+      <Button layoutX="899.0" layoutY="26.0" mnemonicParsing="false" onAction="#logOut" text="LogOut" />
    </children>
 </AnchorPane>
