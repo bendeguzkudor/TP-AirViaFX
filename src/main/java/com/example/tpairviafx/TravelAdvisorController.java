@@ -4,6 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -48,6 +50,8 @@ public class TravelAdvisorController implements Initializable {
     private TextField departureTextField;
     @FXML
     private TextField arrivalTextField;
+    @FXML
+    private TextField cardNumberTextField;
     @FXML
     private TextField searchCustomerField;
     @FXML
@@ -100,6 +104,8 @@ public class TravelAdvisorController implements Initializable {
 
     @FXML
     private RadioButton cardRadioButton, cashRadioButton;
+    @FXML
+    private ChoiceBox currencyChoicebox;
 
 
 
@@ -141,6 +147,7 @@ public class TravelAdvisorController implements Initializable {
     }
 
     private Stage stage;
+    private String currencyChosen;
 
 
 
@@ -158,6 +165,13 @@ public class TravelAdvisorController implements Initializable {
         DBConnect db = new DBConnect();
         populateFlightsTable();
         populateCustomerTable();
+        currencyChoicebox.getItems().addAll(new Currency().getCurrencies());
+//        currencyChoicebox.setOnAction(this::getCurrencyChosen);
+    }
+
+
+    public void getCurrencyChosen(ActionEvent e){
+        currencyChosen = (String) currencyChoicebox.getValue();
     }
     public void getPayment(){
         if (cashRadioButton.isSelected()){
@@ -214,7 +228,6 @@ public class TravelAdvisorController implements Initializable {
                 filteredData.setPredicate(flightSearchModel -> {
                     if(newValue.isEmpty() || newValue.isBlank() || newValue == null){
                         return true;
-
                     }
                     String searchkeyword = newValue.toLowerCase();
                     if(flightSearchModel.getDeparture().toLowerCase().indexOf(searchkeyword) > -1){
@@ -226,9 +239,7 @@ public class TravelAdvisorController implements Initializable {
                     }else{
                         return false;
                     }
-
                 });
-
             });
             SortedList<FlightModel> sortedData = new SortedList<>(filteredData);
             sortedData.comparatorProperty().bind(flightsTableView.comparatorProperty());
@@ -385,7 +396,8 @@ public class TravelAdvisorController implements Initializable {
            }
 
 //        Customer customer = new Customer("bedi", 88);
-           Sale sale = new Sale(staffID, dateString, customer, "USD", blankArrayList,salePayment);
+           Sale sale = new Sale(staffID, dateString, customer, currencyChoicebox.getValue().toString(), blankArrayList,salePayment);
+           System.out.println(currencyChoicebox.getValue().toString());
            sale.setSaleID(sale.selectMaxSaleID() + sale.getSaleID());
            sale.pushToDatabase();
            sale.pushSaleToSoldBlanks();
@@ -398,6 +410,7 @@ public class TravelAdvisorController implements Initializable {
        }
 
     }
+
     public void printCart(){
 //        blank.printFlights();
     }
