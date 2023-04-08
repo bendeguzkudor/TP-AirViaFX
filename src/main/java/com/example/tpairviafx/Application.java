@@ -7,12 +7,24 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Application extends javafx.application.Application {
     public static double interlineCommissionRate = 0.09;
+
+    public static void setInterlineCommissionRate(double interlineCommissionRate) {
+        Application.interlineCommissionRate = interlineCommissionRate;
+    }
+
+    public static void setDomesticCommisionRate(double domesticCommisionRate) {
+        Application.domesticCommisionRate = domesticCommisionRate;
+    }
+
     public static double domesticCommisionRate = 0.05;
     public static double taxRate = 0.1;
     private DateTimeFormatter dtf;
@@ -39,6 +51,7 @@ public class Application extends javafx.application.Application {
         return date.format(dtf);
 
     }
+
 
     public static void main(String[] args) {
         launch();

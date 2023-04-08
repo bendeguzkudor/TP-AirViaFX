@@ -2,12 +2,18 @@ package com.example.tpairviafx;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import static com.example.tpairviafx.Application.date;
 
 public class Blank {
 
+
+    public Blank() {
+        getCommissionRates();
+
+    }
 
     public long getBlankID() {
         return blankID;
@@ -97,6 +103,8 @@ public class Blank {
 
     private String dateAssigned;
     private String dateAdded;
+    public double interlineCommissionRate;
+    public double domesticCommissionRate;
 
 
     public Blank(int staffID, String blankType, ArrayList<FlightModel> flights) throws SQLException {
@@ -107,11 +115,13 @@ public class Blank {
 //        this.localCurrency = localCurrency;// for each loop in the other class to summarize dollar
         noOfFlights = flights.size();
         retrieveBlankID(blankType);
-        System.out.println(noOfFlights);
         calcSum(flights);
-        System.out.println(priceUSD);
-        commisionRate = findCommissionRate(this.blankType);
-        calculateCommission();
+        getCommissionRates();
+        System.out.println(this.blankType);
+//        commisionRate = findCommissionRate(this.blankType);
+//        System.out.println(findCommissionRate(this.blankType));
+//        System.out.println(commisionRate);
+        calculateCommission(this.blankType);
 
 
 
@@ -140,23 +150,53 @@ public class Blank {
 
 
     }
-    public double findCommissionRate(String type){
-        String blankid =Long.toString(blankID);
-        if(blankid.charAt(0)== 4){
-            return Application.interlineCommissionRate;
-        }else{
-            return Application.domesticCommisionRate;
+    public void getCommissionRates(){
+        String sql = "Select * from commission_rates";
+        DBConnect dbConnect = new DBConnect();
+        int maxValue = 0;
+        try {
+            dbConnect.connect();
+            Statement statement = dbConnect.statement;
+            ResultSet rs = statement.executeQuery(sql);
+            while(rs.next()) {
+                interlineCommissionRate = rs.getDouble(1);
+                domesticCommissionRate = rs.getDouble(2);
 
+
+            }
+            dbConnect.closeConnection();
+
+
+
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
         }
+
+
     }
-    public void calculateCommission(){
-        this.commissionSum = priceUSD * commisionRate;
+//    public double findCommissionRate(String type){
+//        String blankID =Long.toString(this.blankID);
+//        double commissionrate;
+//        if(type == "Interline"){
+//            commissionrate =  interlineCommissionRate;
+//        }else if (type == "Domestic"){
+//            commissionrate =  domesticCommissionRate;
+//        }
+//    }
+    public void calculateCommission(String type){
+        if (type.equals("Interline")){
+            this.commissionSum = priceUSD * interlineCommissionRate;
+        }else if(type.equals("Domestic")){
+            this.commissionSum = priceUSD * domesticCommissionRate;
+        }
+
 
     }
     public void calcSum(ArrayList<FlightModel> flights){
         for(FlightModel x : flights){
             this.priceUSD += x.getPrice();
         }
+
 
 
     }    public void printBlankDetails(){
@@ -242,13 +282,9 @@ public class Blank {
 
 
     public static void main(String[] args) throws SQLException {
-        long blankID = 44400000000L;
-        int amount = 10;
-        for (int i = 1; i <= amount; i++){
-            System.out.println(blankID+i);
-        }
-//        Blank blank = new Blank(888, 1, "Interline");
-//        System.out.println(blank.blankID);
+        Blank blank = new Blank();
+//        blank.getCommissionRates();
+//        System.out.println(blank.findCommissionRate("Interline"));
     }
     public void markBlankAsUsed(Blank blank) throws SQLException {
 
@@ -270,6 +306,7 @@ public class Blank {
             db.closeConnection();
         }
     }
+
 
 
 

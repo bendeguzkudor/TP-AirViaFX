@@ -387,6 +387,8 @@ public class TravelAdvisorController implements Initializable {
 
 //        Customer customer = new Customer("bedi", 88);
            Sale sale = new Sale(staffID, dateString, customer, currencyChoicebox.getValue().toString(), blankArrayList,salePayment);
+           System.out.println(customer);
+           System.out.println(blankArrayList.get(0).getBlankType());
            System.out.println(currencyChoicebox.getValue().toString());
            sale.setSaleID(sale.selectMaxSaleID() + sale.getSaleID());
            sale.pushToDatabase();

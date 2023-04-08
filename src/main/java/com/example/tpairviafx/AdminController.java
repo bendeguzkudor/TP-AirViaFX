@@ -29,10 +29,15 @@ public class AdminController implements Initializable {
     @FXML
     private TextField amountTextField;
     @FXML
+    private TextField commissionTextField;
+    @FXML
     private TextField searchBlankIDTextField;
 
     @FXML
     private ChoiceBox<String> choiceBox2;
+
+    @FXML
+    private ChoiceBox<String> commissionChoiceBox;
     @FXML
     private TableColumn<Blank, Long> blankIDColumn;
     @FXML
@@ -64,6 +69,7 @@ public class AdminController implements Initializable {
 
     ObservableList<Blank> blankObservableList = FXCollections.observableArrayList();
     private ObservableList<Blank> selectedBlanksList;
+    private String chosenCommission;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
@@ -72,12 +78,17 @@ public class AdminController implements Initializable {
 
         choiceBox2.getItems().addAll(blankTypes);
         choiceBox2.setOnAction(this::getBlankChosen);
+        commissionChoiceBox.getItems().addAll("Interline","Domestic");
+        commissionChoiceBox.setOnAction(this::getCommisionChosen);
         populateBlankTable();
 
 
     }
     public void getBlankChosen(ActionEvent e){
         chosenBlank = choiceBox2.getValue();
+    }
+    public void getCommisionChosen(ActionEvent e){
+         chosenCommission= commissionChoiceBox.getValue();
     }
 
 
@@ -117,6 +128,26 @@ public class AdminController implements Initializable {
     }
 
     public static void main(String[] args) {
+
+    }
+    public void setCommission(){
+        String sql = "UPDATE commission_rates SET "+commissionChoiceBox.getValue().toLowerCase()+" = "+Double.parseDouble(commissionTextField.getText())+"";
+        DBConnect db = new DBConnect();
+        try {
+            db.connect();
+            int effected = db.statement.executeUpdate(sql);
+
+            System.out.println(effected);
+            if (effected !=0) {
+                System.out.println("Commission'"+commissionChoiceBox.getValue().toLowerCase()+" updated to"+Double.parseDouble(commissionTextField.getText())+" ");
+                System.out.println(effected);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            db.closeConnection();
+        }
 
     }
     public void refreshTable(){

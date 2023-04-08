@@ -7,18 +7,22 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.OfficeManagerController">
+<AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.OfficeManagerController">
    <children>
-      <TextField fx:id="amountTextField" layoutX="283.0" layoutY="98.0" prefHeight="26.0" prefWidth="35.0" />
-      <TableView fx:id="staffTableView" layoutX="14.0" layoutY="69.0" prefHeight="131.0" prefWidth="200.0">
-        <columns>
-          <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
-          <TableColumn fx:id="staffIDColumn" prefWidth="75.0" text="Staff ID" />
-        </columns>
-      </TableView>
-      <Button fx:id="assignButton" layoutX="272.0" layoutY="142.0" mnemonicParsing="false" onAction="#assignBlanks" text="Assign" />
-      <TextField fx:id="searchTextField" layoutX="14.0" layoutY="35.0" promptText="Search Staff by name" />
-      <ChoiceBox fx:id="blankChoiceBox" layoutX="232.0" layoutY="56.0" prefWidth="150.0" />
-      <Button fx:id="logoutButton" layoutX="496.0" layoutY="33.0" mnemonicParsing="false" onAction="#logOut" text="Log Out" />
+      <Button fx:id="logoutButton" layoutX="911.0" layoutY="122.0" mnemonicParsing="false" onAction="#logOut" text="Log Out" />
+      <AnchorPane layoutX="17.0" layoutY="16.0" prefHeight="294.0" prefWidth="516.0">
+         <children>
+            <TableView fx:id="staffTableView" layoutX="21.0" layoutY="76.0" prefHeight="189.0" prefWidth="270.0">
+              <columns>
+                <TableColumn fx:id="staffIDColumn" prefWidth="103.99998092651367" text="Staff ID" />
+                <TableColumn fx:id="nameColumn" prefWidth="117.00001525878906" text="Name" />
+              </columns>
+            </TableView>
+            <TextField fx:id="searchTextField" layoutX="36.0" layoutY="40.0" promptText="Search Staff by name" />
+            <Button fx:id="assignButton" layoutX="380.0" layoutY="158.0" mnemonicParsing="false" onAction="#assignBlanks" text="Assign" />
+            <ChoiceBox fx:id="blankChoiceBox" layoutX="332.0" layoutY="52.0" prefWidth="150.0" />
+            <TextField fx:id="amountTextField" layoutX="391.0" layoutY="94.0" prefHeight="26.0" prefWidth="35.0" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

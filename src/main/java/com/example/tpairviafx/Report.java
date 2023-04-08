@@ -20,14 +20,16 @@ public class Report {
     Row row;
     Workbook workbook;
     Sheet sheet;
+    String dateFrom;
+    String dateTo;
 
     public static void main(String[] args) throws Exception {
         Report report = new Report();
 //        report.queryAssignedBlanks();
-        report.createTicketStockTurnOverReport();
-//        report.generateSalesReport();
-
 //        report.createTicketStockTurnOverReport();
+        report.generateSalesReport();
+
+//
 
 
     }
@@ -42,7 +44,6 @@ public class Report {
             for (int j = 0; j < 16; j++) {
                 cell = row.createCell(j);
                 cell.setCellValue("Cell " + i + "," + j);
-
                 // Set center alignment and autosize the column width
                 CellStyle cellStyle = workbook.createCellStyle();
                 cellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -311,9 +312,9 @@ public class Report {
 
         XSSFSheet sheet = workbook.createSheet("Interline Report");
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 14; i++) {
             XSSFRow row = sheet.createRow(i);
-            for (int j = 0; j < 27; j++) {
+            for (int j = 0; j < 21; j++) {
                 XSSFCell cell = row.createCell(j);
                 cell.setCellValue("Cell " + i + "," + j);
 
@@ -328,70 +329,143 @@ public class Report {
         //sheet.getRow().getCell().setCellValue("");
 
         //AIRVIA DOCUMENTS
-        sheet.addMergedRegion(new CellRangeAddress(0, 2, 0, 0));
-        sheet.addMergedRegion(new CellRangeAddress(0, 0, 1, 6));
-        sheet.addMergedRegion(new CellRangeAddress(1, 2, 1, 1));
-        sheet.addMergedRegion(new CellRangeAddress(1, 2, 2, 2));
-        sheet.addMergedRegion(new CellRangeAddress(1, 2, 3, 3));
-        sheet.addMergedRegion(new CellRangeAddress(1, 1, 4, 5));
-        sheet.addMergedRegion(new CellRangeAddress(1, 2, 6, 6));
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 1, 7));//airvia documents
+        sheet.getRow(0).getCell(1).setCellValue("AirVia Documents");
 
-        sheet.getRow(0).getCell(0).setCellValue("NN");
-        sheet.getRow(0).getCell(1).setCellValue("AIR VIA DOCUMENTS");
-        sheet.getRow(1).getCell(1).setCellValue("ADVISOR NUMBER");
-        sheet.getRow(1).getCell(2).setCellValue("DOC NMBRS ACPNS");
-        sheet.getRow(1).getCell(3).setCellValue("FARE AMOUNT");
-        sheet.getRow(1).getCell(4).setCellValue("TAXES");
-        sheet.getRow(2).getCell(4).setCellValue("LZ");
-        sheet.getRow(2).getCell(5).setCellValue("OTHERS");
-        sheet.getRow(1).getCell(6).setCellValue("TOTAL DOCUMENT'S AMOUNT");
+        sheet.addMergedRegion(new CellRangeAddress(1, 1, 2, 4));//fare amount
+        sheet.getRow(1).getCell(2).setCellValue("Fare amount");
+
+        sheet.addMergedRegion(new CellRangeAddress(1, 1, 5, 6));//taxes
+        sheet.getRow(1).getCell(5).setCellValue("TAXES");
+
+        sheet.addMergedRegion(new CellRangeAddress(0, 2, 0, 0));//N
+        sheet.getRow(0).getCell(0).setCellValue("N");
+
+        sheet.addMergedRegion(new CellRangeAddress(1, 2, 1, 1));//Original issued number
+        sheet.getRow(1).getCell(1).setCellValue("ORIGINAL \n ISSUED \n NUMBER");
+
+        sheet.addMergedRegion(new CellRangeAddress(1, 2, 7, 7));//TTL AMOUNTS
+        sheet.getRow(1).getCell(7).setCellValue("TTL \n Documents");
+        sheet.getRow(2).getCell(2).setCellValue("USD");
+        sheet.getRow(2).getCell(3).setCellValue("USD/BGL");
+        sheet.getRow(2).getCell(4).setCellValue("BGL");
+        sheet.getRow(2).getCell(5).setCellValue("LZ");
+        sheet.getRow(2).getCell(6).setCellValue("OTHS");
+
+        sheet.addMergedRegion(new CellRangeAddress(13, 13, 0, 1)); // nbr of tkts
+        sheet.getRow(13).getCell(0).setCellValue("NMBR TKTS");
+
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 8, 11));//In exchange for docs
+        sheet.getRow(0).getCell(8).setCellValue("IN EXCHANGE FOR DOCS");
+
+
+        sheet.addMergedRegion(new CellRangeAddress(1, 1, 8, 11));//AIRLINES
+        sheet.getRow(1).getCell(8).setCellValue("AIRLINES");
+
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 12, 17));//forms of payments
+        sheet.getRow(0).getCell(12).setCellValue("FORMS OF PAYMENTS");
+
+        sheet.addMergedRegion(new CellRangeAddress(1, 2, 12, 12));//CASH
+        sheet.getRow(1).getCell(12).setCellValue("CASH");
+
+        sheet.getRow(2).getCell(8).setCellValue("CD");
+
+        sheet.getRow(2).getCell(9).setCellValue("DOC.NBR");
+        sheet.getRow(2).getCell(10).setCellValue("FC");
+        sheet.getRow(2).getCell(11).setCellValue("PROR.AMNT");
+
+        sheet.addMergedRegion(new CellRangeAddress(1, 1, 13, 16));//CASH
+        sheet.getRow(1).getCell(13).setCellValue("CREDIT CARDS");
+
+        sheet.getRow(2).getCell(13).setCellValue("LC");
+        sheet.getRow(2).getCell(14).setCellValue("FULL CC NUMBER");
+        sheet.getRow(2).getCell(15).setCellValue("USD");
+        sheet.getRow(2).getCell(16).setCellValue("BGL");
+
+        sheet.addMergedRegion(new CellRangeAddress(1, 2, 17, 17));//TOTAL AMNTS PAID
+        sheet.getRow(1).getCell(17).setCellValue("TTL \n AMOUNTS \n PAID");
+
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 18, 19));//COMMISSIONS
+        sheet.getRow(0).getCell(18).setCellValue("COMMISSIONS");
+
+        sheet.addMergedRegion(new CellRangeAddress(1, 1, 18, 19));//COMMISSIONS
+        sheet.getRow(1).getCell(18).setCellValue("ASSESSABLE AMOUNTS");
+
+        sheet.addMergedRegion(new CellRangeAddress(0, 2, 20, 20));//COMMISSIONS
+        sheet.getRow(0).getCell(20).setCellValue("NON \n ASSESSBALE \n AMOUNTS");
+
+
+        sheet.getRow(2).getCell(18).setCellValue("Commission %");
+
+
+
+
+
+
+
+
+
+//        sheet.addMergedRegion(new CellRangeAddress(1, 2, 1, 1));
+//        sheet.addMergedRegion(new CellRangeAddress(1, 1, 4, 5));
+//        sheet.addMergedRegion(new CellRangeAddress(1, 2, 6, 6));
+
+//        sheet.getRow(0).getCell(0).setCellValue("NN");
+//        sheet.getRow(0).getCell(1).setCellValue("AIR VIA DOCUMENTS");
+//        sheet.getRow(1).getCell(1).setCellValue("ADVISOR NUMBER");
+//        sheet.getRow(1).getCell(2).setCellValue("DOC NMBRS ACPNS");
+//        sheet.getRow(1).getCell(3).setCellValue("FARE AMOUNT");
+//        sheet.getRow(1).getCell(4).setCellValue("TAXES");
+//        sheet.getRow(2).getCell(4).setCellValue("LZ");
+//        sheet.getRow(2).getCell(5).setCellValue("OTHERS");
+//        sheet.getRow(1).getCell(6).setCellValue("TOTAL DOCUMENT'S AMOUNT");
 
         //ISSUED IN EXCHANGE FOR DOCUMENTS OF:
-        sheet.addMergedRegion(new CellRangeAddress(0, 0, 7, 14));
-        sheet.addMergedRegion(new CellRangeAddress(1, 1, 7, 10));
-        sheet.addMergedRegion(new CellRangeAddress(1, 1, 11, 14));
-        sheet.addMergedRegion(new CellRangeAddress(2, 2, 9, 10));
-        sheet.addMergedRegion(new CellRangeAddress(2, 2, 13, 14));
+//        sheet.addMergedRegion(new CellRangeAddress(0, 0, 7, 14));
+//        sheet.addMergedRegion(new CellRangeAddress(1, 1, 7, 10));
+//        sheet.addMergedRegion(new CellRangeAddress(1, 1, 11, 14));
+//        sheet.addMergedRegion(new CellRangeAddress(2, 2, 9, 10));
+//        sheet.addMergedRegion(new CellRangeAddress(2, 2, 13, 14));
 
-        sheet.getRow(0).getCell(7).setCellValue("ISSUED IN EXCHANGE FOR DOCUMENTS OF:");
-        sheet.getRow(1).getCell(7).setCellValue("AIR VIA");
-        sheet.getRow(1).getCell(11).setCellValue("OTHER AIRLINES");
-        sheet.getRow(2).getCell(7).setCellValue("DOCS.");
-        sheet.getRow(2).getCell(8).setCellValue("FCPNS");
-        sheet.getRow(2).getCell(9).setCellValue("PRORATE AMNTS");
-        sheet.getRow(2).getCell(11).setCellValue("DOCS.");
-        sheet.getRow(2).getCell(12).setCellValue("FCPNS");
-        sheet.getRow(2).getCell(13).setCellValue("PRORATE AMNTS");
+//        sheet.getRow(0).getCell(7).setCellValue("ISSUED IN EXCHANGE FOR DOCUMENTS OF:");
+//        sheet.getRow(1).getCell(7).setCellValue("AIR VIA");
+//        sheet.getRow(1).getCell(11).setCellValue("OTHER AIRLINES");
+//        sheet.getRow(2).getCell(7).setCellValue("DOCS.");
+//        sheet.getRow(2).getCell(8).setCellValue("FCPNS");
+//        sheet.getRow(2).getCell(9).setCellValue("PRORATE AMNTS");
+//        sheet.getRow(2).getCell(11).setCellValue("DOCS.");
+//        sheet.getRow(2).getCell(12).setCellValue("FCPNS");
+//        sheet.getRow(2).getCell(13).setCellValue("PRORATE AMNTS");
 
         //FORMS OF PAYMENT
-        sheet.addMergedRegion(new CellRangeAddress(0, 0, 15, 19));
-        sheet.addMergedRegion(new CellRangeAddress(1, 2, 15, 15));
-        sheet.addMergedRegion(new CellRangeAddress(1, 1, 16, 18));
-        sheet.addMergedRegion(new CellRangeAddress(1, 2, 19, 19));
+//        sheet.addMergedRegion(new CellRangeAddress(0, 0, 15, 19));
+//        sheet.addMergedRegion(new CellRangeAddress(1, 2, 15, 15));
+//        sheet.addMergedRegion(new CellRangeAddress(1, 1, 16, 18));
+//        sheet.addMergedRegion(new CellRangeAddress(1, 2, 19, 19));
 
-        sheet.getRow(0).getCell(15).setCellValue("FORMS OF PAYMENT");
-        sheet.getRow(1).getCell(15).setCellValue("CASH");
-        sheet.getRow(1).getCell(16).setCellValue("CREDIT CARDS");
-        sheet.getRow(2).getCell(16).setCellValue("NMBR");
-        sheet.getRow(2).getCell(17).setCellValue("USD");
-        sheet.getRow(2).getCell(18).setCellValue("BGL");
-        sheet.getRow(1).getCell(19).setCellValue("TOTAL AMOUNTS PAID");
+//        sheet.getRow(0).getCell(15).setCellValue("FORMS OF PAYMENT");
+//        sheet.getRow(1).getCell(15).setCellValue("CASH");
+//        sheet.getRow(1).getCell(16).setCellValue("CREDIT CARDS");
+//        sheet.getRow(2).getCell(16).setCellValue("NMBR");
+//        sheet.getRow(2).getCell(17).setCellValue("USD");
+//        sheet.getRow(2).getCell(18).setCellValue("BGL");
+//        sheet.getRow(1).getCell(19).setCellValue("TOTAL AMOUNTS PAID");
 
         //COMMISSION
-        sheet.addMergedRegion(new CellRangeAddress(0, 0, 20, 25));
-        sheet.addMergedRegion(new CellRangeAddress(1, 1, 20, 25));
-        sheet.addMergedRegion(new CellRangeAddress(0, 2, 26, 26));
+//        sheet.addMergedRegion(new CellRangeAddress(0, 0, 20, 25));
+//        sheet.addMergedRegion(new CellRangeAddress(1, 1, 20, 25));
+//        sheet.addMergedRegion(new CellRangeAddress(0, 2, 26, 26));
 
-        sheet.getRow(0).getCell(20).setCellValue("COMMISSIONS");
-        sheet.getRow(1).getCell(20).setCellValue("ASSESSABLE AMOUNTS");
-        sheet.getRow(0).getCell(26).setCellValue("NON ASSESS AMOUNTS");
+//        sheet.getRow(0).getCell(20).setCellValue("COMMISSIONS");
+//        sheet.getRow(1).getCell(20).setCellValue("ASSESSABLE AMOUNTS");
+//        sheet.getRow(0).getCell(26).setCellValue("NON ASSESS AMOUNTS");
 
-        for (int i = 0; i < 26; i++) {
+        for (int i = 0; i < 21; i++) {
             sheet.autoSizeColumn(i);
+
 
         }
         // Write the workbook to a file
-        try (FileOutputStream outputStream = new FileOutputStream("Table9.xlsx")) {
+        try (FileOutputStream outputStream = new FileOutputStream("Table10.xlsx")) {
             workbook.write(outputStream);
         } catch (IOException e) {
             e.printStackTrace();

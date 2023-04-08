@@ -170,6 +170,7 @@ public class Sale {
     }
 
 
+
     public String printBlanks(){
         String blanksS ="";
         for(Blank x : this.blanks){
