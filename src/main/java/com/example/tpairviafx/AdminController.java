@@ -53,7 +53,7 @@ public class AdminController implements Initializable {
     private int staffID;
     private int amount;
     private String chosenBlank;
-    private String [] blankTypes = {"444", "440","420","201","101"};
+    private final String [] blankTypes = {"444", "440","420","201","101"};
     private ResultSet rs;
 
     public void setStage(Stage stage) {
@@ -214,12 +214,7 @@ public class AdminController implements Initializable {
                         return true;
                     //NEEDS FIXING//
                     }
-                    if(blankSearchModel.getBlankID() > -1){
-                        return true;
-
-                    }else{
-                        return false;
-                    }
+                    return blankSearchModel.getBlankID() > -1;
 
                 });
 

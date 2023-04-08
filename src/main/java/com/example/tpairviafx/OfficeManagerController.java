@@ -43,7 +43,7 @@ public class OfficeManagerController implements Initializable {
 
     @FXML
     private ChoiceBox<String> blankChoiceBox;
-    private String [] blankTypes = {"444", "440","420","201","101"};
+    private final String [] blankTypes = {"444", "440","420","201","101"};
 
     private ObservableList<Staff> selectedStaffList;
     private ResultSet rs;
@@ -68,7 +68,7 @@ public class OfficeManagerController implements Initializable {
     private int staffID;
     private String chosenBlank;
     private String sqlforMinBlank;
-    private String date = Application.getDate();
+    private final String date = Application.getDate();
     private int amount;
 
 
@@ -119,12 +119,7 @@ public class OfficeManagerController implements Initializable {
                     if(staffSearchModel.getName().toLowerCase().indexOf(searchkeyword) > -1){
                         return true;
 
-                    }else if(staffSearchModel.getName().toLowerCase().indexOf(searchkeyword) > -1){
-                        return true;
-
-                    }else{
-                        return false;
-                    }
+                    }else return staffSearchModel.getName().toLowerCase().indexOf(searchkeyword) > -1;
 
                 });
 
@@ -145,10 +140,15 @@ public class OfficeManagerController implements Initializable {
         System.out.println("addblanks");
         Long rangeFrom = getMinBlank();
         amount = Integer.parseInt(amountTextField.getText());
-        Long rangeTo = rangeFrom+amount;
+        Long rangeTo;
+        if(amount == 1){
+            rangeTo = rangeFrom;
+        }else{
+            rangeTo = rangeFrom+amount;
         System.out.println(rangeTo);
+        }
 
-        String sql = "UPDATE blanks SET staffID = '"+queryStaffID+"', dateAssigned = '"+date+"'" +
+        String sql = "UPDATE blanks SET staffID = '"+selectedStaffList.get(0).getStaffID()+"', dateAssigned = '"+date+"'" +
                 "WHERE blankID BETWEEN   ?  AND   ? ";
         try {
 //                String sql = "INSERT INTO blanks (blankID, staffID, dateAssigned, sold) VALUES (?,?,?,?)";
@@ -166,6 +166,7 @@ public class OfficeManagerController implements Initializable {
 
         }catch (SQLException e){
             e.printStackTrace();}
+
     }
     public Long getMinBlank(){
         long minBlank = 0;
@@ -189,7 +190,7 @@ public class OfficeManagerController implements Initializable {
 //                System.out.println(sql);
                 break;
             case "101":
-                sqlforMinBlank = "select min(blankID) from blanks where SUBSTR(blankID, 1, 3) = '101'";
+                sqlforMinBlank = "select min(blankID) from blanks where SUBSTR(blankID, 1, 3) = '101' and staffID = 0";
 //                System.out.println(sql);
                 break;
 

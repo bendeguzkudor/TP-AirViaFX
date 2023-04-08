@@ -18,7 +18,7 @@ public class Cart {
         return flights;
     }
 
-    private ArrayList<FlightModel> flights;
+    private final ArrayList<FlightModel> flights;
 
     public Cart(){
 //        blanks = new ArrayList();

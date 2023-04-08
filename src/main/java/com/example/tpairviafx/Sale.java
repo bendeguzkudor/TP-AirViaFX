@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class Sale {
-    private int staffID;
+    private final int staffID;
 
 
 //     stmt.setInt(1, saleID);
@@ -22,10 +22,10 @@ public class Sale {
 //            stmt.setString(9, "");
 //            stmt.setDouble(10, commisionSum);
 //            stmt.setDouble(11, (priceUSD * 0.2));
-    private static int  counter = 0;
+    private static final int  counter = 0;
 
     private int price; // set in dollars
-    private String date;
+    private final String date;
 
     public void setSaleID(int saleID) {
         this.saleID = saleID;
@@ -38,19 +38,19 @@ public class Sale {
     private int saleID;
     // need array for blankIDs
     //need array for flights.
-    private String localCurrency;
+    private final String localCurrency;
     private int exchangeRate;
 
-    private Customer customer; // customer object  // need a second constructor for non-member sales
+    private final Customer customer; // customer object  // need a second constructor for non-member sales
 
-    private double commisionSum; //calculated in the constructor
+    private final double commisionSum; //calculated in the constructor
     private int type; //interline or domestic 0 or 1.
-    private double airportTax;
+    private final double airportTax;
     private boolean latePayment; // date string if allowed and date represents the deadline, null if no late payment is issued
     private double discount; // percentage dependant on the customer
-    private ArrayList<Blank> blanks;
+    private final ArrayList<Blank> blanks;
     private int priceUSD;
-    private String paymentType;
+    private final String paymentType;
 
     public Sale(int staffID, String date, Customer customer,String localCurrency, ArrayList<Blank> blanks, String paymentType){
         this.saleID = 1;

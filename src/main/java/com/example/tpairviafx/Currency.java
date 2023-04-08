@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
     public class Currency {
 
-        private Map<String, Double> conversionRates;
+        private final Map<String, Double> conversionRates;
 
         public String[] getCurrencies() {
             return currencies;

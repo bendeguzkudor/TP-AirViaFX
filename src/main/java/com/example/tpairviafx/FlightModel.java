@@ -32,7 +32,7 @@ public class FlightModel {
         String ft ;
         DBConnect db = new DBConnect();
         try {
-            db.connect();;
+            db.connect();
             String sql = "SELECT type FROM flights WHERE flighNumber = '" + this.flightNumber + "'";
             rs = db.statement.executeQuery(sql);
             if (rs.next()) {

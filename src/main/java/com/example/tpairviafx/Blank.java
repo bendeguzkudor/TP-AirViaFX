@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import static com.example.tpairviafx.Application.date;
+
 public class Blank {
 
 
@@ -108,7 +110,7 @@ public class Blank {
         System.out.println(noOfFlights);
         calcSum(flights);
         System.out.println(priceUSD);
-        this.commisionRate = findCommissionRate(this.blankType);
+        commisionRate = findCommissionRate(this.blankType);
         calculateCommission();
 
 
@@ -166,7 +168,7 @@ public class Blank {
                     "  blankID:  "+this.blankID+
                     "  Local Currency:  "+this.localCurrency+
                     "  paymentType:  "+paymentTypeT(this.paymentType)+
-                    "  CommissionRate : "+this.commisionRate+
+                    "  CommissionRate : "+ commisionRate+
                     "  Customer:  "+this.customer);
     }
 //    public void finalizeBlank(int userID, String flightType, long blankID, ){
@@ -251,7 +253,7 @@ public class Blank {
     public void markBlankAsUsed(Blank blank) throws SQLException {
 
         blankID = blank.getBlankID();
-        String sql = "UPDATE blanks SET sold = 1 WHERE blankID = '"+blankID+"'";
+        String sql = "UPDATE blanks SET sold = 1, dateUsed = '"+ Application.getDate() +"' WHERE blankID = '"+blankID+"'";
         DBConnect db = new DBConnect();
         try {
             db.connect();

@@ -32,8 +32,8 @@ public class TravelAdvisorController implements Initializable {
 
     private LocalDateTime now;
 
-    private double commisionRate = 0.1;
-    private double discount = 0.05;
+    private final double commisionRate = 0.1;
+    private final double discount = 0.05;
 
 
     @FXML
@@ -233,12 +233,7 @@ public class TravelAdvisorController implements Initializable {
                     if(flightSearchModel.getDeparture().toLowerCase().indexOf(searchkeyword) > -1){
                         return true;
 
-                    }else if(flightSearchModel.getArrival().toLowerCase().indexOf(searchkeyword) > -1){
-                        return true;
-
-                    }else{
-                        return false;
-                    }
+                    }else return flightSearchModel.getArrival().toLowerCase().indexOf(searchkeyword) > -1;
                 });
             });
             SortedList<FlightModel> sortedData = new SortedList<>(filteredData);
@@ -292,12 +287,7 @@ public class TravelAdvisorController implements Initializable {
                     if(customerSearchModel.getFirstName().toLowerCase().indexOf(searchkeyword) > -1){
                         return true;
 
-                    }else if(customerSearchModel.getLastName().toLowerCase().indexOf(searchkeyword) > -1){
-                        return true;
-
-                    }else{
-                        return false;
-                    }
+                    }else return customerSearchModel.getLastName().toLowerCase().indexOf(searchkeyword) > -1;
                 });
             });
             SortedList<Customer> sortedData = new SortedList<>(filteredData);
@@ -320,7 +310,7 @@ public class TravelAdvisorController implements Initializable {
     public void printBlanks() throws SQLException {
         DBConnect db = new DBConnect();
         try {
-            db.connect();;
+            db.connect();
             String sql = "SELECT * FROM blanks WHERE staffID = '" + staffID + "'";
             rs = db.statement.executeQuery(sql);
             while (rs.next()) {

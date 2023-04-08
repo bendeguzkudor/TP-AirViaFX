@@ -23,7 +23,7 @@ public class LoginController {
     }
 
     public void setTravelAdvisorController(TravelAdvisorController travelAdvisorController) {
-        this.travelAdvisorController = travelAdvisorController;
+        LoginController.travelAdvisorController = travelAdvisorController;
     }
 
     public static TravelAdvisorController travelAdvisorController;

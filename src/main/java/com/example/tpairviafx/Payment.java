@@ -1,10 +1,10 @@
 package com.example.tpairviafx;
 
 public class Payment {
-    private String paymentType;
-    private String cardNumber;
-    private double exchangeRate;
-    private int localCurrencyAmount;
+    private final String paymentType;
+    private final String cardNumber;
+    private final double exchangeRate;
+    private final int localCurrencyAmount;
 
     public Payment(String paymentType, String cardNumber, double exchangeRate, int localCurrencyAmount) {
         this.paymentType = paymentType;
