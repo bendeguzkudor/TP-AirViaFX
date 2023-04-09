@@ -10,24 +10,38 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 
+import javax.xml.transform.Result;
+
 
 public class Report {
     Integer staffID = null;
     Integer amount = null;
     Long max_blankID = null;
     Long min_blankID = null;
+
+    String blankID = null;
     Cell cell;
     Row row;
     Workbook workbook;
     Sheet sheet;
     String dateFrom;
     String dateTo;
+    private String currency;
+    private double conversionRate;
+    private String card;
+    private double taxSum;
+    private String cash;
+    private double commissionSum;
+    private int price;
+    private Row headerRow;
 
     public static void main(String[] args) throws Exception {
         Report report = new Report();
 //        report.queryAssignedBlanks();
 //        report.createTicketStockTurnOverReport();
-        report.generateSalesReport();
+//        report.generateSalesReport2();
+//        report.generateInterlineSalesReportTemplatePerAdvisor();
+        report.populateSalesReport();
 
 //
 
@@ -308,14 +322,14 @@ public class Report {
     }
 
     public void generateSalesReport() {
-        XSSFWorkbook workbook = new XSSFWorkbook();
+        workbook = new XSSFWorkbook();
 
-        XSSFSheet sheet = workbook.createSheet("Interline Report");
+        sheet = workbook.createSheet("Interline Report");
 
         for (int i = 0; i < 14; i++) {
-            XSSFRow row = sheet.createRow(i);
+            row = sheet.createRow(i);
             for (int j = 0; j < 21; j++) {
-                XSSFCell cell = row.createCell(j);
+                cell = row.createCell(j);
                 cell.setCellValue("Cell " + i + "," + j);
 
                 CellStyle cellStyle = workbook.createCellStyle();
@@ -343,6 +357,7 @@ public class Report {
 
         sheet.addMergedRegion(new CellRangeAddress(1, 2, 1, 1));//Original issued number
         sheet.getRow(1).getCell(1).setCellValue("ORIGINAL \n ISSUED \n NUMBER");
+
 
         sheet.addMergedRegion(new CellRangeAddress(1, 2, 7, 7));//TTL AMOUNTS
         sheet.getRow(1).getCell(7).setCellValue("TTL \n Documents");
@@ -395,73 +410,11 @@ public class Report {
         sheet.getRow(0).getCell(20).setCellValue("NON \n ASSESSBALE \n AMOUNTS");
 
 
+
         sheet.getRow(2).getCell(18).setCellValue("Commission %");
-
-
-
-
-
-
-
-
-
-//        sheet.addMergedRegion(new CellRangeAddress(1, 2, 1, 1));
-//        sheet.addMergedRegion(new CellRangeAddress(1, 1, 4, 5));
-//        sheet.addMergedRegion(new CellRangeAddress(1, 2, 6, 6));
-
-//        sheet.getRow(0).getCell(0).setCellValue("NN");
-//        sheet.getRow(0).getCell(1).setCellValue("AIR VIA DOCUMENTS");
-//        sheet.getRow(1).getCell(1).setCellValue("ADVISOR NUMBER");
-//        sheet.getRow(1).getCell(2).setCellValue("DOC NMBRS ACPNS");
-//        sheet.getRow(1).getCell(3).setCellValue("FARE AMOUNT");
-//        sheet.getRow(1).getCell(4).setCellValue("TAXES");
-//        sheet.getRow(2).getCell(4).setCellValue("LZ");
-//        sheet.getRow(2).getCell(5).setCellValue("OTHERS");
-//        sheet.getRow(1).getCell(6).setCellValue("TOTAL DOCUMENT'S AMOUNT");
-
-        //ISSUED IN EXCHANGE FOR DOCUMENTS OF:
-//        sheet.addMergedRegion(new CellRangeAddress(0, 0, 7, 14));
-//        sheet.addMergedRegion(new CellRangeAddress(1, 1, 7, 10));
-//        sheet.addMergedRegion(new CellRangeAddress(1, 1, 11, 14));
-//        sheet.addMergedRegion(new CellRangeAddress(2, 2, 9, 10));
-//        sheet.addMergedRegion(new CellRangeAddress(2, 2, 13, 14));
-
-//        sheet.getRow(0).getCell(7).setCellValue("ISSUED IN EXCHANGE FOR DOCUMENTS OF:");
-//        sheet.getRow(1).getCell(7).setCellValue("AIR VIA");
-//        sheet.getRow(1).getCell(11).setCellValue("OTHER AIRLINES");
-//        sheet.getRow(2).getCell(7).setCellValue("DOCS.");
-//        sheet.getRow(2).getCell(8).setCellValue("FCPNS");
-//        sheet.getRow(2).getCell(9).setCellValue("PRORATE AMNTS");
-//        sheet.getRow(2).getCell(11).setCellValue("DOCS.");
-//        sheet.getRow(2).getCell(12).setCellValue("FCPNS");
-//        sheet.getRow(2).getCell(13).setCellValue("PRORATE AMNTS");
-
-        //FORMS OF PAYMENT
-//        sheet.addMergedRegion(new CellRangeAddress(0, 0, 15, 19));
-//        sheet.addMergedRegion(new CellRangeAddress(1, 2, 15, 15));
-//        sheet.addMergedRegion(new CellRangeAddress(1, 1, 16, 18));
-//        sheet.addMergedRegion(new CellRangeAddress(1, 2, 19, 19));
-
-//        sheet.getRow(0).getCell(15).setCellValue("FORMS OF PAYMENT");
-//        sheet.getRow(1).getCell(15).setCellValue("CASH");
-//        sheet.getRow(1).getCell(16).setCellValue("CREDIT CARDS");
-//        sheet.getRow(2).getCell(16).setCellValue("NMBR");
-//        sheet.getRow(2).getCell(17).setCellValue("USD");
-//        sheet.getRow(2).getCell(18).setCellValue("BGL");
-//        sheet.getRow(1).getCell(19).setCellValue("TOTAL AMOUNTS PAID");
-
-        //COMMISSION
-//        sheet.addMergedRegion(new CellRangeAddress(0, 0, 20, 25));
-//        sheet.addMergedRegion(new CellRangeAddress(1, 1, 20, 25));
-//        sheet.addMergedRegion(new CellRangeAddress(0, 2, 26, 26));
-
-//        sheet.getRow(0).getCell(20).setCellValue("COMMISSIONS");
-//        sheet.getRow(1).getCell(20).setCellValue("ASSESSABLE AMOUNTS");
-//        sheet.getRow(0).getCell(26).setCellValue("NON ASSESS AMOUNTS");
 
         for (int i = 0; i < 21; i++) {
             sheet.autoSizeColumn(i);
-
 
         }
         // Write the workbook to a file
@@ -473,6 +426,206 @@ public class Report {
 
     }
 
+    public void populateSalesReport(){
+        workbook = new XSSFWorkbook();
+
+        // create a new sheet
+        sheet = workbook.createSheet("Sheet1");
+
+        // create a header row
+        headerRow = sheet.createRow(0);
+        String[] columnTitles = {"NO. ","BLANKS", "PRICE USD", "PRICE CURRNECY", "CONVERSION RATE", "TAXES", "TAX RATE",
+                "CASH", "CARD NUMBER", "COMMISSION RATE", "COMMISSION SUM", "TOTAL AMOUNTS PAID"};
+        String sql = "SELECT GROUP_CONCAT(b.blankID) as blankIDs, s.staffID, s.price, s.currency,s.conversionRate, s.paymentType,s.cardNumber, s.commissionsum, s.taxSum,  COUNT(b.blankID) as num_blanks\n" +
+                "FROM sale s\n" +
+                "LEFT JOIN soldBlanks b ON s.saleID = b.saleID\n" +
+                "GROUP BY s.saleID\n" +
+                "HAVING num_blanks > 1 OR num_blanks = 1;";
+        DBConnect db = new DBConnect();
+        ResultSet rs;
+        try {
+            db.connect();
+            rs = db.statement.executeQuery(sql);
+
+//
+            rs.last();
+            int lastRow = rs.getRow();
+            rs.first();
+            for (int i = 0; i < lastRow+1; i++) {
+                row = sheet.createRow(i);
+                for (int j = 0; j < columnTitles.length; j++) {
+                    cell = row.createCell(j);
+                    cell.setCellValue("Cell " + i + "," + j);
+                    // Set center alignment and autosize the column width
+                    CellStyle cellStyle = workbook.createCellStyle();
+                    cellStyle.setAlignment(HorizontalAlignment.CENTER);
+                    cell.setCellStyle(cellStyle);
+                    sheet.autoSizeColumn(j);
+                }
+            }
+            for(int j = 0; j < columnTitles.length; j++) {
+                sheet.getRow(0).getCell(j).setCellValue(columnTitles[j]);
+            }
+            int i = 1;
+            int j = 0;
+            int taxSumm = 0;
+            int priceSum = 0;
+            int basePriceSum = 0;
+            int count = 1;
+
+            while (rs.next()) {
+                blankID = rs.getString(1);
+                price = rs.getInt(3);
+                currency  = rs.getString(4);
+                conversionRate = rs.getDouble(5);
+                cash = rs.getString(6);
+                card = rs.getString(7);
+                commissionSum = rs.getDouble(8);
+                taxSum = rs.getDouble(9);
+                taxSumm += taxSum;
+                priceSum += price;
+                basePriceSum += price-taxSum;
+                sheet.getRow(i).getCell(j).setCellValue(i);
+                j++;
+                sheet.getRow(i).getCell(j).setCellValue(blankID +"\n" );
+                j++;
+                sheet.getRow(i).getCell(j).setCellValue(price-taxSum);
+                j++;
+                sheet.getRow(i).getCell(j).setCellValue(currency);
+                j++;
+                sheet.getRow(i).getCell(j).setCellValue(conversionRate);
+                j++;
+                sheet.getRow(i).getCell(j).setCellValue(taxSum);
+                j++;
+                sheet.getRow(i).getCell(j).setCellValue(taxSum / price);
+                j++;
+                sheet.getRow(i).getCell(j).setCellValue(cash);
+                j++;
+                sheet.getRow(i).getCell(j).setCellValue(card);
+                j++;
+                sheet.getRow(i).getCell(j).setCellValue(commissionSum/price);
+                j++;
+                sheet.getRow(i).getCell(j).setCellValue((price-taxSum) * conversionRate);
+                j++;
+                sheet.getRow(i).getCell(j).setCellValue(price);
+                j=0;
+                i++;
+
+            }for(int k = 0; k < columnTitles.length; k++) {
+                sheet.autoSizeColumn(j);
+            }
+
+            sheet.getRow(lastRow).getCell(0).setCellValue("TOTALS ");
+            sheet.getRow(lastRow).getCell(11).setCellValue(priceSum);
+
+            sheet.createRow(lastRow+2).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow+2, lastRow+2, 9, 10));//COMMISSIONS
+            sheet.getRow(lastRow+2).getCell(9).setCellValue("TOTAL COMMISSION AMOUNTS  :"+ (priceSum-taxSumm)*(commissionSum/price));
+
+            sheet.createRow(lastRow+3).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow+3, lastRow+3, 9, 10));//COMMISSIONS
+            sheet.getRow(lastRow+3).getCell(9).setCellValue("NET AMOUNTS FOR AGEMTS DEBIT  :" + (basePriceSum - (priceSum-taxSumm)*(commissionSum/price)));
+
+            sheet.createRow(lastRow+4).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow+4, lastRow+4, 9, 10));//COMMISSIONS
+            sheet.getRow(lastRow+4).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA  :" + (priceSum -(priceSum-taxSumm)*(commissionSum/price)));
+
+//        sheet.getRow(1).getCell(0).setCellValue("1");
+
+            for(int x = 0; x < columnTitles.length; x++) {
+                sheet.autoSizeColumn(x);
+            }
+            // write the workbook to a file
+            try {
+                FileOutputStream outputStream = new FileOutputStream("excel-sheet.xlsx");
+                workbook.write(outputStream);
+                workbook.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+//            sheet.getRow(19).getCell(2).setCellValue(sum);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void generateInterlineSalesReportTemplatePerAdvisor(){
+        workbook = new XSSFWorkbook();
+
+        // create a new sheet
+        sheet = workbook.createSheet("Sheet1");
+
+        // create a header row
+         headerRow = sheet.createRow(0);
+
+        // add column titles to header row
+        String[] columnTitles = {"NO. ","BLANKS", "PRICE USD", "PRICE CURRNECY", "CONVERSION RATE", "TAXES", "TAX RATE",
+                "CASH", "CARD NUMBER", "COMMISSION RATE", "COMMISSION SUM", "TOTAL AMOUNTS PAID"};
+//        int rowCount = 10;
+//        int columnCount = columnTitles.length;
+//        Row firstRow = sheet.createRow(0);
+//        for(int j = 0; j < columnCount; j++) {
+//            Cell cell = firstRow.createCell(j);
+//            cell.setCellValue(columnTitles[j]);
+//        }
+//        for(int i = 1; i < rowCount; i++) {
+//            Row row = sheet.createRow(i);
+//            for(int j = 0; j < columnCount; j++) {
+//                Cell cell = row.createCell(j);
+//                cell.setCellValue("Cell " + j + "," + i);
+//            }
+//        }/////////////
+        for (int i = 0; i < 10; i++) {
+            row = sheet.createRow(i);
+            for (int j = 0; j < columnTitles.length; j++) {
+                cell = row.createCell(j);
+                cell.setCellValue("Cell " + i + "," + j);
+                // Set center alignment and autosize the column width
+                CellStyle cellStyle = workbook.createCellStyle();
+                cellStyle.setAlignment(HorizontalAlignment.CENTER);
+                cell.setCellStyle(cellStyle);
+                sheet.autoSizeColumn(j);
+            }
+        }
+        for(int j = 0; j < columnTitles.length; j++) {
+            sheet.getRow(0).getCell(j).setCellValue(columnTitles[j]);
+        }
+
+        /////////////
+        for(int j = 0; j < columnTitles.length; j++) {
+            sheet.autoSizeColumn(j);
+        }
+        sheet.getRow(9).getCell(0).setCellValue("TOTALS ");
+
+        sheet.createRow(11).createCell(9);
+        sheet.addMergedRegion(new CellRangeAddress(11, 11, 9, 10));//COMMISSIONS
+        sheet.getRow(11).getCell(9).setCellValue("TOTAL COMMISSION AMOUNTS");
+
+        sheet.createRow(12).createCell(9);
+        sheet.addMergedRegion(new CellRangeAddress(12, 12, 9, 10));//COMMISSIONS
+        sheet.getRow(12).getCell(9).setCellValue("NET AMOUNTS FOR AGEMTS DEBIT");
+
+        sheet.createRow(13).createCell(9);
+        sheet.addMergedRegion(new CellRangeAddress(13, 13, 9, 10));//COMMISSIONS
+        sheet.getRow(13).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA");
+
+//        sheet.getRow(1).getCell(0).setCellValue("1");
+
+
+//        populateSalesReport(sheet);
+        for(int j = 0; j < columnTitles.length; j++) {
+            sheet.autoSizeColumn(j);
+        }
+        // write the workbook to a file
+        try {
+            FileOutputStream outputStream = new FileOutputStream("excel-sheet.xlsx");
+            workbook.write(outputStream);
+            workbook.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 

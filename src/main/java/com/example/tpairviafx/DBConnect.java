@@ -2,6 +2,7 @@ package com.example.tpairviafx;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class DBConnect {
@@ -23,7 +24,7 @@ public class DBConnect {
     public void connect(){
         try{
             connection = DriverManager.getConnection(url, userName, password);
-            statement = connection.createStatement();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         }catch (Exception e){
             e.printStackTrace();
         }

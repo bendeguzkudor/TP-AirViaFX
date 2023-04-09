@@ -114,7 +114,7 @@ public class Blank {
         this.blankType = blankType;
 //        this.localCurrency = localCurrency;// for each loop in the other class to summarize dollar
         noOfFlights = flights.size();
-        retrieveBlankID(blankType);
+//        retrieveBlankID(blankType);
         calcSum(flights);
         getCommissionRates();
         System.out.println(this.blankType);
@@ -239,7 +239,8 @@ public class Blank {
 
 
 
-    public void retrieveBlankID(String flightType) throws SQLException {
+    public  Long retrieveBlankID(String flightType) throws SQLException {
+        Long blankID = 0L;
         switch (flightType){
             case "Interline":
                 if(noOfFlights > 2){
@@ -261,7 +262,7 @@ public class Blank {
             rs = db.statement.executeQuery(sql);
             System.out.println(sql);
             if (rs.next()) {
-                this.blankID = rs.getLong("blankID");
+                blankID = rs.getLong("blankID");
 //                System.out.println(rs.getInt("blankID"));
 
             }else{
@@ -278,6 +279,7 @@ public class Blank {
             }
             db.closeConnection();
         }
+        return blankID;
     }
 
 

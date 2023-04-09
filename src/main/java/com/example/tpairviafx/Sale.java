@@ -10,22 +10,10 @@ import java.util.ArrayList;
 public class Sale {
     private final int staffID;
 
-
-//     stmt.setInt(1, saleID);
-//            stmt.setInt(2, staffID);
-//            stmt.setDouble(3, priceUSD);
-//            stmt.setString(4, localCurrency);
-//            stmt.setString(5, date);
-//            stmt.setInt(6, customer.getCustomerID());
-//            stmt.setString(7, "Card");
-//            stmt.setInt(8, 123);
-//            stmt.setString(9, "");
-//            stmt.setDouble(10, commisionSum);
-//            stmt.setDouble(11, (priceUSD * 0.2));
     private static final int  counter = 0;
 
     private int price; // set in dollars
-    private final String date;
+    private String date;
 
     public void setSaleID(int saleID) {
         this.saleID = saleID;
@@ -92,7 +80,7 @@ public class Sale {
     }
     public void pushToDatabase() throws SQLException {
         String sql = "INSERT INTO sale (saleID, staffID, price,currency, date, customerID, paymentType,cardNumber," +
-        "latePayment, commissionSum, taxSum) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        "latePayment, commissionSum, taxSum, conversionRate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
             DBConnect db = new DBConnect();
@@ -103,13 +91,14 @@ public class Sale {
             stmt.setInt(2, staffID);
             stmt.setDouble(3, priceUSD);
             stmt.setString(4, localCurrency);
-            stmt.setString(5, "05-05-2023");
+            stmt.setString(5, date);
             stmt.setInt(6, customer.getCustomerID());
             stmt.setString(7, paymentType);
-            stmt.setInt(8, 123);
+            stmt.setString(8, customer.getCardNumber());
             stmt.setString(9, "");
             stmt.setDouble(10, commisionSum);
             stmt.setDouble(11, (priceUSD * 0.2));
+            stmt.setDouble(12, (commisionSum/ priceUSD));
 //            System.out.println(stmt.executeUpdate());
 
             int rowsInserted = stmt.executeUpdate();

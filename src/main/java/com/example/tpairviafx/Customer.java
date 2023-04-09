@@ -77,6 +77,16 @@ public class Customer {
 
     private int discount;
 
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    private String cardNumber;
+
     public Customer(String firstName,String lastName, int customerID, double fixedDiscount, double fLexibleDiscount, int discount ){
         latePaymentLimit = 30;
         this.firstName = firstName;
@@ -84,6 +94,16 @@ public class Customer {
         this.customerID = customerID+1;
         this.fixedDiscount = fixedDiscount;
         this.fLexibleDiscount = fLexibleDiscount;
+
+    }
+    public Customer(String firstName,String lastName, int customerID, double fixedDiscount, double fLexibleDiscount, int discount, String cardNumber ){
+        latePaymentLimit = 30;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.customerID = customerID+1;
+        this.fixedDiscount = fixedDiscount;
+        this.fLexibleDiscount = fLexibleDiscount;
+        this.cardNumber = cardNumber;
 
     }
     public static void recordCustomer(Customer customer){

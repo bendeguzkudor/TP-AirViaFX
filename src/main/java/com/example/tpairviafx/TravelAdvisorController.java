@@ -332,11 +332,6 @@ public class TravelAdvisorController implements Initializable {
         System.out.println(customer.getCustomerID());
     }
 
-
-    public void getDate(){
-        LocalDate date = datePicker.getValue();
-        System.out.println(date);
-    }
     public void closeWindow(){
         Stage stage = (Stage) closeButton.getScene().getWindow();
         stage.close();
@@ -358,14 +353,20 @@ public class TravelAdvisorController implements Initializable {
 //        blanks.add(new Blank())
         if(!flightsToBlank.isEmpty()) {
             Blank blank1 = new Blank(staffID, flightsToBlank.get(0).getFlightType(), flightsToBlank);
+            if (blank1.retrieveBlankID(blank1.getBlankType()) != 0){
+                blank1.setBlankID(blank1.retrieveBlankID(blank1.getBlankType()));
+                blank1.retrieveBlankID(blank1.getBlankType());
+                blank1.printBlankDetails();
+                flightsToBlank.clear();
+                blanks.add(blank1);
+                flightsOnBlankList.clear();
+                currentBlankTableView.refresh();
+                addBlankToCartTable(blank1);
+                blank1.markBlankAsUsed(blank1);
+            }else{
+                System.out.println("No blanks avaliable ");
+            }
 
-            blank1.printBlankDetails();
-            flightsToBlank.clear();
-            blanks.add(blank1);
-            flightsOnBlankList.clear();
-            currentBlankTableView.refresh();
-            addBlankToCartTable(blank1);
-            blank1.markBlankAsUsed(blank1);
         }
 
     }
@@ -386,12 +387,17 @@ public class TravelAdvisorController implements Initializable {
            }
 
 //        Customer customer = new Customer("bedi", 88);
-           Sale sale = new Sale(staffID, dateString, customer, currencyChoicebox.getValue().toString(), blankArrayList,salePayment);
+           customer.setCardNumber(cardNumberTextField.getText());
+           Sale sale = new Sale(staffID, Application.getDate(), customer, currencyChoicebox.getValue().toString(), blankArrayList,salePayment);
            System.out.println(customer);
            System.out.println(blankArrayList.get(0).getBlankType());
            System.out.println(currencyChoicebox.getValue().toString());
            sale.setSaleID(sale.selectMaxSaleID() + sale.getSaleID());
+//           for (Blank x:blankArrayList) {
+//               x.markBlankAsUsed(x);
+//           }
            sale.pushToDatabase();
+
            sale.pushSaleToSoldBlanks();
 //           sale.printSale();
            blankArrayList.clear();
