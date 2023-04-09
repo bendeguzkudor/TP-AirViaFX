@@ -103,8 +103,27 @@ public class Blank {
 
     private String dateAssigned;
     private String dateAdded;
+
+    public double getInterlineCommissionRate() {
+        return interlineCommissionRate;
+    }
+
+    public double getDomesticCommissionRate() {
+        return domesticCommissionRate;
+    }
+
     public double interlineCommissionRate;
     public double domesticCommissionRate;
+
+    public double getCommissionRate() {
+        return commissionRate;
+    }
+
+    public void setCommissionRate(double commissionRate) {
+        this.commissionRate = commissionRate;
+    }
+
+    private double commissionRate;
 
 
     public Blank(int staffID, String blankType, ArrayList<FlightModel> flights) throws SQLException {
@@ -122,6 +141,8 @@ public class Blank {
 //        System.out.println(findCommissionRate(this.blankType));
 //        System.out.println(commisionRate);
         calculateCommission(this.blankType);
+
+
 
 
 
@@ -185,9 +206,11 @@ public class Blank {
 //    }
     public void calculateCommission(String type){
         if (type.equals("Interline")){
-            this.commissionSum = priceUSD * interlineCommissionRate;
+            this.commissionSum = (priceUSD*0.8) * interlineCommissionRate;
+            setCommissionRate(interlineCommissionRate);
         }else if(type.equals("Domestic")){
-            this.commissionSum = priceUSD * domesticCommissionRate;
+            this.commissionSum = (priceUSD*0.8) * domesticCommissionRate;
+            setCommissionRate(domesticCommissionRate);
         }
 
 

@@ -80,7 +80,7 @@ public class Sale {
     }
     public void pushToDatabase() throws SQLException {
         String sql = "INSERT INTO sale (saleID, staffID, price,currency, date, customerID, paymentType,cardNumber," +
-        "latePayment, commissionSum, taxSum, conversionRate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+        "latePayment, commissionSum, taxSum) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
             DBConnect db = new DBConnect();
@@ -98,7 +98,6 @@ public class Sale {
             stmt.setString(9, "");
             stmt.setDouble(10, commisionSum);
             stmt.setDouble(11, (priceUSD * 0.2));
-            stmt.setDouble(12, (commisionSum/ priceUSD));
 //            System.out.println(stmt.executeUpdate());
 
             int rowsInserted = stmt.executeUpdate();

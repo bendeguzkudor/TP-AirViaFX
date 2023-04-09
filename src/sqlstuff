@@ -265,6 +265,10 @@ FROM blanks
 WHERE staffID IS NOT NULL AND sold = 1 and dateAssigned >= "20230402" and dateAssigned <="20230430"
 GROUP BY staffID, LEFT(blankID, 3);
 
+SELECT MAX(blankID) - MIN(blankID) + 1 AS amount, MIN(blankID) AS min_blankID, MAX(blankID) AS max_blankID
+FROM blanks WHERE dateAdded >= "20230401" and dateAdded <="20230430"
+GROUP BY staffID, LEFT(blankID, 3);
+
 
 
 
