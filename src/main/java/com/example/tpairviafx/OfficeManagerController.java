@@ -144,7 +144,7 @@ public class OfficeManagerController implements Initializable {
         if(amount == 1){
             rangeTo = rangeFrom;
         }else{
-            rangeTo = rangeFrom+amount;
+            rangeTo = rangeFrom+amount-1;
         System.out.println(rangeTo);
         }
 

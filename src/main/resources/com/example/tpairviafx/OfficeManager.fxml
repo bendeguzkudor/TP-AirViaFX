@@ -9,7 +9,7 @@
 
 <AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.OfficeManagerController">
    <children>
-      <Button fx:id="logoutButton" layoutX="911.0" layoutY="122.0" mnemonicParsing="false" onAction="#logOut" text="Log Out" />
+      <Button fx:id="logoutButton" layoutX="924.0" layoutY="14.0" mnemonicParsing="false" onAction="#logOut" text="Log Out" />
       <AnchorPane layoutX="17.0" layoutY="16.0" prefHeight="294.0" prefWidth="516.0">
          <children>
             <TableView fx:id="staffTableView" layoutX="21.0" layoutY="76.0" prefHeight="189.0" prefWidth="270.0">
