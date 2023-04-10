@@ -7,10 +7,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
@@ -20,6 +17,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
@@ -40,9 +41,17 @@ public class OfficeManagerController implements Initializable {
     private TableColumn<Staff, String> nameColumn;
     @FXML
     private TableColumn<Staff,Integer > staffIDColumn;
+    @FXML
+    private DatePicker dateFromDatePicker;
+    @FXML
+    private DatePicker dateToDatePicker;
 
     @FXML
     private ChoiceBox<String> blankChoiceBox;
+    @FXML
+    private ChoiceBox<String> typeChoiceBox;
+    @FXML
+    private ChoiceBox<String> advisorChoiceBox;
     private final String [] blankTypes = {"444", "440","420","201","101"};
 
     private ObservableList<Staff> selectedStaffList;
@@ -70,29 +79,81 @@ public class OfficeManagerController implements Initializable {
     private String sqlforMinBlank;
     private final String date = Application.getDate();
     private int amount;
+    private  Integer [] advisors;
+    private final String[] reportTypes = { "Stock Turnover", "Domestic", "Interline" };
+    private String chosenAdvisor;
+    private String typeChosen;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         populateStaffTable();
+        typeChoiceBox.getItems().addAll(reportTypes);
+        typeChoiceBox.setOnAction(this::getTypeChosen);
+
+        addStaffToChoiceBox();
+        advisorChoiceBox.setOnAction(this::getAdvisorChosen);
 
         blankChoiceBox.getItems().addAll(blankTypes);
         blankChoiceBox.setOnAction(this::getblankChosen);
 
     }
+    public void addStaffToChoiceBox(){
+        for (Staff x : staffObservableList){
+            advisorChoiceBox.getItems().add(String.valueOf(x.getStaffID()));
+        }
+    }
+    public void generateReport() throws ParseException {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String dateFrom="";
+        String dateTo="";
 
+        if (dateFromDatePicker.getValue() != null && dateToDatePicker.getValue() != null){
+             dateFrom = (dateFromDatePicker.getValue().format(dtf));
+             dateTo = (dateToDatePicker.getValue().format(dtf));
+            System.out.println(dateFrom+ " -  " + dateTo);
+            if (advisorChoiceBox.getSelectionModel().isEmpty()){
+                System.out.println("empty");
+                // global
+                if (typeChosen.equals("Interline")){
+                    Report report = new Report(dateFrom, dateTo, 0);
+                    report.globalInterLineSalesReport();
+                } else if (typeChosen.equals("Domestic")) {
+                    Report report = new Report(dateFrom, dateTo, 0);
+                    report.globalDomesticSalesReport();
+                }
+            }if(!advisorChoiceBox.getSelectionModel().isEmpty() && !typeChoiceBox.getSelectionModel().isEmpty()){
+                if(typeChosen.equals("Domestic")){
+                    Report report = new Report(dateFrom, dateTo, Integer.parseInt(chosenAdvisor));
+                    report.domesticIndividualReport();
+                } else if (typeChosen.equals("Interline")) {
+                    Report report = new Report(dateFrom, dateTo, Integer.parseInt(chosenAdvisor));
+                    report.individualInterlineSalesReport();
+                }
+
+            }
+        }
+
+    }
+
+    private void getTypeChosen(ActionEvent actionEvent) {typeChosen = typeChoiceBox.getValue();}
     public void getblankChosen(ActionEvent e){
         chosenBlank = blankChoiceBox.getValue();
+    }
+    public void getAdvisorChosen(ActionEvent e){
+        chosenAdvisor = advisorChoiceBox.getValue();
     }
     public void populateStaffTable(){
         System.out.println("sadgf");
         DBConnect db = new DBConnect();
 //        ResultSet rs;
-        String sql = "SELECT name, staffID FROM staff"; //query for dynamic search
+        String sql = "SELECT name, staffID FROM staff where role = 1"; //query for dynamic search
 //        String sql2 = "SELECT * FROM flights WHERE departure = \"London\" AND arrival = \"budapest\" AND date = \"23-05-10\"";
         try{
             db.connect();
             rs = db.statement.executeQuery(sql);
+            int counter =0;
             while(rs.next()){
                 queryStaffID = rs.getInt("staffID");
                 String queryName = rs.getString("name");
@@ -100,6 +161,7 @@ public class OfficeManagerController implements Initializable {
                 System.out.println(queryStaffID);
                 //Populate the list
                 staffObservableList.add(new Staff(queryName,queryStaffID));
+                counter++;
 
             }
 

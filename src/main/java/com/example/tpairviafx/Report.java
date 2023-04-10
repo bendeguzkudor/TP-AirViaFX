@@ -40,7 +40,7 @@ public class Report {
     private String cash;
     private double commissionSum;
     private int price;
-    private int staffID;
+    private  int staffID;
     DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
     DateFormat inputFormat = new SimpleDateFormat("yyyyMMdd");
 
@@ -1027,7 +1027,7 @@ public class Report {
 
         // create a header row
         headerRow = sheet.createRow(0);
-        String[] columnTitles = {"NO. ","NO.OF. S. ","STAFF ID", "BASE PRICE USD", "TAX SUM","CASH PAYMENT ","CARD PAYMENT", "5 % COMMISSION RATE ",  " 9 % COMMISSION RATE"," 20 % COMMISSION RATE","TOTAL PAID","TOTAL COMMISSION" };
+        String[] columnTitles = {"NO. ","NO.OF. S. ","STAFF ID", "BASE PRICE USD", "TAX SUM","CASH PAYMENT ","CARD PAYMENT", "5 % COMMISSION RATE ",  " 9 % COMMISSION RATE","TOTAL PAID","TOTAL COMMISSION" };
         String setmode = "SET sql_mode = '';";
         String sql3 = "" +
                 "SELECT \n" +
@@ -1037,9 +1037,8 @@ public class Report {
                 "  SUM(subquery.sum_tax) as total_tax,\n" +
                 "  SUM(CASE WHEN subquery.paymentType = 'cash' THEN subquery.price_total ELSE 0 END) AS payed_in_cash,\n" +
                 "  SUM(CASE WHEN subquery.paymentType = 'card' THEN subquery.price_total ELSE 0 END) AS payed_in_card,\n" +
-                "  MAX(CASE WHEN subquery.commission_ratio = 0.5 THEN subquery.commissionSum ELSE 0 END) AS commission_5_percent,\n" +
-                "  SUM(CASE WHEN subquery.commission_ratio = 0.9 THEN subquery.commissionSum ELSE 0 END) AS commission_9_percent,\n" +
-                "  SUM(CASE WHEN subquery.commission_ratio = 0.2 THEN subquery.commissionSum ELSE 0 END) AS commission_20_percent,\n" +
+                "  SUM(CASE WHEN subquery.commission_ratio = 0.05 THEN subquery.commissionSum ELSE 0 END) AS commission_5_percent,\n" +
+                "  SUM(CASE WHEN subquery.commission_ratio = 0.09 THEN subquery.commissionSum ELSE 0 END) AS commission_9_percent,\n" +
                 "  SUM(subquery.price_total),\n" +
                 "  SUM(commissionSum) as total_commission\n" +
                 "FROM (\n" +
@@ -1119,16 +1118,14 @@ public class Report {
                 System.out.println(commission10);
                 Double commission15 = rs.getDouble(8);
                 System.out.println(commission15);
-                Double commission20 = rs.getDouble(9);
-                System.out.println(commission20);
-                Double totalPaid = rs.getDouble(10);
+                Double totalPaid = rs.getDouble(9);
                 System.out.println(totalPaid);
-                Double totalCommission = rs.getDouble(11);
+                Double totalCommission = rs.getDouble(10);
                 System.out.println(totalCommission);
                 taxSumm += taxSum;
                 priceSum += payedCash+payedCard;
                 basePriceSum += base_price;
-                commissionsSum += commission10+commission15+commission20;
+                commissionsSum += commission10+commission15;
                 sheet.getRow(i).getCell(j).setCellValue(i);
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(numberOfSales );
@@ -1147,8 +1144,6 @@ public class Report {
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(commission15);
                 j++;
-                sheet.getRow(i).getCell(j).setCellValue(commission20);
-                j++;
                 sheet.getRow(i).getCell(j).setCellValue(totalPaid);
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(totalCommission);
@@ -1163,8 +1158,8 @@ public class Report {
             sheet.getRow(lastRow+1).getCell(0).setCellValue("TOTALS ");
             sheet.getRow(lastRow+1).getCell(3).setCellValue(basePriceSum);
             sheet.getRow(lastRow+1).getCell(4).setCellValue(taxSumm);
-            sheet.getRow(lastRow+1).getCell(10).setCellValue(priceSum);
-            sheet.getRow(lastRow+1).getCell(11).setCellValue(commissionsSum);
+            sheet.getRow(lastRow+1).getCell(9).setCellValue(priceSum);
+            sheet.getRow(lastRow+1).getCell(10).setCellValue(commissionsSum);
 
             ///
             sheet.createRow(lastRow+3).createCell(3);
