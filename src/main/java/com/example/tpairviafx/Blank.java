@@ -2,10 +2,7 @@ package com.example.tpairviafx;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-
-import static com.example.tpairviafx.Application.date;
 
 public class Blank {
 
@@ -25,7 +22,6 @@ public class Blank {
     public int noOfFlights;
     private int staffID;
     private int localCurrency;
-    private int price;
     private int paymentType; // 0 for card, 1 for cash
     private static double commisionRate;
     private String customer;
@@ -52,17 +48,21 @@ public class Blank {
 
     private String blankType;
 
-    public double getCommissionSum() {
-        return commissionSum;
+    public double getCommissionAmount() {
+        return commissionAmount;
     }
 
-    private double commissionSum;
+    private double commissionAmount;
 
-    public int getPriceUSD() {
-        return priceUSD;
+    public int getPriceGBP() {
+        return priceGBP;
     }
 
-    private int priceUSD;
+    public void setPriceGBP(int priceGBP) {
+        this.priceGBP = priceGBP;
+    }
+
+    private int priceGBP;
 
     public int getSold() {
         return sold;
@@ -143,19 +143,6 @@ public class Blank {
         calculateCommission(this.blankType);
 
 
-
-
-
-
-
-//        this.taxLocal = taxLocal;
-//        this.taxOther = taxOther;
-//        this.paymentType = paymentType;
-//        this.commisionRate = commisionRate;
-//        this.customer = customer;
-
-//        flights.get(0).getDeparture();
-
     }
     public Blank(Long blankID,int staffID,  String dateAssigned,int sold, String dateAdded ){
         this.blankID = blankID;
@@ -183,11 +170,8 @@ public class Blank {
                 interlineCommissionRate = rs.getDouble(1);
                 domesticCommissionRate = rs.getDouble(2);
 
-
             }
             dbConnect.closeConnection();
-
-
 
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
@@ -206,10 +190,10 @@ public class Blank {
 //    }
     public void calculateCommission(String type){
         if (type.equals("Interline")){
-            this.commissionSum = (priceUSD*0.8) * interlineCommissionRate;
+//            this.commissionAmount = (priceUSD*0.8) * interlineCommissionRate;
             setCommissionRate(interlineCommissionRate);
         }else if(type.equals("Domestic")){
-            this.commissionSum = (priceUSD*0.8) * domesticCommissionRate;
+//            this.commissionAmount = (priceUSD*0.8) * domesticCommissionRate;
             setCommissionRate(domesticCommissionRate);
         }
 
@@ -217,7 +201,7 @@ public class Blank {
     }
     public void calcSum(ArrayList<FlightModel> flights){
         for(FlightModel x : flights){
-            this.priceUSD += x.getPrice();
+            this.priceGBP += x.getPrice();
         }
 
 

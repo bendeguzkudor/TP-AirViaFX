@@ -26,7 +26,7 @@ public class Application extends javafx.application.Application {
     }
 
     public static double domesticCommisionRate = 0.05;
-    public static double taxRate = 0.1;
+    public static double taxRate = 0.2;
     private DateTimeFormatter dtf;
 
     private LocalDateTime now;

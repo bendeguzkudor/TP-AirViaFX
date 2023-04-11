@@ -26,7 +26,7 @@
             <TextField fx:id="amountTextField" layoutX="391.0" layoutY="94.0" prefHeight="26.0" prefWidth="35.0" />
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="557.0" layoutY="133.0" prefHeight="332.0" prefWidth="421.0" style="-fx-background-color: pink;">
+      <AnchorPane layoutX="15.0" layoutY="327.0" prefHeight="332.0" prefWidth="421.0" style="-fx-background-color: pink;">
          <children>
             <Label layoutX="14.0" layoutY="5.0" text="Generate Report" />
             <ChoiceBox fx:id="typeChoiceBox" layoutX="36.0" layoutY="55.0" prefWidth="150.0" />
@@ -38,5 +38,6 @@
             <Button layoutX="190.0" layoutY="231.0" mnemonicParsing="false" onAction="#generateReport" text="Generate" />
          </children>
       </AnchorPane>
+      <Button fx:id="manageCustomerDiscountButton" layoutX="576.0" layoutY="33.0" mnemonicParsing="false" onAction="#manageCustomerDiscount" text="Manage Customer Discount" />
    </children>
 </AnchorPane>

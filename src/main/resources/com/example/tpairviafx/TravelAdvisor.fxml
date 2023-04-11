@@ -101,9 +101,8 @@
       </Pane>
       <Button fx:id="addtocartButton" layoutX="40.0" layoutY="392.0" mnemonicParsing="false" onAction="#addToCart" style="-fx-background-color: #31AED1;" text="AddtoCart" />
       <Button fx:id="printButton" layoutX="325.0" layoutY="392.0" mnemonicParsing="false" onAction="#printCart" style="-fx-background-color: #31AED1;" text="print" />
-      <Button fx:id="printBlanksButton" layoutX="409.0" layoutY="393.0" mnemonicParsing="false" onAction="#printBlanks" style="-fx-background-color: #31AED1;" text="printblanks" />
       <Button fx:id="addToBlankButton" layoutX="138.0" layoutY="391.0" mnemonicParsing="false" onAction="#addToBlank" style="-fx-background-color: #31AED1;" text="AddtoBlank" />
-      <Button fx:id="aftf" layoutX="593.0" layoutY="393.0" mnemonicParsing="false" onAction="#addFlightsToFlights" style="-fx-background-color: #31AED1;" text="addFLgithsToFLights" />
+      <Button fx:id="aftf" layoutX="594.0" layoutY="400.0" mnemonicParsing="false" onAction="#addFlightsToFlights" style="-fx-background-color: #31AED1;" text="addFLgithsToFLights" />
       <Button fx:id="fcb" layoutX="766.0" layoutY="400.0" mnemonicParsing="false" onAction="#addToBlank" style="-fx-background-color: #31AED1;" text="finalizeCurrentBlank" />
       <Pane layoutY="443.0" prefHeight="358.0" prefWidth="436.0" style="-fx-background-color: grey;">
          <children>

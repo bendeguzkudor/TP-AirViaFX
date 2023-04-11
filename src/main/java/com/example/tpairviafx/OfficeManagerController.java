@@ -6,7 +6,9 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -45,6 +47,8 @@ public class OfficeManagerController implements Initializable {
     private DatePicker dateFromDatePicker;
     @FXML
     private DatePicker dateToDatePicker;
+    private FXMLLoader fxmlLoader;
+    private Scene scene;
 
     @FXML
     private ChoiceBox<String> blankChoiceBox;
@@ -275,6 +279,16 @@ public class OfficeManagerController implements Initializable {
     }
     public void logOut() throws IOException {
         Application.logOut(stage);
+    }
+    public void manageCustomerDiscount() throws IOException {
+        Stage stage = new Stage();
+        fxmlLoader = new FXMLLoader(Application.class.getResource("ManageCustomerDiscount.fxml"));
+        scene = new Scene(fxmlLoader.load(), 600, 500);
+        stage.setScene(scene);
+        ManageCustomerDiscountController manageCustomerDiscountController = new ManageCustomerDiscountController();
+        manageCustomerDiscountController.setPreviousScene(this.scene);
+        stage.show();
+
     }
 
 

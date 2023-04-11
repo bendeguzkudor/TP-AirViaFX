@@ -154,10 +154,23 @@ public class Report {
         DBConnect db = new DBConnect();
         ResultSet rs;
 
-        String blanksUsedWithinTheReportPeriod = "SELECT staffID, MAX(blankID) - MIN(blankID)+1  AS amount, MIN(blankID) AS min_blankID, MAX(blankID) AS max_blankID " +
-                "FROM blanks " +
-                "WHERE staffID != 0 AND sold = 1 and dateUsed >= \"20230401\" and dateUsed <= \"20230430\" " +
-                "GROUP BY staffID, LEFT(blankID, 3);"; //col4
+        String blanksUsedWithinTheReportPeriod = "SELECT \n" +
+                "    MIN(blankID) AS start_range,\n" +
+                "    MAX(blankID) AS end_range,\n" +
+                "    COUNT(*) AS range_size\n" +
+                "FROM (\n" +
+                "    SELECT \n" +
+                "        t.*,\n" +
+                "        @rn := IF(@prev_staff = staffID AND blankID = @prev_blank + 1, @rn, @rn + 1) AS range_group,\n" +
+                "        @prev_staff := staffID,\n" +
+                "        @prev_blank := blankID\n" +
+                "    FROM blanks t\n" +
+                "    CROSS JOIN (SELECT @rn := 0, @prev_staff := NULL, @prev_blank := NULL) vars\n" +
+                "    WHERE sold = 1 and (blankID LIKE '1%' OR blankID LIKE '2%' OR blankID LIKE '4%')\n" +
+                "    ORDER BY blankID\n" +
+                ") t\n" +
+                "GROUP BY range_group\n" +
+                "HAVING COUNT(*) >= 1;"; //col4
 
 
         String blanksAdded = "SELECT \n" +
@@ -215,6 +228,8 @@ public class Report {
                 "    FROM blanks t\n" +
                 "    CROSS JOIN (SELECT @rn := 0, @prev_staff := NULL, @prev_blank := NULL) vars\n" +
                 "    WHERE staffID != 0\n" +
+                "    AND dateAssigned >= \"20230401\" \n" +
+                "    AND dateAssigned <= \"20230430\"\n" +
                 "    ORDER BY staffID, blankID\n" +
                 ") t\n" +
                 "GROUP BY staffID, range_group \n" +
@@ -331,16 +346,14 @@ public class Report {
             j = 9;
             sum = 0;
             while (rs.next()) {
-                amount = rs.getInt(2);
-                min_blankID = rs.getLong(3);
-                max_blankID = rs.getLong(4);
+                min_blankID = rs.getLong(1);
+                max_blankID = rs.getLong(2);
+                amount = rs.getInt(3);
                 sum += amount;
-                System.out.print(rs.getInt(1) + ":");
-                System.out.print(rs.getInt(2) + ":");
-                System.out.print(rs.getLong(3) + ":");
-                System.out.print(rs.getLong(4) + ":");
-                System.out.println();
-                System.out.println(i + "" + j);
+                System.out.print(rs.getLong(1) + ":");
+                System.out.print(rs.getLong(2) + ":");
+                System.out.print(rs.getInt(3) + ":");
+
                 sheet.getRow(i).getCell(j).setCellValue(min_blankID + "-" + max_blankID);
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(amount);

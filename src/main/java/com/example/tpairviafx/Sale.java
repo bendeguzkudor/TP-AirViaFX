@@ -1,10 +1,8 @@
 package com.example.tpairviafx;
 
-import java.lang.reflect.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class Sale {
@@ -39,6 +37,7 @@ public class Sale {
     private final ArrayList<Blank> blanks;
     private int priceUSD;
     private final String paymentType;
+    private double initialPriceSum;
 
     public Sale(int staffID, String date, Customer customer,String localCurrency, ArrayList<Blank> blanks, String paymentType){
         this.saleID = 1;
@@ -49,9 +48,11 @@ public class Sale {
         this.customer = customer;
 //        this.latePayment = latePayment; // In customer object, setlatepayment options. customer.getLatePayment
 //        this.discount = discount; // customer.getDiscount()
-        calcSum(blanks);
+        customer.getQueryDiscount();
+        takeDiscountOff(blanks, customer);
+        initialPriceSum = calcSum(blanks);
         commisionSum = calcCommissionSum(blanks);
-        airportTax = Application.taxRate * priceUSD;
+        airportTax = Application.taxRate * initialPriceSum;
         this.paymentType = paymentType;
 //        getSaleID(this);
 
@@ -60,16 +61,27 @@ public class Sale {
 
     }
 
-    public void calcSum(ArrayList<Blank> blanks){
+
+    public double calcSum(ArrayList<Blank> blanks){
+        double priceSum =0;
         for(Blank x : blanks){
-            this.priceUSD += x.getPriceUSD();
+            priceSum += x.getPriceGBP();
+        }
+        return priceSum;
+    }
+    public void takeDiscountOff(ArrayList<Blank> blanks, Customer customer){
+        for(Blank x : blanks){
+            x.setPriceGBP((int) (x.getPriceGBP()*(1- customer.getQueryDiscount())));
+            System.out.println(x.getPriceGBP());
+            System.out.println(customer.getQueryDiscount());
         }
     }
     public double  calcCommissionSum(ArrayList<Blank> blanks){
         double sum = 0;
         for(Blank x : blanks){
-            sum += x.getCommissionSum();
+            sum += (x.getPriceGBP()*(1-Application.taxRate))*x.getCommissionRate();
         }
+        System.out.println(sum);
         return sum;
     }
 
@@ -89,7 +101,7 @@ public class Sale {
             // Set the values of the parameters in the prepared statement
             stmt.setInt(1, saleID);
             stmt.setInt(2, staffID);
-            stmt.setDouble(3, priceUSD);
+            stmt.setDouble(3, initialPriceSum);
             stmt.setString(4, localCurrency);
             stmt.setString(5, date);
             stmt.setInt(6, customer.getCustomerID());
@@ -97,7 +109,7 @@ public class Sale {
             stmt.setString(8, customer.getCardNumber());
             stmt.setString(9, "");
             stmt.setDouble(10, commisionSum);
-            stmt.setDouble(11, (priceUSD * 0.2));
+            stmt.setDouble(11, (initialPriceSum * 0.2));
 //            System.out.println(stmt.executeUpdate());
 
             int rowsInserted = stmt.executeUpdate();
@@ -110,6 +122,8 @@ public class Sale {
 
         }
     }
+
+    /** */
     public void pushSaleToSoldBlanks(){
         System.out.println("Pishintdasletoolsoldblanks");
         String sql = "INSERT INTO soldBlanks (saleID, blankID) VALUES (?,?)";

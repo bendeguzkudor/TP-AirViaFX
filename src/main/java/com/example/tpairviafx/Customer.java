@@ -1,6 +1,7 @@
 package com.example.tpairviafx;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Customer {
@@ -48,13 +49,6 @@ public class Customer {
 
     private int customerID;
 
-    public double getFixedDiscount() {
-        return fixedDiscount;
-    }
-
-    public void setFixedDiscount(double fixedDiscount) {
-        this.fixedDiscount = fixedDiscount;
-    }
 
     public double getfLexibleDiscount() {
         return fLexibleDiscount;
@@ -64,18 +58,17 @@ public class Customer {
         this.fLexibleDiscount = fLexibleDiscount;
     }
 
-    private double fixedDiscount;
     private double fLexibleDiscount;
 
-    public int getDiscount() {
-        return discount;
+    public double getQueryDiscount() {
+        return queryDiscount;
     }
 
-    public void setDiscount(int discount) {
-        this.discount = discount;
+    public void setQueryDiscount(int discount) {
+        this.queryDiscount = discount;
     }
 
-    private int discount;
+    private double queryDiscount;
 
     public String getCardNumber() {
         return cardNumber;
@@ -86,50 +79,114 @@ public class Customer {
     }
 
     private String cardNumber;
+    private String email;
 
-    public Customer(String firstName,String lastName, int customerID, double fixedDiscount, double fLexibleDiscount, int discount ){
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public double getFixeddiscount() {
+        return fixeddiscount;
+    }
+
+    public void setFixeddiscount(double fixeddiscount) {
+        this.fixeddiscount = fixeddiscount;
+    }
+
+    public double getBelow1000() {
+        return below1000;
+    }
+
+    public void setBelow1000(double below1000) {
+        this.below1000 = below1000;
+    }
+
+    public double getBetween1and2000() {
+        return between1and2000;
+    }
+
+    public void setBetween1and2000(double between1and2000) {
+        this.between1and2000 = between1and2000;
+    }
+
+    public double getMorethan2000() {
+        return morethan2000;
+    }
+
+    public void setMorethan2000(double morethan2000) {
+        this.morethan2000 = morethan2000;
+    }
+
+    private double fixeddiscount, below1000, between1and2000, morethan2000;
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    private String phone;
+
+
+    public Customer(String firstName,String lastName,String email,String phone,double fixeddiscount, double below1000, double between1and2000, double morethan2000){
         latePaymentLimit = 30;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.customerID = customerID+1;
-        this.fixedDiscount = fixedDiscount;
-        this.fLexibleDiscount = fLexibleDiscount;
+        this.email = email;
+        this.phone = phone;
+        this.fixeddiscount = fixeddiscount;
+        this.below1000 = below1000;
+        this.between1and2000 = between1and2000;
+        this.morethan2000 = morethan2000;
+        this.queryDiscount = queryDiscount();
+        System.out.println(queryDiscount());
+
 
     }
-    public Customer(String firstName,String lastName, int customerID, double fixedDiscount, double fLexibleDiscount, int discount, String cardNumber ){
+    public Customer(String firstName,String lastName, int customerID ){
         latePaymentLimit = 30;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.customerID = customerID+1;
-        this.fixedDiscount = fixedDiscount;
-        this.fLexibleDiscount = fLexibleDiscount;
-        this.cardNumber = cardNumber;
-
+        this.customerID = customerID;
+        this.queryDiscount = queryDiscount();
+    }
+    public Customer(String firstName,String lastName, int customerID, double fixeddiscount, double below1000, double between1and2000, double morethan2000 ){
+        latePaymentLimit = 30;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.customerID = customerID;
+        this.fixeddiscount = fixeddiscount;
+        this.below1000 = below1000;
+        this.between1and2000 = between1and2000;
+        this.morethan2000 = morethan2000;
     }
     public static void recordCustomer(Customer customer){
-            String sql = "INSERT INTO customer (customerID, firstName, lastName, flexibleDiscount, fixedDiscount, discount)\n" +
-                    "VALUES (?,?,?,?,?,?)";
-            try {
-                DBConnect db = new DBConnect();
-                db.connect();
-                PreparedStatement stmt = db.getConnection().prepareStatement(sql);
-                // Set the values of the parameters in the prepared statement
-                stmt.setInt(1, customer.getCustomerID());
-                stmt.setString(2, customer.getName());
-                stmt.setString(3, customer.getLastName());
-                stmt.setDouble(4, customer.getfLexibleDiscount());
-                stmt.setDouble(5, customer.getFixedDiscount());
-                stmt.setInt(6, customer.getDiscount());
-//            System.out.println(stmt.executeUpdate());
-                int rowsInserted = stmt.executeUpdate();
-                System.out.println(rowsInserted + " rows inserted.");
-                System.out.println(sql);
-                stmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
 
-            }
+        DBConnect db = new DBConnect();
+        try{
+        String sql = "INSERT INTO customer (firstName, lastName, email, phone, fixeddiscount, below1000, between1and2000, morethan2000) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
+        db.connect();
+        PreparedStatement pstmt = db.getConnection().prepareStatement(sql);
+        System.out.println(pstmt.toString());
+        pstmt.setString(1, customer.getFirstName());
+        pstmt.setString(2, customer.getLastName());
+        pstmt.setString(3, customer.getEmail());
+        pstmt.setString(4, customer.getPhone());
+        pstmt.setDouble(5, customer.getFixeddiscount());
+        pstmt.setDouble(6, customer.getBelow1000());
+        pstmt.setDouble(7, customer.getBetween1and2000());
+        pstmt.setDouble(8, customer.getMorethan2000());
+        pstmt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
         }
+    }
 
     public String getName(){
         return this.firstName;
@@ -143,4 +200,27 @@ public class Customer {
             System.out.println(i);
         }
     }
+    public double queryDiscount(){
+        String sql = "select fixeddiscount, below1000, between1and2000,morethan2000\n" +
+                "from customer where  id = "+ customerID +"; ";
+        double discount = 0;
+        DBConnect db = new DBConnect();
+
+        try{
+            db.connect();
+            ResultSet rs = db.executeQuery(sql);
+            if (rs.next()){
+                if (rs.getDouble(1) != 0){
+                    discount = rs.getDouble(1);
+                }
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+
+        return discount;
+    }
+
 }

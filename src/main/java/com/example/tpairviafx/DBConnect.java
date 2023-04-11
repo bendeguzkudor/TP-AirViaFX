@@ -65,7 +65,7 @@ public class DBConnect {
     }
     public synchronized void backup(String backupFilePath) {
         try {
-            // Get the database name
+            // Get the database name0
             String dbName = "AirVia";
 
             // Set up the command to run mysqldump

@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -259,15 +260,13 @@ public class TravelAdvisorController implements Initializable {
             db.connect();
             rs = db.executeQuery(sql);
             while(rs.next()){
-                Integer queryCustomerID = rs.getInt("customerID");
+                Integer queryCustomerID = rs.getInt("id");
                 String queryFirtsName = rs.getString("firstName");
                 String queryLastName = rs.getString("lastName");
-                Double queryFlexibleDiscount = rs.getDouble("flexibleDiscount");
-                Double queryFixedDiscount = rs.getDouble("fixedDiscount");
-                Integer queryDiscount = rs.getInt("discount");
+
 
                 //Populate the list
-                customerObservableList.add(new Customer(queryFirtsName, queryLastName,queryCustomerID ,queryFlexibleDiscount,queryFixedDiscount, queryDiscount ));
+                customerObservableList.add(new Customer(queryFirtsName, queryLastName,queryCustomerID));
             }
             customerFirstameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
             customerLastnameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
@@ -329,6 +328,11 @@ public class TravelAdvisorController implements Initializable {
     public void selectCustomer(){
         selectedCustomerList = customerTableView.getSelectionModel().getSelectedItems();
         customer = selectedCustomerList.get(0);
+        if (customer.getQueryDiscount() != 0){
+            discountAlert();
+
+        }
+
         System.out.println(customer.getCustomerID());
     }
 
@@ -364,6 +368,7 @@ public class TravelAdvisorController implements Initializable {
                 addBlankToCartTable(blank1);
                 blank1.markBlankAsUsed(blank1);
             }else{
+                noBlankAlert();
                 System.out.println("No blanks avaliable ");
             }
 
@@ -385,7 +390,6 @@ public class TravelAdvisorController implements Initializable {
                System.out.println(x);
                blankArrayList.add(x);
            }
-
 //        Customer customer = new Customer("bedi", 88);
            customer.setCardNumber(cardNumberTextField.getText());
            Sale sale = new Sale(staffID, Application.getDate(), customer, currencyChoicebox.getValue().toString(), blankArrayList,salePayment);
@@ -403,6 +407,8 @@ public class TravelAdvisorController implements Initializable {
            blankArrayList.clear();
            blanks.clear();
            cartTable.refresh();
+           populateCustomerTable();
+
 
            //int userID, int price,String date, int saleID, Customer customer, int commisionRate, int type, boolean latePayment, int discount//
        }
@@ -504,6 +510,36 @@ public class TravelAdvisorController implements Initializable {
     public void setStaffID(int staffID){
         this.staffID = staffID;
 
+    }
+    public void discountAlert(){
+        Alert discountAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        discountAlert.setTitle("Discount");
+        discountAlert.setHeaderText("A discount for this customer is applicable");
+        discountAlert.setContentText("This customer has is on a fixed discount plan, Would you like to apply the discount to this sale ? ");
+        ButtonType applybutton = new ButtonType("Apply");
+        ButtonType declinebutton = new ButtonType("Discard");
+        discountAlert.getButtonTypes().setAll(applybutton,declinebutton);
+        Optional<ButtonType> result = discountAlert.showAndWait();
+        if (discountAlert.getResult() == applybutton){
+            System.out.println("Applied");
+        }else{
+            customer.setQueryDiscount(0);
+            System.out.println("discarded");
+        }
+
+    }
+    public void noBlankAlert(){
+        Alert discountAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        discountAlert.setTitle("NO BLANKS LEFT");
+        discountAlert.setHeaderText("OUT OF BLANKS");
+        discountAlert.setContentText("There are no more blanks left that would fit this ticketing ");
+        ButtonType okbutton = new ButtonType("OK");
+
+        discountAlert.getButtonTypes().setAll(okbutton);
+        Optional<ButtonType> result = discountAlert.showAndWait();
+        if (discountAlert.getResult() == okbutton){
+            System.out.println("OK");
+        }
     }
 
 }
