@@ -74,8 +74,7 @@ public void record(){
             int maxValue = 0;
             try {
                 dbConnect.connect();
-                Statement statement = dbConnect.statement;
-                ResultSet rs = statement.executeQuery("select max(customerID) from customer");
+                ResultSet rs = dbConnect.executeQuery("select max(customerID) from customer");
                 rs.next();
                 maxValue = rs.getInt(1);
                 System.out.println("Max value is: " + maxValue);

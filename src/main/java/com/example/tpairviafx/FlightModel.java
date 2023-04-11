@@ -34,7 +34,7 @@ public class FlightModel {
         try {
             db.connect();
             String sql = "SELECT type FROM flights WHERE flighNumber = '" + this.flightNumber + "'";
-            rs = db.statement.executeQuery(sql);
+            rs = db.executeQuery(sql);
             if (rs.next()) {
                 this.flightType=rs.getString("type");
                 ft = rs.getString("type");

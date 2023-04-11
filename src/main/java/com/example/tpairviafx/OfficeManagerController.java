@@ -152,7 +152,7 @@ public class OfficeManagerController implements Initializable {
 //        String sql2 = "SELECT * FROM flights WHERE departure = \"London\" AND arrival = \"budapest\" AND date = \"23-05-10\"";
         try{
             db.connect();
-            rs = db.statement.executeQuery(sql);
+            rs = db.executeQuery(sql);
             int counter =0;
             while(rs.next()){
                 queryStaffID = rs.getInt("staffID");
@@ -217,7 +217,7 @@ public class OfficeManagerController implements Initializable {
 
                 DBConnect db = new DBConnect();
                 db.connect();
-                PreparedStatement stmt = db.connection.prepareStatement(sql);
+                PreparedStatement stmt = db.getConnection().prepareStatement(sql);
 
                 // Set the values of the parameters in the prepared statement
                 stmt.setLong(1, rangeFrom);
@@ -260,9 +260,8 @@ public class OfficeManagerController implements Initializable {
         DBConnect db = new DBConnect();
         try {
             db.connect();
-            Statement statement = db.statement;
             System.out.println(sqlforMinBlank);
-            ResultSet rs = statement.executeQuery(sqlforMinBlank);
+            ResultSet rs = db.executeQuery(sqlforMinBlank);
             rs.next();
             minBlank = rs.getLong(1);
             System.out.println("Min value is: " + minBlank);

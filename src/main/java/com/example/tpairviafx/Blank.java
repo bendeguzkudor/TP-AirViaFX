@@ -177,8 +177,8 @@ public class Blank {
         int maxValue = 0;
         try {
             dbConnect.connect();
-            Statement statement = dbConnect.statement;
-            ResultSet rs = statement.executeQuery(sql);
+
+            ResultSet rs = dbConnect.executeQuery(sql);
             while(rs.next()) {
                 interlineCommissionRate = rs.getDouble(1);
                 domesticCommissionRate = rs.getDouble(2);
@@ -282,7 +282,7 @@ public class Blank {
         DBConnect db = new DBConnect();
         try {
             db.connect();
-            rs = db.statement.executeQuery(sql);
+            rs = db.executeQuery(sql);
             System.out.println(sql);
             if (rs.next()) {
                 blankID = rs.getLong("blankID");
@@ -316,26 +316,22 @@ public class Blank {
         blankID = blank.getBlankID();
         String sql = "UPDATE blanks SET sold = 1, dateUsed = '"+ Application.getDate() +"' WHERE blankID = '"+blankID+"'";
         DBConnect db = new DBConnect();
-        try {
-            db.connect();
-            int effected = db.statement.executeUpdate(sql);
-            System.out.println(sql);
-            if (effected !=0) {
-                System.out.println("Blank Status Updated, marked blank '"+blankID+"' as sold ");
-                System.out.println(effected);
+        db.connect();
+        int effected = db.executeUpdate(sql);
+        System.out.println(sql);
+        if (effected !=0) {
+            System.out.println("Blank Status Updated, marked blank '"+blankID+"' as sold ");
+            System.out.println(effected);
 
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            db.closeConnection();
-        }
-    }
 
 
 
 
 
+
+
+}
 }
 
 

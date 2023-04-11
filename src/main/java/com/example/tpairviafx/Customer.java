@@ -112,7 +112,7 @@ public class Customer {
             try {
                 DBConnect db = new DBConnect();
                 db.connect();
-                PreparedStatement stmt = db.connection.prepareStatement(sql);
+                PreparedStatement stmt = db.getConnection().prepareStatement(sql);
                 // Set the values of the parameters in the prepared statement
                 stmt.setInt(1, customer.getCustomerID());
                 stmt.setString(2, customer.getName());

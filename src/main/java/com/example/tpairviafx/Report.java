@@ -259,7 +259,7 @@ public class Report {
                 "ORDER BY staffID, start_range;";
         try {
             db.connect();
-            rs = db.statement.executeQuery(blanksAdded);
+            rs = db.executeQuery(blanksAdded);
             int i = 3;
             int j = 1;
             int sum = 0;
@@ -280,7 +280,7 @@ public class Report {
                 i++;
             }
             sheet.getRow(19).getCell(2).setCellValue(sum);
-            rs = db.statement.executeQuery(blanksAssignedFromAdded);
+            rs = db.executeQuery(blanksAssignedFromAdded);
             i = 3;
             j = 3;
             sum = 0;
@@ -305,7 +305,7 @@ public class Report {
                 i++;
             }
             sheet.getRow(19).getCell(5).setCellValue(sum);
-            rs = db.statement.executeQuery(blanksAssignedToAdvisors);
+            rs = db.executeQuery(blanksAssignedToAdvisors);
             i = 3;
             j = 6;
             sum = 0;
@@ -326,7 +326,7 @@ public class Report {
                 i++;
             }
             sheet.getRow(19).getCell(8).setCellValue(sum);
-            rs = db.statement.executeQuery(blanksUsedWithinTheReportPeriod);
+            rs = db.executeQuery(blanksUsedWithinTheReportPeriod);
             i = 3;
             j = 9;
             sum = 0;
@@ -348,7 +348,7 @@ public class Report {
                 i++;
             }
             sheet.getRow(19).getCell(10).setCellValue(sum);
-            rs = db.statement.executeQuery(blanksAvaliableAtEndoF);
+            rs = db.executeQuery(blanksAvaliableAtEndoF);
             i = 3;
             j = 11;
             sum = 0;
@@ -366,7 +366,7 @@ public class Report {
                 i++;
             }
             sheet.getRow(19).getCell(12).setCellValue(sum);
-            rs = db.statement.executeQuery(blanksAssignedAtTheEndOf);
+            rs = db.executeQuery(blanksAssignedAtTheEndOf);
             i = 3;
             j = 13;
             sum = 0;
@@ -531,7 +531,7 @@ public class Report {
         ResultSet rs;
         try {
             db.connect();
-            rs = db.statement.executeQuery(sql);
+            rs = db.executeQuery(sql);
 
 //
             rs.last();
@@ -678,7 +678,7 @@ public class Report {
                 "  SUM(subquery.sum_tax) as total_tax,\n" +
                 "  SUM(CASE WHEN subquery.paymentType = 'cash' THEN subquery.price_total ELSE 0 END) AS payed_in_cash,\n" +
                 "  SUM(CASE WHEN subquery.paymentType = 'card' THEN subquery.price_total ELSE 0 END) AS payed_in_card,\n" +
-                "  MAX(CASE WHEN subquery.commission_ratio = 0.5 THEN subquery.commissionSum ELSE 0 END) AS commission_10_percent,\n" +
+                "  SUM(CASE WHEN subquery.commission_ratio = 0.5 THEN subquery.commissionSum ELSE 0 END) AS commission_10_percent,\n" +
                 "  SUM(CASE WHEN subquery.commission_ratio = 0.15 THEN subquery.commissionSum ELSE 0 END) AS commission_15_percent,\n" +
                 "  SUM(CASE WHEN subquery.commission_ratio = 0.2 THEN subquery.commissionSum ELSE 0 END) AS commission_20_percent,\n" +
                 "  SUM(subquery.price_total),\n" +
@@ -707,7 +707,7 @@ public class Report {
         ResultSet rs;
         try {
             db.connect();
-             PreparedStatement stmt = db.connection.prepareStatement(setmode);
+             PreparedStatement stmt = db.getConnection().prepareStatement(setmode);
 //             PreparedStatement querys = db.connection.prepareStatement(sql3);
 //            String query = querys.toString();
 //            System.out.println("Executing query: " + query);
@@ -715,7 +715,7 @@ public class Report {
 //             querys.executeUpdate();
 //             String query = db.statement.executeQuery(sql3);
 //            System.out.println(query);
-            rs = db.statement.executeQuery(sql3);
+            rs = db.executeQuery(sql3);
 
 
             rs.last();
@@ -890,7 +890,7 @@ public class Report {
         ResultSet rs;
         try {
             db.connect();
-            rs = db.statement.executeQuery(sql);
+            rs = db.executeQuery(sql);
 
 //
             rs.last();
@@ -1065,7 +1065,7 @@ public class Report {
         ResultSet rs;
         try {
             db.connect();
-            PreparedStatement stmt = db.connection.prepareStatement(setmode);
+            PreparedStatement stmt = db.getConnection().prepareStatement(setmode);
 //             PreparedStatement querys = db.connection.prepareStatement(sql3);
 //            String query = querys.toString();
 //            System.out.println("Executing query: " + query);
@@ -1073,7 +1073,7 @@ public class Report {
 //             querys.executeUpdate();
 //             String query = db.statement.executeQuery(sql3);
 //            System.out.println(query);
-            rs = db.statement.executeQuery(sql3);
+            rs = db.executeQuery(sql3);
 
 
             rs.last();

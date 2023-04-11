@@ -85,7 +85,7 @@ public class Sale {
         try {
             DBConnect db = new DBConnect();
             db.connect();
-            PreparedStatement stmt = db.connection.prepareStatement(sql);
+            PreparedStatement stmt = db.getConnection().prepareStatement(sql);
             // Set the values of the parameters in the prepared statement
             stmt.setInt(1, saleID);
             stmt.setInt(2, staffID);
@@ -116,7 +116,7 @@ public class Sale {
         try {
             DBConnect db = new DBConnect();
             db.connect();
-            PreparedStatement stmt = db.connection.prepareStatement(sql);
+            PreparedStatement stmt = db.getConnection().prepareStatement(sql);
 
             System.out.println(this.blanks.size());
             for (Blank x : this.blanks) {
@@ -142,8 +142,8 @@ public class Sale {
         int maxValue = 0;
         try {
             dbConnect.connect();
-            Statement statement = dbConnect.statement;
-            ResultSet rs = statement.executeQuery("SELECT MAX(saleID) FROM sale");
+
+            ResultSet rs = dbConnect.executeQuery("SELECT MAX(saleID) FROM sale");
             rs.next();
             maxValue = rs.getInt(1);
             System.out.println("Max value is: " + maxValue);

@@ -81,6 +81,7 @@ public class AdminController implements Initializable {
         commissionChoiceBox.getItems().addAll("Interline","Domestic");
         commissionChoiceBox.setOnAction(this::getCommisionChosen);
         populateBlankTable();
+//        dataBaseBackup();
 
 
     }
@@ -109,7 +110,7 @@ public class AdminController implements Initializable {
 
             DBConnect db = new DBConnect();
             db.connect();
-            PreparedStatement stmt = db.connection.prepareStatement(sql);
+            PreparedStatement stmt = db.getConnection().prepareStatement(sql);
 
             // Set the values of the parameters in the prepared statement
             stmt.setLong(1, rangeFrom + i);
@@ -133,22 +134,15 @@ public class AdminController implements Initializable {
     public void setCommission(){
         String sql = "UPDATE commission_rates SET "+commissionChoiceBox.getValue().toLowerCase()+" = "+Double.parseDouble(commissionTextField.getText())+"";
         DBConnect db = new DBConnect();
-        try {
             db.connect();
-            int effected = db.statement.executeUpdate(sql);
+            int effected = db.executeUpdate(sql);
 
             System.out.println(effected);
             if (effected !=0) {
                 System.out.println("Commission'"+commissionChoiceBox.getValue().toLowerCase()+" updated to"+Double.parseDouble(commissionTextField.getText())+" ");
                 System.out.println(effected);
-
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
             db.closeConnection();
-        }
-
     }
     public void refreshTable(){
         blankObservableList.clear();
@@ -191,9 +185,7 @@ public class AdminController implements Initializable {
         DBConnect db = new DBConnect();
         try {
             db.connect();
-            Statement statement = db.statement;
-            System.out.println(sqlForMaxBlank);
-            ResultSet rs = statement.executeQuery(sqlForMaxBlank);
+            ResultSet rs = db.executeQuery(sqlForMaxBlank);
             rs.next();
 
             maxBlankID = rs.getLong(1);
@@ -208,6 +200,7 @@ public class AdminController implements Initializable {
             return initialize;
         }
         return maxBlankID;
+
     }
     public void populateBlankTable(){
         DBConnect db = new DBConnect();
@@ -216,7 +209,7 @@ public class AdminController implements Initializable {
 //        String sql2 = "SELECT * FROM flights WHERE departure = \"London\" AND arrival = \"budapest\" AND date = \"23-05-10\"";
         try{
             db.connect();
-            rs = db.statement.executeQuery(sql);
+            rs = db.executeQuery(sql);
             while(rs.next()){
                 Long queryBlankID = rs.getLong("blankID");
                 Integer queryStaffID = rs.getInt("staffID");
@@ -276,7 +269,7 @@ public class AdminController implements Initializable {
 // Create a PreparedStatement object
         DBConnect db = new DBConnect();
         db.connect();
-        PreparedStatement pstmt = db.connection.prepareStatement(sql);
+        PreparedStatement pstmt = db.getConnection().prepareStatement(sql);
 
 // Set the parameter value
         pstmt.setLong(1, selectedBlanksList.get(0).getBlankID());
@@ -297,5 +290,12 @@ public class AdminController implements Initializable {
 //        blankObservableList.remove(selectedIndex);
         refreshTable();
 
+    }
+    public void dataBaseBackup(){
+        String backupFilePath = "/Users/bedikudor/Documents/tpairviafx/TP-AirViaFX/src/DB_Backup/backup.sql";
+        DBConnect dbConnect = new DBConnect();
+        dbConnect.connect();
+        dbConnect.backup(backupFilePath);
+        dbConnect.closeConnection();
     }
 }

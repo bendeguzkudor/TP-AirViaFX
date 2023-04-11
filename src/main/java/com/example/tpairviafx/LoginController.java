@@ -120,7 +120,7 @@ public class LoginController {
         DBConnect db = new DBConnect();
         try{
             db.connect();
-            rs = db.statement.executeQuery(sql);
+            rs = db.executeQuery(sql);
             if(rs.next()){
                 role = rs.getInt("role");
                 staffID = rs.getInt("staffID");

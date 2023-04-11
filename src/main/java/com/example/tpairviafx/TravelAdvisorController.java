@@ -199,7 +199,7 @@ public class TravelAdvisorController implements Initializable {
 //        String sql2 = "SELECT * FROM flights WHERE departure = \"London\" AND arrival = \"budapest\" AND date = \"23-05-10\"";
         try{
             db.connect();
-            rs = db.statement.executeQuery(sql);
+            rs = db.executeQuery(sql);
             while(rs.next()){
                 System.out.println(rs.getInt("flighNumber"));
                 Integer queryflightNumber = rs.getInt("flighNumber");
@@ -257,7 +257,7 @@ public class TravelAdvisorController implements Initializable {
 //        String sql2 = "SELECT * FROM flights WHERE departure = \"London\" AND arrival = \"budapest\" AND date = \"23-05-10\"";
         try{
             db.connect();
-            rs = db.statement.executeQuery(sql);
+            rs = db.executeQuery(sql);
             while(rs.next()){
                 Integer queryCustomerID = rs.getInt("customerID");
                 String queryFirtsName = rs.getString("firstName");
@@ -312,7 +312,7 @@ public class TravelAdvisorController implements Initializable {
         try {
             db.connect();
             String sql = "SELECT * FROM blanks WHERE staffID = '" + staffID + "'";
-            rs = db.statement.executeQuery(sql);
+            rs = db.executeQuery(sql);
             while (rs.next()) {
                 System.out.println(rs.getLong("blankID"));
                 System.out.println(rs.getInt("staffID"));
@@ -446,7 +446,7 @@ public class TravelAdvisorController implements Initializable {
         try {
             db.connect();
             System.out.println(sql2);
-            rs = db.statement.executeQuery(sql2);
+            rs = db.executeQuery(sql2);
             while (rs.next()) {
                 System.out.println(rs.getInt("flighNumber"));
                 queryflightNumber = rs.getInt("flighNumber");
