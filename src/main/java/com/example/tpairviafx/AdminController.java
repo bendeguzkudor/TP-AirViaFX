@@ -58,7 +58,7 @@ public class AdminController implements Initializable {
     private int staffID;
     private int amount;
     private String chosenBlank;
-    private final String [] blankTypes = {"444", "440","420","201","101"};
+    private final String [] blankTypes = {"444", "440","420","201","101","451","452"};
     private ResultSet rs;
 
     public void setStage(Stage stage) {
@@ -180,6 +180,16 @@ public class AdminController implements Initializable {
                 sqlForMaxBlank = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '101'";
                 System.out.println(sql);
                 initialize = 10100000000L;
+                break;
+            case "451":
+                sqlForMaxBlank = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '451'";
+                System.out.println(sql);
+                initialize = 45100000000L;
+                break;
+            case "452":
+                sqlForMaxBlank = "select max(blankID) from blanks where SUBSTR(blankID, 1, 3) = '452'";
+                System.out.println(sql);
+                initialize = 45200000000L;
                 break;
         }
         DBConnect db = new DBConnect();

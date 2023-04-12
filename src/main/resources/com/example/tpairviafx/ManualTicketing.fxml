@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.ManualTicketingController">
+   <children>
+      <Label layoutX="18.0" layoutY="15.0" text="Manual Ticketing" />
+      <Label layoutX="138.0" layoutY="66.0" text="Departure" />
+      <Label layoutX="22.0" layoutY="157.0" text="Date" />
+      <Label layoutX="391.0" layoutY="166.0" text="Price" />
+      <Label layoutX="388.0" layoutY="65.0" text="Arrival" />
+      <TextField fx:id="departuretextfield" layoutX="196.0" layoutY="96.0" />
+      <TextField fx:id="arrivaltextfield" layoutX="450.0" layoutY="95.0" />
+      <TextField fx:id="pricetextfield" layoutX="441.0" layoutY="218.0" />
+      <DatePicker fx:id="datepicker" layoutX="72.0" layoutY="186.0" />
+      <TableView fx:id="currentBlankTableView" layoutX="10.0" layoutY="345.0" prefHeight="191.0" prefWidth="327.0" style="-fx-background-color: #31AED1;">
+         <columns>
+            <TableColumn fx:id="blankflightNumberColumn" prefWidth="41.5" text="Flight Number" />
+            <TableColumn fx:id="blankdepartureColumn" prefWidth="83.0" text="Departure" />
+            <TableColumn fx:id="blankarrivalColumn" prefWidth="79.0" text="Arrival" />
+            <TableColumn fx:id="blankdateColumn" minWidth="0.0" prefWidth="75.5" text="Date" />
+            <TableColumn fx:id="blankpriceColumn" prefWidth="50.5" text="Price" />
+         </columns>
+      </TableView>
+      <Label layoutX="16.0" layoutY="65.0" text="Flight number" />
+      <TextField fx:id="flightnumbertextfield" layoutX="48.0" layoutY="95.0" prefHeight="25.0" prefWidth="77.0" />
+      <Pane layoutX="353.0" layoutY="321.0" prefHeight="250.0" prefWidth="365.0" style="-fx-background-color: grey;">
+         <children>
+            <TextField fx:id="searchCustomerField" layoutX="178.0" layoutY="12.0" />
+            <Label fx:id="searchCustomerLabel" layoutX="8.0" layoutY="16.0" text="Enter Customer Name: " />
+            <TableView fx:id="customerTableView" layoutX="36.0" layoutY="55.0" prefHeight="124.0" prefWidth="290.0">
+               <columns>
+                  <TableColumn fx:id="customerFirstameColumn" maxWidth="1.7976931348623157E308" prefWidth="100.0" text="First Name" />
+                  <TableColumn fx:id="customerLastnameColumn" prefWidth="94.44461059570312" text="Last Name" />
+                  <TableColumn fx:id="customerIDColumn" prefWidth="76.55537414550781" text="Customer ID" />
+               </columns>
+            </TableView>
+            <Button fx:id="recordCustomerButton" layoutX="189.0" layoutY="192.0" mnemonicParsing="false" onAction="#recordNewCustomer" style="-fx-background-color: #31AED1;" text="RecordNewCustoner" />
+            <Button layoutX="48.0" layoutY="193.0" mnemonicParsing="false" onAction="#selectCustomer" text="Select Customer" />
+         </children>
+      </Pane>
+      <Button layoutX="326.0" layoutY="266.0" mnemonicParsing="false" onAction="#addFlightsToFlights" text="Add flight to blank" />
+      <TextField fx:id="blankinuseTextfield" layoutX="115.0" layoutY="309.0" prefHeight="26.0" prefWidth="118.0" />
+      <Label layoutX="19.0" layoutY="313.0" text="Blank In Use:" />
+      <Button layoutX="526.0" layoutY="625.0" mnemonicParsing="false" onAction="#sell" text="Sell" />
+      <Label layoutX="34.0" layoutY="222.0" text="Time" />
+      <TextField fx:id="timetextfield" layoutX="89.0" layoutY="245.0" prefHeight="25.0" prefWidth="77.0" />
+      <Button layoutX="21.0" layoutY="544.0" mnemonicParsing="false" onAction="#addToBlank" text="Finalize" />
+      <RadioButton fx:id="cashRadiobutton" layoutX="66.0" layoutY="599.0" mnemonicParsing="false" onAction="#getPayment" text="Cash">
+         <toggleGroup>
+            <ToggleGroup fx:id="payment1" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="cardRadiobutton" layoutX="204.0" layoutY="599.0" mnemonicParsing="false" onAction="#getPayment" text="Card" toggleGroup="$payment1" />
+      <TextField fx:id="cardNumberTextField" layoutX="146.0" layoutY="640.0" />
+      <Label layoutX="56.0" layoutY="644.0" text="Card Number" />
+   </children>
+</AnchorPane>

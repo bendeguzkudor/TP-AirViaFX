@@ -56,7 +56,7 @@ public class OfficeManagerController implements Initializable {
     private ChoiceBox<String> typeChoiceBox;
     @FXML
     private ChoiceBox<String> advisorChoiceBox;
-    private final String [] blankTypes = {"444", "440","420","201","101"};
+    private final String [] blankTypes = {"444", "440","420","201","101","451","452"};
 
     private ObservableList<Staff> selectedStaffList;
     private ResultSet rs;
@@ -257,6 +257,14 @@ public class OfficeManagerController implements Initializable {
                 break;
             case "101":
                 sqlforMinBlank = "select min(blankID) from blanks where SUBSTR(blankID, 1, 3) = '101' and staffID = 0";
+//                System.out.println(sql);
+                break;
+            case "451":
+                sqlforMinBlank = "select min(blankID) from blanks where SUBSTR(blankID, 1, 3) = '451' and staffID = 0";
+//                System.out.println(sql);
+                break;
+            case "452":
+                sqlforMinBlank = "select min(blankID) from blanks where SUBSTR(blankID, 1, 3) = '452' and staffID = 0";
 //                System.out.println(sql);
                 break;
 

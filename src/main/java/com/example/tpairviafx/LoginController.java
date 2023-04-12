@@ -125,7 +125,7 @@ public class LoginController {
                 role = rs.getInt("role");
                 staffID = rs.getInt("staffID");
                 System.out.println("succesful login");
-                this.username = rs.getString("username");
+                this.username = rs.getString("name");
                 return true;
             }
             else {

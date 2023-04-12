@@ -16,7 +16,9 @@ import javafx.stage.Stage;
 
 import javax.xml.transform.Result;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.net.URL;
@@ -49,6 +51,9 @@ public class TravelAdvisorController implements Initializable {
     private Button recordCustomerButton;
     @FXML
     private TextField departureTextField;
+
+    @FXML
+    private TextField otherTextfield;
     @FXML
     private TextField arrivalTextField;
     @FXML
@@ -82,7 +87,8 @@ public class TravelAdvisorController implements Initializable {
     private TableColumn<Customer, String> customerFirstameColumn;
     @FXML
     private TableColumn<Customer, String> customerLastnameColumn;
-
+    @FXML
+    private TableColumn<Blank, Double> priceTableColumn;
 
     //Columns for cart
     @FXML
@@ -104,7 +110,8 @@ public class TravelAdvisorController implements Initializable {
     private TableColumn<FlightModel, String> blankpriceColumn;
 
     @FXML
-    private RadioButton cardRadioButton, cashRadioButton;
+    private RadioButton cardRadioButton, cashRadioButton, extraluggageRadiobutton,otherRadiobutton;
+
     @FXML
     private ChoiceBox currencyChoicebox;
 
@@ -128,6 +135,8 @@ public class TravelAdvisorController implements Initializable {
     private ObservableList<Customer> selectedCustomerList;
 //    private ObservableList<FlightModel> flightsOnBlankList;
 
+    private ManualTicketingController manualTicketingController;
+
 
     private String salePayment;
 
@@ -149,6 +158,20 @@ public class TravelAdvisorController implements Initializable {
 
     private Stage stage;
     private String currencyChosen;
+    private String descruptionChosen;
+
+    @FXML
+    private ChoiceBox<String> typeChoiceBox;
+
+    @FXML
+    private ChoiceBox<String> reportTypeChoicebox;
+
+    @FXML
+    private DatePicker dateFromDatePicker;
+    @FXML
+    private DatePicker dateToDatePicker;
+    private String currentDate;
+    private String reportTypeChosen;
 
 
 
@@ -159,6 +182,8 @@ public class TravelAdvisorController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle){
 //        selectMaxSaleID();
         currentBlankTableView.setPlaceholder(new Label("No flights selected"));
+        reportTypeChoicebox.getItems().addAll("Interline","Domestic");
+        reportTypeChoicebox.setOnAction(this::getTypeChosen);
         initializeDate();
 //        cart = new Cart();
         flightsToBlank = new ArrayList<>();
@@ -166,9 +191,39 @@ public class TravelAdvisorController implements Initializable {
         DBConnect db = new DBConnect();
         populateFlightsTable();
         populateCustomerTable();
-        currencyChoicebox.getItems().addAll(new Currency().getCurrencies());
+//        currencyChoicebox.getItems().addAll(new Currency().getCurrencies());
+        currentDate = Application.getDate();
 //        currencyChoicebox.setOnAction(this::getCurrencyChosen);
     }
+
+    private void getTypeChosen(ActionEvent actionEvent) {
+        reportTypeChosen = reportTypeChoicebox.getValue();
+
+    }
+
+    public void generateReport() throws ParseException {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String dateFrom="";
+        String dateTo="";
+        if (!reportTypeChoicebox.getSelectionModel().isEmpty() && dateFromDatePicker.getValue() != null && dateToDatePicker.getValue() != null){
+            dateFrom = (dateFromDatePicker.getValue().format(dtf));
+            dateTo = (dateToDatePicker.getValue().format(dtf));
+            System.out.println(dateFrom+ " -  " + dateTo);
+                Report report = new Report(dateFrom,dateTo,staffID);
+                switch(reportTypeChoicebox.getValue()){
+                    case "Interline":
+                        report.individualInterlineSalesReport();
+                        break;
+                    case "Domestic":
+                        report.domesticIndividualReport();
+                    break;
+
+                }
+                // global
+
+            }
+        }
+
 
 
     public void getCurrencyChosen(ActionEvent e){
@@ -177,8 +232,21 @@ public class TravelAdvisorController implements Initializable {
     public void getPayment(){
         if (cashRadioButton.isSelected()){
             salePayment = "Cash";
+            cardNumberTextField.setDisable(true);
         }else {
             salePayment = "Card";
+            cardNumberTextField.setDisable(false);
+        }
+    }
+    public void getMCO(){
+        if (extraluggageRadiobutton.isSelected()){
+            descruptionChosen = "Extra Luggage";
+            otherTextfield.setDisable(true);
+            System.out.println(descruptionChosen);
+        }else {
+            otherTextfield.setDisable(false);
+            descruptionChosen = otherTextfield.getText();
+            System.out.println(descruptionChosen);
         }
     }
     public void logOut() throws IOException {
@@ -191,6 +259,17 @@ public class TravelAdvisorController implements Initializable {
         stage.setScene(scene);
         CustomerRegisterFormController customerRegisterFormController = new CustomerRegisterFormController();
         customerRegisterFormController.setPreviousScene(this.scene);
+        stage.show();
+    }
+    public void manualTicketing() throws IOException {
+        Stage stage = new Stage();
+        fxmlLoader = new FXMLLoader(Application.class.getResource("ManualTicketing.fxml"));
+        scene = new Scene(fxmlLoader.load(), 800, 700);
+        stage.setScene(scene);
+        manualTicketingController = fxmlLoader.getController();
+        manualTicketingController.setStaffID(this.staffID);
+        manualTicketingController.setPreviousScene(this.scene);
+        System.out.println(staffID);
         stage.show();
     }
     public void populateFlightsTable(){
@@ -330,10 +409,8 @@ public class TravelAdvisorController implements Initializable {
         customer = selectedCustomerList.get(0);
         if (customer.getQueryDiscount() != 0){
             discountAlert();
-
         }
-
-        System.out.println(customer.getCustomerID());
+        System.out.println(customer.getFirstName()+ " is selected");
     }
 
     public void closeWindow(){
@@ -375,6 +452,31 @@ public class TravelAdvisorController implements Initializable {
         }
 
     }
+
+    public void addExtraLuggage() throws SQLException {
+        if (otherRadiobutton.isSelected()){
+            descruptionChosen = otherTextfield.getText();
+        }
+        System.out.println(blanks.get(0).getBlankID());
+//        blanks.add(new Blank())
+
+        if(!blanks.isEmpty() && descruptionChosen!= "") {
+            Blank blank1 = new Blank(0L, staffID, "MCO", blanks.get(0).getBlankType(),descruptionChosen);
+            if (blank1.retrieveBlankID(blank1.getBlankType()) != 0){
+                blank1.setBlankID(blank1.retrieveBlankID(blank1.getBlankType()));
+                blank1.retrieveBlankID(blank1.getBlankType());
+                blanks.add(blank1);
+                currentBlankTableView.refresh();
+                addBlankToCartTable(blank1);
+                blank1.markBlankAsUsed(blank1);
+            }else{
+                noBlankAlert();
+                System.out.println("No blanks avaliable ");
+            }
+
+        }
+
+    }
     public void addFlightsToFlights() throws SQLException {
         if(!selectedFlightsList.isEmpty()){
         flightsToBlank.add(selectedFlightsList.get(0));
@@ -392,7 +494,7 @@ public class TravelAdvisorController implements Initializable {
            }
 //        Customer customer = new Customer("bedi", 88);
            customer.setCardNumber(cardNumberTextField.getText());
-           Sale sale = new Sale(staffID, Application.getDate(), customer, currencyChoicebox.getValue().toString(), blankArrayList,salePayment);
+           Sale sale = new Sale(staffID, Application.getDate(), customer, "GBP", blankArrayList,salePayment);
            System.out.println(customer);
            System.out.println(blankArrayList.get(0).getBlankType());
            System.out.println(currencyChoicebox.getValue().toString());
@@ -402,7 +504,7 @@ public class TravelAdvisorController implements Initializable {
 //           }
            sale.pushToDatabase();
 
-           sale.pushSaleToSoldBlanks();
+           sale.pushSaleToSoldBlanks(descruptionChosen);
 //           sale.printSale();
            blankArrayList.clear();
            blanks.clear();
@@ -431,6 +533,7 @@ public class TravelAdvisorController implements Initializable {
     }
     public void addBlankToCartTable(Blank blank){
         cartBlankIDColumn.setCellValueFactory(new PropertyValueFactory<>("blankID"));
+        priceTableColumn.setCellValueFactory(new PropertyValueFactory<>("priceGBP"));
         cartTable.setItems(blanks);
 
     }

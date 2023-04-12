@@ -114,6 +114,7 @@ public class Blank {
 
     public double interlineCommissionRate;
     public double domesticCommissionRate;
+    private String flightType;
 
     public double getCommissionRate() {
         return commissionRate;
@@ -125,9 +126,19 @@ public class Blank {
 
     private double commissionRate;
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    private String description;
+
 
     public Blank(int staffID, String blankType, ArrayList<FlightModel> flights) throws SQLException {
-
+        this.description = "";
         this.flights = flights;
         this.staffID = staffID;
         this.blankType = blankType;
@@ -136,10 +147,6 @@ public class Blank {
 //        retrieveBlankID(blankType);
         calcSum(flights);
         getCommissionRates();
-        System.out.println(this.blankType);
-//        commisionRate = findCommissionRate(this.blankType);
-//        System.out.println(findCommissionRate(this.blankType));
-//        System.out.println(commisionRate);
         calculateCommission(this.blankType);
 
 
@@ -150,10 +157,23 @@ public class Blank {
         this.dateAssigned = dateAssigned;
         this.sold = sold;
         this.dateAdded = dateAdded;
+        this.description = "";
 
 
 
-    }    public void setBlankID(String flightType) throws SQLException {
+    }
+    public Blank(Long blankID, int staffID, String type,String flightType, String description){
+        this.priceGBP = 30;
+        this.blankID = blankID;
+        this.staffID = staffID;
+        this.blankType = type;
+        this.flightType = flightType;
+        this.description = description;
+        getCommissionRates();
+        calculateCommission(flightType);
+
+    }
+    public void setBlankID(String flightType) throws SQLException {
         retrieveBlankID(flightType);
 
 
@@ -197,6 +217,35 @@ public class Blank {
             setCommissionRate(domesticCommissionRate);
         }
 
+    }
+    public static Long getManualTicketingBlank(int staffID) throws SQLException {
+        long blankID = 0L;
+        String sql = "SELECT MIN(blankID) FROM blanks WHERE SUBSTR(blankID, 1, 3) = '440' AND staffID = "+staffID+" AND sold != 1;";
+        DBConnect db = new DBConnect();
+        ResultSet rs = null;
+        try {
+            db.connect();
+            rs = db.executeQuery(sql);
+            System.out.println(sql);
+            if (rs.next()) {
+                blankID = rs.getLong(1);
+//                System.out.println(rs.getInt("blankID"));
+
+            }else{
+                System.out.println("No more available blanks that would suit this ticketing");
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }finally {
+            if(rs!= null){
+                rs.close();
+            }
+            db.closeConnection();
+        }
+        return blankID;
 
     }
     public void calcSum(ArrayList<FlightModel> flights){
@@ -262,6 +311,8 @@ public class Blank {
                 }else{
                     sql = "SELECT blankID FROM blanks WHERE SUBSTR(blankID, 1, 3) = '101' AND staffID ='"+ staffID +"'AND sold != 1";
                 }
+            case "MCO":
+                sql = "SELECT blankID FROM blanks WHERE (SUBSTR(blankID, 1, 3) = '451' or SUBSTR(blankID, 1, 3) = '452') AND staffID ='"+ staffID +"'AND sold != 1";
         }
         DBConnect db = new DBConnect();
         try {

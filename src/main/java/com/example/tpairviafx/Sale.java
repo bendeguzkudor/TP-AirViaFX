@@ -25,6 +25,7 @@ public class Sale {
     // need array for blankIDs
     //need array for flights.
     private final String localCurrency;
+    private Blank blank;
     private int exchangeRate;
 
     private final Customer customer; // customer object  // need a second constructor for non-member sales
@@ -57,6 +58,7 @@ public class Sale {
 //        getSaleID(this);
 
     }
+
     public void uploadToDatabase(){
 
     }
@@ -124,23 +126,34 @@ public class Sale {
     }
 
     /** */
-    public void pushSaleToSoldBlanks(){
+    public void pushSaleToSoldBlanks(String description){
         System.out.println("Pishintdasletoolsoldblanks");
         String sql = "INSERT INTO soldBlanks (saleID, blankID) VALUES (?,?)";
+        String sqlformco = "INSERT INTO soldBlanks (saleID, blankID,description) VALUES (?,?,?)";
         try {
             DBConnect db = new DBConnect();
             db.connect();
             PreparedStatement stmt = db.getConnection().prepareStatement(sql);
+            PreparedStatement pstmt = db.getConnection().prepareStatement(sqlformco);
 
             System.out.println(this.blanks.size());
             for (Blank x : this.blanks) {
-                System.out.println("Sale ID; " + saleID +" BlankID: " +x.getBlankID());
+                if(!(x.getBlankID()>45000000000L)){
                 // Set the values of the parameters in the prepared statement
                 stmt.setInt(1, saleID);
                 stmt.setLong(2, x.getBlankID());
                 int rowsInserted = stmt.executeUpdate();
                 System.out.println(rowsInserted + " rows inserted.");
                 System.out.println(sql);
+            }else{
+                    pstmt.setInt(1, saleID);
+                    pstmt.setLong(2, x.getBlankID());
+                    pstmt.setString(3,description);
+                    int rowsInserted = pstmt.executeUpdate();
+                    System.out.println(rowsInserted + " rows inserted.");
+                    System.out.println(sql);
+
+                }
             }
             stmt.close();
         } catch (SQLException e) {

@@ -13,38 +13,28 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.TravelAdvisorController">
+<AnchorPane prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: lightgrey;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.TravelAdvisorController">
    <children>
-      <Pane layoutX="709.0" prefHeight="137.0" prefWidth="308.0" style="-fx-background-color: #31AED1;">
+      <Pane layoutX="743.0" prefHeight="90.0" prefWidth="274.0" style="-fx-background-color: #31AED1;">
          <children>
-            <Label layoutX="8.0" layoutY="23.0" text="Logged in: ">
+            <Label layoutX="6.0" layoutY="15.0" text="Logged in: ">
                <font>
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="nameLabel" alignment="CENTER" layoutX="76.0" layoutY="19.0" prefHeight="28.0" prefWidth="156.0" text="Logged in ">
+            <Label fx:id="nameLabel" alignment="CENTER" layoutX="74.0" layoutY="11.0" prefHeight="28.0" prefWidth="186.0" text="Logged in ">
                <font>
                   <Font name="Verdana Bold" size="22.0" />
                </font>
             </Label>
-            <Label fx:id="roleLabel" alignment="CENTER" layoutX="36.0" layoutY="59.0" prefHeight="57.0" prefWidth="233.0" text="Logged in ">
+            <Label fx:id="roleLabel" alignment="CENTER" layoutX="56.0" layoutY="48.0" prefHeight="26.0" prefWidth="163.0" text="Logged in ">
                <font>
                   <Font name="System Bold Italic" size="22.0" />
                </font>
             </Label>
-            <Button fx:id="logoutButton" layoutX="242.0" layoutY="103.0" mnemonicParsing="false" onAction="#logOut" style="-fx-background-color: black;" text="Logout" textFill="#f8f8f8" />
+            <Button fx:id="logoutButton" layoutX="218.0" layoutY="57.0" mnemonicParsing="false" onAction="#logOut" style="-fx-background-color: black;" text="Logout" textFill="#f8f8f8" />
          </children>
       </Pane>
-      <Button fx:id="closeButton" layoutX="963.0" maxHeight="46.0" maxWidth="54.0" minHeight="25.0" minWidth="38.0" mnemonicParsing="false" onAction="#closeWindow" prefHeight="36.0" prefWidth="47.0" style="-fx-background-color: black;">
-         <font>
-            <Font name="System Bold" size="59.0" />
-         </font>
-      </Button>
-      <Label layoutX="982.0" layoutY="1.0" text="X" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="26.0" />
-         </font>
-      </Label>
       <AnchorPane layoutX="-1.0" prefHeight="134.0" prefWidth="713.0" style="-fx-background-color: grey;">
          <children>
             <Label layoutX="9.0" layoutY="44.0" text="Departure" />
@@ -80,7 +70,8 @@
             </TableView>
             <TableView fx:id="cartTable" layoutX="795.0" layoutY="10.0" prefHeight="230.0" prefWidth="220.0" style="-fx-background-color: #31AED1;">
                <columns>
-                  <TableColumn fx:id="cartBlankIDColumn" prefWidth="153.3133544921875" text="Blank " />
+                  <TableColumn fx:id="cartBlankIDColumn" prefWidth="111.82452392578125" text="Blank " />
+                  <TableColumn fx:id="priceTableColumn" prefWidth="116.67547607421875" text="Price" />
                </columns>
             </TableView>
             <Label layoutX="420.0" layoutY="-9.0" style="-fx-background-color: black;" text="Current legs on blank" textFill="WHITE">
@@ -99,39 +90,55 @@
             </Label>
          </children>
       </Pane>
-      <Button fx:id="addtocartButton" layoutX="40.0" layoutY="392.0" mnemonicParsing="false" onAction="#addToCart" style="-fx-background-color: #31AED1;" text="AddtoCart" />
-      <Button fx:id="printButton" layoutX="325.0" layoutY="392.0" mnemonicParsing="false" onAction="#printCart" style="-fx-background-color: #31AED1;" text="print" />
-      <Button fx:id="addToBlankButton" layoutX="138.0" layoutY="391.0" mnemonicParsing="false" onAction="#addToBlank" style="-fx-background-color: #31AED1;" text="AddtoBlank" />
-      <Button fx:id="aftf" layoutX="594.0" layoutY="400.0" mnemonicParsing="false" onAction="#addFlightsToFlights" style="-fx-background-color: #31AED1;" text="addFLgithsToFLights" />
-      <Button fx:id="fcb" layoutX="766.0" layoutY="400.0" mnemonicParsing="false" onAction="#addToBlank" style="-fx-background-color: #31AED1;" text="finalizeCurrentBlank" />
-      <Pane layoutY="443.0" prefHeight="358.0" prefWidth="436.0" style="-fx-background-color: grey;">
+      <Button fx:id="aftf" layoutX="327.0" layoutY="393.0" mnemonicParsing="false" onAction="#addFlightsToFlights" style="-fx-background-color: #3FB93B;" text="Select flight" />
+      <Button fx:id="fcb" layoutX="529.0" layoutY="394.0" mnemonicParsing="false" onAction="#addToBlank" style="-fx-background-color: #3FB93B;" text="Finalize Selection" />
+      <Pane layoutY="440.0" prefHeight="361.0" prefWidth="334.0" style="-fx-background-color: grey;">
          <children>
             <TextField fx:id="searchCustomerField" layoutX="155.0" layoutY="39.0" />
             <Label fx:id="searchCustomerLabel" layoutX="8.0" layoutY="16.0" text="Enter Customer Name: " />
-            <TableView fx:id="customerTableView" layoutX="4.0" layoutY="86.0" prefHeight="203.0" prefWidth="270.0">
+            <TableView fx:id="customerTableView" layoutX="35.0" layoutY="99.0" prefHeight="203.0" prefWidth="270.0">
                <columns>
                   <TableColumn fx:id="customerFirstameColumn" maxWidth="1.7976931348623157E308" prefWidth="100.0" text="First Name" />
                   <TableColumn fx:id="customerLastnameColumn" prefWidth="94.44461059570312" text="Last Name" />
                   <TableColumn fx:id="customerIDColumn" prefWidth="76.55537414550781" text="Customer ID" />
                </columns>
             </TableView>
-            <Button fx:id="selectCustomerButton" layoutX="283.0" layoutY="255.0" mnemonicParsing="false" onAction="#selectCustomer" style="-fx-background-color: #31AED1;" text="Select Customer" />
-            <Button fx:id="recordCustomerButton" layoutX="279.0" layoutY="108.0" mnemonicParsing="false" onAction="#recordNewCustomer" style="-fx-background-color: #31AED1;" text="RecordNewCustoner" />
+            <Button fx:id="selectCustomerButton" layoutX="204.0" layoutY="321.0" mnemonicParsing="false" onAction="#selectCustomer" style="-fx-background-color: #3FB93B;" text="Select Customer" />
+            <Button fx:id="recordCustomerButton" layoutX="20.0" layoutY="319.0" mnemonicParsing="false" onAction="#recordNewCustomer" style="-fx-background-color: #3FB93B;" text="RecordNewCustoner" />
          </children>
       </Pane>
-      <AnchorPane layoutX="436.0" layoutY="443.0" prefHeight="277.0" prefWidth="270.0">
+      <AnchorPane layoutX="341.0" layoutY="634.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="154.0" prefWidth="270.0" style="-fx-background-color: #31AED1;">
          <children>
-            <RadioButton fx:id="cashRadioButton" layoutX="20.0" layoutY="98.0" mnemonicParsing="false" onAction="#getPayment" text="Cash">
+            <RadioButton fx:id="cashRadioButton" layoutX="22.0" layoutY="33.0" mnemonicParsing="false" onAction="#getPayment" text="Cash">
                <toggleGroup>
                   <ToggleGroup fx:id="payment" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="cardRadioButton" layoutX="158.0" layoutY="98.0" mnemonicParsing="false" onAction="#getPayment" text="Card" toggleGroup="$payment" />
-            <Button fx:id="sellButton" layoutX="104.0" layoutY="221.0" mnemonicParsing="false" onAction="#sell" style="-fx-background-color: #31AED1;" text="sell" />
-            <TextField fx:id="cardNumberTextField" layoutX="104.0" layoutY="171.0" />
-            <Label layoutX="14.0" layoutY="175.0" text="Card Number" />
-            <Label layoutX="20.0" layoutY="23.0" text="Select Currency" />
-            <ChoiceBox fx:id="currencyChoicebox" layoutX="142.0" layoutY="19.0" prefHeight="26.0" prefWidth="76.0" />
+            <RadioButton fx:id="cardRadioButton" layoutX="158.0" layoutY="32.0" mnemonicParsing="false" onAction="#getPayment" text="Card" toggleGroup="$payment" />
+            <Button fx:id="sellButton" layoutX="106.0" layoutY="107.0" mnemonicParsing="false" onAction="#sell" style="-fx-background-color: #3FB93B;" text="sell" textFill="WHITE" />
+            <TextField fx:id="cardNumberTextField" layoutX="105.0" layoutY="76.0" />
+            <Label layoutX="20.0" layoutY="78.0" text="Card Number" />
+         </children>
+      </AnchorPane>
+      <Button layoutX="410.0" layoutY="577.0" mnemonicParsing="false" onAction="#addExtraLuggage" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: #3FB93B;" text="Add extra MCO" />
+      <RadioButton fx:id="otherRadiobutton" layoutX="365.0" layoutY="506.0" mnemonicParsing="false" onAction="#getMCO" prefHeight="36.0" prefWidth="90.0" text="Other">
+         <toggleGroup>
+            <ToggleGroup fx:id="mco" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="extraluggageRadiobutton" layoutX="365.0" layoutY="467.0" mnemonicParsing="false" onAction="#getMCO" prefHeight="25.0" prefWidth="128.0" text="Extra Luggage" toggleGroup="$mco" />
+      <TextField fx:id="otherTextfield" layoutX="471.0" layoutY="512.0" prefHeight="26.0" prefWidth="116.0" />
+      <Button layoutX="863.0" layoutY="733.0" mnemonicParsing="false" onAction="#manualTicketing" style="-fx-background-color: #3FB93B;" text="Manual Ticketing" />
+      <AnchorPane layoutX="720.0" layoutY="469.0" prefHeight="180.0" prefWidth="300.0" style="-fx-background-color: #31AED1;">
+         <children>
+            <Label layoutX="100.0" layoutY="5.0" text="Generate reports" />
+            <ChoiceBox fx:id="reportTypeChoicebox" layoutX="82.0" layoutY="38.0" prefWidth="150.0" />
+            <Label layoutX="5.0" layoutY="40.0" text="Select type" />
+            <Button layoutX="123.0" layoutY="127.0" mnemonicParsing="false" onAction="#generateReport" style="-fx-background-color: #3FB93B;" text="Generate" />
+            <DatePicker fx:id="dateFromDatePicker" layoutX="21.0" layoutY="87.0" prefHeight="25.0" prefWidth="107.0" />
+            <DatePicker fx:id="dateToDatePicker" layoutX="182.0" layoutY="88.0" prefHeight="25.0" prefWidth="107.0" />
+            <Label layoutX="6.0" layoutY="69.0" text="Date From" />
+            <Label layoutX="158.0" layoutY="69.0" text="Date to" />
          </children>
       </AnchorPane>
    </children>
