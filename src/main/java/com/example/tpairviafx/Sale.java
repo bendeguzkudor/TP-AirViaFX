@@ -1,5 +1,6 @@
 package com.example.tpairviafx;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -94,7 +95,8 @@ public class Sale {
     }
     public void pushToDatabase() throws SQLException {
         String sql = "INSERT INTO sale (saleID, staffID, price,currency, date, customerID, paymentType,cardNumber," +
-        "latePayment, commissionSum, taxSum) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        "latePayment, commissionSum, taxSum, conversionRate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+        Currency currency = new Currency();
 
         try {
             DBConnect db = new DBConnect();
@@ -112,6 +114,7 @@ public class Sale {
             stmt.setString(9, "");
             stmt.setDouble(10, commisionSum);
             stmt.setDouble(11, (initialPriceSum * 0.2));
+            stmt.setDouble(12, currency.getConversion(1));
 //            System.out.println(stmt.executeUpdate());
 
             int rowsInserted = stmt.executeUpdate();
@@ -122,19 +125,23 @@ public class Sale {
         } catch (SQLException e) {
             e.printStackTrace();
 
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     /** */
     public void pushSaleToSoldBlanks(String description){
+        date = Application.getDate();
         System.out.println("Pishintdasletoolsoldblanks");
-        String sql = "INSERT INTO soldBlanks (saleID, blankID) VALUES (?,?)";
-        String sqlformco = "INSERT INTO soldBlanks (saleID, blankID,description) VALUES (?,?,?)";
+        String sql = "INSERT INTO soldBlanks (saleID, blankID,dateUsed) VALUES (?,?,?)";
+        String sqlformco = "INSERT INTO soldBlanks (saleID, blankID,dateUsed,description) VALUES (?,?,?,?)";
         try {
             DBConnect db = new DBConnect();
             db.connect();
             PreparedStatement stmt = db.getConnection().prepareStatement(sql);
             PreparedStatement pstmt = db.getConnection().prepareStatement(sqlformco);
+
 
             System.out.println(this.blanks.size());
             for (Blank x : this.blanks) {
@@ -142,12 +149,14 @@ public class Sale {
                 // Set the values of the parameters in the prepared statement
                 stmt.setInt(1, saleID);
                 stmt.setLong(2, x.getBlankID());
+                stmt.setString(3,date);
                 int rowsInserted = stmt.executeUpdate();
                 System.out.println(rowsInserted + " rows inserted.");
                 System.out.println(sql);
             }else{
                     pstmt.setInt(1, saleID);
                     pstmt.setLong(2, x.getBlankID());
+                    stmt.setString(3,date);
                     pstmt.setString(3,description);
                     int rowsInserted = pstmt.executeUpdate();
                     System.out.println(rowsInserted + " rows inserted.");

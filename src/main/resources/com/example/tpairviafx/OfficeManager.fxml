@@ -39,5 +39,22 @@
          </children>
       </AnchorPane>
       <Button fx:id="manageCustomerDiscountButton" layoutX="576.0" layoutY="33.0" mnemonicParsing="false" onAction="#manageCustomerDiscount" text="Manage Customer Discount" />
+      <AnchorPane layoutX="486.0" layoutY="325.0" prefHeight="380.0" prefWidth="483.0" style="-fx-background-color: lightgreen;">
+         <children>
+            <TableView fx:id="blanksTableView" layoutX="21.0" layoutY="45.0" prefHeight="258.0" prefWidth="437.0">
+               <columns>
+                  <TableColumn fx:id="blankIDColumn" prefWidth="75.0" text="Blank ID" />
+                  <TableColumn fx:id="assignedToColumn" prefWidth="75.0" text="Assigned To" />
+                  <TableColumn fx:id="soldColumn" prefWidth="75.0" text="Sold" />
+                  <TableColumn fx:id="dateAddedColumn" prefWidth="75.0" text="Date Added" />
+                  <TableColumn fx:id="dateAssignedColumn" prefWidth="104.60641479492188" text="Date Assigned" />
+               </columns>
+            </TableView>
+            <ChoiceBox fx:id="reAssignTochoiceBox" layoutX="207.0" layoutY="317.0" prefHeight="27.0" prefWidth="109.0" />
+            <Button layoutX="344.0" layoutY="318.0" mnemonicParsing="false" onAction="#reAssign" text="Re-Assign" />
+            <TextField fx:id="searchBlankIDTextField" layoutX="70.0" layoutY="5.0" />
+            <Label layoutX="20.0" layoutY="10.0" text="Search" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

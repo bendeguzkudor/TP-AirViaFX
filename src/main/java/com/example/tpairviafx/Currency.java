@@ -1,60 +1,67 @@
 package com.example.tpairviafx;
 
 
-import java.util.HashMap;
-import java.util.Map;
+
+import org.apache.xmlbeans.impl.store.Cur;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+
+import java.util.*;
 
 import java.util.HashMap;
 import java.util.Map;
     public class Currency {
 
-        private final Map<String, Double> conversionRates;
+        private static final String api = "https://openexchangerates.org/api/latest.json?app_id=5738214a5d4041059d56b94f7893352c&base=USD&symbolGBP";
+        // 5738214a5d4041059d56b94f7893352c Exchangerates api key
+        //https://github.com/dneto/oer-java
+        //https://www.youtube.com/watch?v=zZoboXqsCNw
+        //https://github.com/stleary/JSON-java
 
-        public String[] getCurrencies() {
-            return currencies;
-        }
-
-        public void setCurrencies(String[] currencies) {
-            this.currencies = currencies;
-        }
-
-        private String [] currencies;
 
         public Currency() {
-            conversionRates = new HashMap<>();
-            conversionRates.put("USD", 1.0);
-            conversionRates.put("EUR", 0.84);
-            conversionRates.put("GBP", 0.72);
-            conversionRates.put("JPY", 109.68);
-            conversionRates.put("AUD", 1.31);
-            conversionRates.put("CAD", 1.25);
-            conversionRates.put("CHF", 0.92);
-            conversionRates.put("CNY", 6.51);
-            conversionRates.put("HKD", 7.76);
-            conversionRates.put("INR", 73.58);
-            conversionRates.put("KRW", 1130.78);
-            conversionRates.put("MXN", 20.09);
-            conversionRates.put("NZD", 1.39);
-            conversionRates.put("SGD", 1.33);
-            currencies = conversionRates.keySet().toArray(new String[0]);
+
         }
 
-        public double convert(double amount, String fromCurrency, String toCurrency) {
-            double fromRate = conversionRates.get(fromCurrency);
-            double toRate = conversionRates.get(toCurrency);
-            return amount * toRate / fromRate;
+        public static void main(String[] args) throws IOException {
+            Currency currency = new Currency();
+            System.out.println(currency.getConversion(100)/100);
+        }
+        public double getConversion(double amount) throws IOException {
+            URL url = new URL(api);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            int response = connection.getResponseCode();
+            System.out.println(response);
+            Scanner scanner = new Scanner(connection.getInputStream());
+            String line;
+            double rate = -1;
+            while (scanner.hasNextLine()) {
+                line = scanner.nextLine();
+
+                if (line.contains("GBP")) {
+                    int start = line.indexOf(":") + 1;
+                    int end = line.indexOf(",", start);
+                    rate = Double.parseDouble(line.substring(start, end));
+                    break;
+                }
+            }
+            scanner.close();
+            connection.disconnect();
+            if (rate == -1) {
+                throw new IOException("GBP conversion rate not found in API response");
+            }
+            return amount * rate;
+            }
         }
 
-        public static void main(String[] args) {
-            Currency converter = new Currency();
-            double amount = 100.0;
-            String fromCurrency = "USD";
-            String toCurrency = "EUR";
-            double convertedAmount = converter.convert(amount, fromCurrency, toCurrency);
-            System.out.printf("%.2f %s = %.2f %s", amount, fromCurrency, convertedAmount, toCurrency);
-        }
-
-    }
 
 
 

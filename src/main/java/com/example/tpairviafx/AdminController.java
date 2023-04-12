@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 public class AdminController implements Initializable {
@@ -128,7 +129,9 @@ public class AdminController implements Initializable {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        // ,/usr/local/mysql-8.0.32-macos13-x86_64/bin/mysqldump
+//     dbConnect.backupDatabase10("smcse-stuproj00.city.ac.uk",3306,"in2018g05_a","lPP1uVU0","in2018g05","/Users/bedikudor/Documents/tpairviafx/TP-AirViaFX/src/DB_Backup/backup"+randomnumber+".sql");
 
     }
     public void setCommission(){
@@ -301,11 +304,18 @@ public class AdminController implements Initializable {
         refreshTable();
 
     }
-    public void dataBaseBackup(){
-        String backupFilePath = "/Users/bedikudor/Documents/tpairviafx/TP-AirViaFX/src/DB_Backup/backup.sql";
+    public void backupDatabase() throws IOException, InterruptedException {
         DBConnect dbConnect = new DBConnect();
         dbConnect.connect();
-        dbConnect.backup(backupFilePath);
-        dbConnect.closeConnection();
+        Random random = new Random();
+        String randomnumber = String.valueOf(random.nextInt(1,1000));
+        // lPP1uVU0
+//        dbConnect.backupDatabase2("/Users/bedikudor/Documents/tpairviafx/TP-AirViaFX/src/DB_Backup/backup"+randomnumber+".sql");
+//        dbConnect.backupDatabase2("localhost","3306","AirVia","root","rrrrrrrr","/Users/bedikudor/Documents/tpairviafx/TP-AirViaFX/src/DB_Backup/backup"+randomnumber+".sql");
+        // /usr/local/mysql-8.0.32-macos13-x86_64/bin/mysqldump -h 10.205.18.228 -P 3306 -u in2018g05_ -p in2018g05_ backupmysql.sql
+        // 10.205.18.228
+        dbConnect.backupDatabase10("smcse-stuproj00.city.ac.uk",3306,"in2018g05_a","lPP1uVU0","in2018g05","/Users/bedikudor/Documents/tpairviafx/TP-AirViaFX/src/DB_Backup/backup"+randomnumber+".sql");
+
     }
+
 }

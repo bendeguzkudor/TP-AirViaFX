@@ -233,6 +233,7 @@ public class TravelAdvisorController implements Initializable {
         if (cashRadioButton.isSelected()){
             salePayment = "Cash";
             cardNumberTextField.setDisable(true);
+            cardNumberTextField.clear();
         }else {
             salePayment = "Card";
             cardNumberTextField.setDisable(false);
@@ -497,7 +498,6 @@ public class TravelAdvisorController implements Initializable {
            Sale sale = new Sale(staffID, Application.getDate(), customer, "GBP", blankArrayList,salePayment);
            System.out.println(customer);
            System.out.println(blankArrayList.get(0).getBlankType());
-           System.out.println(currencyChoicebox.getValue().toString());
            sale.setSaleID(sale.selectMaxSaleID() + sale.getSaleID());
 //           for (Blank x:blankArrayList) {
 //               x.markBlankAsUsed(x);

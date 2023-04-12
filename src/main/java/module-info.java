@@ -6,6 +6,7 @@ module com.example.tpairviafx {
     requires org.apache.poi.poi;
     requires org.apache.poi.ooxml;
     requires org.apache.logging.log4j;
+    requires org.apache.pdfbox;
 
 
     opens com.example.tpairviafx to javafx.fxml;

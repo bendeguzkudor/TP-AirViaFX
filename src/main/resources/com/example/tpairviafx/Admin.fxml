@@ -47,5 +47,6 @@
             <Button layoutX="90.0" layoutY="167.0" mnemonicParsing="false" onAction="#setCommission" text="Set" />
          </children>
       </AnchorPane>
+      <Button fx:id="backUpButton" layoutX="828.0" layoutY="84.0" mnemonicParsing="false" onAction="#backupDatabase" text="Back up" />
    </children>
 </AnchorPane>

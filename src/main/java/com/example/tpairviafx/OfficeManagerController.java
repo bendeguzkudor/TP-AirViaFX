@@ -12,7 +12,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.apache.poi.xwpf.usermodel.Document;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
@@ -33,6 +35,22 @@ import java.util.ResourceBundle;
 public class OfficeManagerController implements Initializable {
     ObservableList<Staff> staffObservableList = FXCollections.observableArrayList();
 
+    @FXML
+    private TableView blanksTableView;
+    @FXML
+    private TextField searchBlankIDTextField;
+    ObservableList<Blank> blankObservableList = FXCollections.observableArrayList();
+    private ObservableList<Blank> selectedBlanksList;
+    @FXML
+    private TableColumn<Blank, Long> blankIDColumn;
+    @FXML
+    private TableColumn<Blank, Integer> assignedToColumn;
+    @FXML
+    private TableColumn<Blank, Integer> soldColumn;
+    @FXML
+    private TableColumn<Blank, String> dateAddedColumn;
+    @FXML
+    private TableColumn<Blank, String> dateAssignedColumn;
     @FXML
     private TextField searchTextField;
     @FXML
@@ -56,6 +74,9 @@ public class OfficeManagerController implements Initializable {
     private ChoiceBox<String> typeChoiceBox;
     @FXML
     private ChoiceBox<String> advisorChoiceBox;
+    @FXML
+    private ChoiceBox<String> reAssignTochoiceBox;
+    private String reassignto;
     private final String [] blankTypes = {"444", "440","420","201","101","451","452"};
 
     private ObservableList<Staff> selectedStaffList;
@@ -93,11 +114,13 @@ public class OfficeManagerController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         populateStaffTable();
+        populateBlankTable();
         typeChoiceBox.getItems().addAll(reportTypes);
         typeChoiceBox.setOnAction(this::getTypeChosen);
 
         addStaffToChoiceBox();
         advisorChoiceBox.setOnAction(this::getAdvisorChosen);
+        reAssignTochoiceBox.setOnAction(this::setReassignToChosen);
 
         blankChoiceBox.getItems().addAll(blankTypes);
         blankChoiceBox.setOnAction(this::getblankChosen);
@@ -106,6 +129,7 @@ public class OfficeManagerController implements Initializable {
     public void addStaffToChoiceBox(){
         for (Staff x : staffObservableList){
             advisorChoiceBox.getItems().add(String.valueOf(x.getStaffID()));
+            reAssignTochoiceBox.getItems().add(String.valueOf(x.getStaffID()));
         }
     }
     public void generateReport() throws ParseException {
@@ -147,6 +171,10 @@ public class OfficeManagerController implements Initializable {
     }
     public void getAdvisorChosen(ActionEvent e){
         chosenAdvisor = advisorChoiceBox.getValue();
+    }
+    public void setReassignToChosen(ActionEvent e){
+        reassignto = reAssignTochoiceBox.getValue();
+        System.out.println(reassignto);
     }
     public void populateStaffTable(){
         System.out.println("sadgf");
@@ -201,6 +229,20 @@ public class OfficeManagerController implements Initializable {
         }finally {
             db.closeConnection();
         }
+    }
+    public void reAssign() throws SQLException {
+        Long selectedBlankID = selectedBlanksList.get(0).getBlankID();
+
+        String sql = "update  blanks set staffID = "+reassignto+" where blankID = "+selectedBlankID+" and sold != 1;";
+        DBConnect db = new DBConnect();
+        db.connect();
+        PreparedStatement preparedStatement = db.getConnection().prepareStatement(sql);
+
+        int update = preparedStatement.executeUpdate();
+        System.out.println(update);
+        populateBlankTable();
+
+
     }
     public void assignBlanks(){
         System.out.println("addblanks");
@@ -296,6 +338,65 @@ public class OfficeManagerController implements Initializable {
         ManageCustomerDiscountController manageCustomerDiscountController = new ManageCustomerDiscountController();
         manageCustomerDiscountController.setPreviousScene(this.scene);
         stage.show();
+
+    }
+    public void populateBlankTable(){
+        DBConnect db = new DBConnect();
+        blankObservableList.clear();
+//        ResultSet rs;
+        String sql = "SELECT * FROM blanks"; //query for dynamic search
+//        String sql2 = "SELECT * FROM flights WHERE departure = \"London\" AND arrival = \"budapest\" AND date = \"23-05-10\"";
+        try{
+            db.connect();
+            rs = db.executeQuery(sql);
+            while(rs.next()){
+                Long queryBlankID = rs.getLong("blankID");
+                Integer queryStaffID = rs.getInt("staffID");
+                String querydateAssinged = rs.getString("dateAssigned");
+                Integer querySold = rs.getInt("sold");
+                String querydateAdded = rs.getString("dateAdded");
+
+
+                //Populate the list
+                blankObservableList.add(new Blank(queryBlankID,queryStaffID,
+                        querydateAssinged,querySold,querydateAdded));
+            }
+
+            blankIDColumn.setCellValueFactory(new PropertyValueFactory<>("blankID"));
+            assignedToColumn.setCellValueFactory(new PropertyValueFactory<>("staffID"));
+            dateAssignedColumn.setCellValueFactory(new PropertyValueFactory<>("dateAssigned"));
+            soldColumn.setCellValueFactory(new PropertyValueFactory<>("sold"));
+            dateAddedColumn.setCellValueFactory(new PropertyValueFactory<>("dateAdded"));
+
+            blanksTableView .setItems(blankObservableList);
+
+            FilteredList<Blank> filteredData = new FilteredList<>(blankObservableList, b->true);
+            searchBlankIDTextField.textProperty().addListener((observable, oldValue, newValue)->{
+                filteredData.setPredicate(blankSearchModel -> {
+                    if(newValue.isEmpty() || newValue.isBlank() || newValue == null){
+                        return true;
+                        //NEEDS FIXING//
+                    }
+                    return blankSearchModel.getBlankID() > -1;
+
+                });
+
+            });
+            SortedList<Blank> sortedData = new SortedList<>(filteredData);
+            sortedData.comparatorProperty().bind(blanksTableView.comparatorProperty());
+            blanksTableView.setItems(sortedData);
+            selectedBlanksList = blanksTableView.getSelectionModel().getSelectedItems();
+            System.out.println("selected flight");
+
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }finally {
+            db.closeConnection();
+        }
+
+
+    }
+    public void generatePDF(){
 
     }
 

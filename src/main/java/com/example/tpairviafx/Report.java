@@ -1,8 +1,7 @@
 package com.example.tpairviafx;
 
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,9 +10,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.printing.PDFPageable;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.util.Matrix;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
+import org.apache.pdfbox.util.Matrix;
+
+import org.apache.pdfbox.pdfwriter.ContentStreamWriter;
+
+import org.apache.poi.xwpf.usermodel.Document;
 
 
 public class Report {
@@ -40,7 +54,7 @@ public class Report {
     private String cash;
     private double commissionSum;
     private int price;
-    private  int staffID;
+    private int staffID;
     DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
     DateFormat inputFormat = new SimpleDateFormat("yyyyMMdd");
 
@@ -49,6 +63,7 @@ public class Report {
     private Date dateToDate;
     private Date dateFromDate;
     private Date todaysDate;
+
     public static void main(String[] args) throws Exception {
         Report report = new Report("20230401", "20230430", 888);
 //        report.queryAssignedBlanks();
@@ -65,6 +80,7 @@ public class Report {
 
 
     }
+
     public Report(String datefrom, String dateTo, int staffID) throws ParseException {
         this.datefrom = datefrom;
         this.dateTo = dateTo;
@@ -73,10 +89,16 @@ public class Report {
         dateFromDate = inputFormat.parse(datefrom);
         dateToDate = inputFormat.parse(dateTo);
         todaysDate = inputFormat.parse(Application.getDate());
+        System.out.println(todaysDate);
     }
 
     public void createTicketStockTurnOverReport() {
         workbook = new XSSFWorkbook();
+        Font font = workbook.createFont();
+        font.setFontHeightInPoints((short) 20);
+        CellStyle cstyle = workbook.createCellStyle();
+        cstyle.setAlignment(HorizontalAlignment.CENTER);
+        cstyle.setFont(font);
 
         // Create a new sheet
         sheet = workbook.createSheet("Table");
@@ -134,12 +156,33 @@ public class Report {
 //
         queryAssignedBlanks();
 
+
+        sheet.createRow(23 + 3).createCell(3);
+        sheet.addMergedRegion(new CellRangeAddress(23 + 3, 23 + 3, 3, 4)); // StaffID
+
+        sheet.createRow(22).createCell(7);
+        sheet.createRow(23).createCell(7);
+        sheet.addMergedRegion(new CellRangeAddress(22,23, 7,9));
+        sheet.getRow(22).getCell(7).setCellValue("TICKET STOCK TURNOVER REPORT");
+        sheet.getRow(22).getCell(7).setCellStyle(cstyle);
+        sheet.getRow(23 + 3).createCell(8);
+        sheet.addMergedRegion(new CellRangeAddress(23 + 3, 23 + 3, 8, 10)); // Date From
+        sheet.getRow(23 + 3).getCell(8).setCellValue("Date From   :  " + outputFormat.format(dateFromDate));
+
+        sheet.createRow(23 + 4).createCell(8);
+        sheet.addMergedRegion(new CellRangeAddress(23 + 4, 23 + 4, 8, 10)); // Date To
+        sheet.getRow(23 + 4).getCell(8).setCellValue("Date to   :  " + outputFormat.format(dateToDate));
+
+        sheet.getRow(23 + 4).createCell(7);
+        sheet.getRow(23 + 4).getCell(7).setCellValue("Date :" + outputFormat.format(todaysDate));
+//        signature(sheet, 21, 0, "TICKET STOCK TURNOVER", staffID);
+
         for (int i = 0; i < 16; i++) {
             sheet.autoSizeColumn(i);
 
         }
         // Write the workbook to a file
-        try (FileOutputStream outputStream = new FileOutputStream("TicketStockTurnOver.xlsx")) {
+        try (FileOutputStream outputStream = new FileOutputStream("reports/TicketStockTurnOver"+datefrom+"-"+dateTo+".xlsx")) {
             workbook.write(outputStream);
         } catch (IOException e) {
             e.printStackTrace();
@@ -147,6 +190,36 @@ public class Report {
 
 
         System.out.println("Table.xlsx created successfully!");
+
+    }
+    public void signature (Sheet sheet, int lastrow, int middle, String title, int staffID){
+        lastrow = lastrow+3;
+        Font font = workbook.createFont();
+        font.setFontHeightInPoints((short) 20);
+        CellStyle cstyle = workbook.createCellStyle();
+        cstyle.setAlignment(HorizontalAlignment.CENTER);
+
+        cstyle.setFont(font);
+        sheet.createRow(lastrow + 2).createCell(6);
+//        sheet.addMergedRegion(new CellRangeAddress(lastrow + 2, lastrow+2,  6, 6)); // StaffID
+        sheet.getRow(lastrow+2).createCell(7);
+        sheet.getRow(lastrow+2).getCell(7).setCellValue("StaffID" + staffID);
+
+        sheet.createRow(lastrow).createCell(7);
+        sheet.createRow(lastrow+1).createCell(7);
+        sheet.addMergedRegion(new CellRangeAddress(lastrow,lastrow+1, 7,9));
+        sheet.getRow(lastrow).getCell(7).setCellValue(title);
+        sheet.getRow(lastrow).getCell(7).setCellStyle(cstyle);
+        sheet.getRow(lastrow+2).createCell(8);
+        sheet.addMergedRegion(new CellRangeAddress(lastrow+2, lastrow+2, 8, 10)); // Date From
+        sheet.getRow(lastrow+ 2).getCell(8).setCellValue("Date From   :  " + outputFormat.format(dateFromDate));
+
+        sheet.createRow(lastrow + 3).createCell(8);
+        sheet.addMergedRegion(new CellRangeAddress(lastrow + 3, lastrow+ 3, 8, 10)); // Date To
+        sheet.getRow(lastrow + 3).getCell(8).setCellValue("Date to   :  " + outputFormat.format(dateToDate));
+
+        sheet.getRow(lastrow + 3).createCell(7);
+        sheet.getRow(lastrow + 3).getCell(7).setCellValue("Date :" + outputFormat.format(todaysDate));
 
     }
 
@@ -185,7 +258,7 @@ public class Report {
                 "    FROM blanks t\n" +
                 "    CROSS JOIN (SELECT @rn := 0, @prev_blank := NULL) vars\n" +
                 "\twhere\n" +
-                "\tdateAdded >= 20230301 and dateAdded <= 20230430\n" +
+                "\tdateAdded >= "+datefrom+" and dateAdded <= "+dateTo+"" +
                 "    ORDER BY blankID\n" +
                 ") t\n" +
                 "GROUP BY range_group \n" +
@@ -204,10 +277,10 @@ public class Report {
                 "        @prev_blank := blankID\n" +
                 "    FROM blanks t\n" +
                 "    CROSS JOIN (SELECT @rn := 0, @prev_staff := NULL, @prev_blank := NULL) vars\n" +
-                "    WHERE dateAdded >= \"20230401\" \n" +
-                "      AND dateAdded <= \"20230430\" \n" +
-                "      AND dateAssigned >= \"20230401\" \n" +
-                "      AND dateAssigned <= \"20230430\"\n" +
+                "    WHERE dateAdded >= "+datefrom+" \n" +
+                "      AND dateAdded <= '"+dateTo+"' \n" +
+                "      AND dateAssigned >= '"+datefrom+"' \n" +
+                "      AND dateAssigned <= '"+dateTo+"'\n" +
                 "      and staffID != 0\n" +
                 "    ORDER BY staffID, blankID\n" +
                 ") t\n" +
@@ -228,8 +301,8 @@ public class Report {
                 "    FROM blanks t\n" +
                 "    CROSS JOIN (SELECT @rn := 0, @prev_staff := NULL, @prev_blank := NULL) vars\n" +
                 "    WHERE staffID != 0\n" +
-                "    AND dateAssigned >= \"20230401\" \n" +
-                "    AND dateAssigned <= \"20230430\"\n" +
+                "    AND dateAssigned >= '"+datefrom+"' \n" +
+                "    AND dateAssigned <= '"+dateTo+"' " +
                 "    ORDER BY staffID, blankID\n" +
                 ") t\n" +
                 "GROUP BY staffID, range_group \n" +
@@ -309,7 +382,6 @@ public class Report {
                 System.out.print(rs.getLong(2) + ":");
                 System.out.print(rs.getLong(3) + ":");
                 System.out.print(rs.getInt(4) + ":");
-                System.out.println();
                 System.out.println(i + "" + j);
                 sheet.getRow(i).getCell(j).setCellValue(queryStaffID);
                 j++;
@@ -495,8 +567,9 @@ public class Report {
         sheet.getRow(0).getCell(20).setCellValue("NON \n ASSESSBALE \n AMOUNTS");
 
 
-
         sheet.getRow(2).getCell(18).setCellValue("Commission %");
+
+
 
         for (int i = 0; i < 21; i++) {
             sheet.autoSizeColumn(i);
@@ -511,7 +584,7 @@ public class Report {
 
     }
 
-    public void individualInterlineSalesReport(){
+    public void individualInterlineSalesReport() {
         workbook = new XSSFWorkbook();
 
         // create a new sheet
@@ -519,7 +592,7 @@ public class Report {
 
         // create a header row
         headerRow = sheet.createRow(0);
-        String[] columnTitles = {"NO. ","BLANKS", "BASE PRICE USD", "PRICE CURRNECY", "CONVERSION RATE", "TAXES", "TAX RATE",
+        String[] columnTitles = {"NO. ", "BLANKS", "BASE PRICE GBP", "IN-USD", "CONVERSION RATE", "TAXES", "TAX RATE",
                 "CASH", "CARD NUMBER", "COMMISSION RATE", "COMMISSION SUM", "TOTAL AMOUNTS PAID"};
         String sql = "SELECT \n" +
                 "  GROUP_CONCAT(b.blankID) as blankIDs, \n" +
@@ -535,9 +608,9 @@ public class Report {
                 "FROM sale s\n" +
                 "LEFT JOIN soldBlanks b ON s.saleID = b.saleID\n" +
                 "WHERE \n" +
-                "  s.staffID = '"+ staffID +"' AND \n" +
+                "  s.staffID = '" + staffID + "' AND \n" +
                 "SUBSTR(blankID, 1, 1) = '4' AND" +
-                "  s.date BETWEEN '"+datefrom+"' AND '"+dateTo+"'\n" +
+                "  s.date BETWEEN '" + datefrom + "' AND '" + dateTo + "'\n" +
                 "GROUP BY s.saleID\n" +
                 "HAVING num_blanks > 1 OR num_blanks = 1;";
         DBConnect db = new DBConnect();
@@ -550,7 +623,7 @@ public class Report {
             rs.last();
             int lastRow = rs.getRow();
 
-            for (int i = 0; i < lastRow+2; i++) {
+            for (int i = 0; i < lastRow + 2; i++) {
                 row = sheet.createRow(i);
                 for (int j = 0; j < columnTitles.length; j++) {
                     cell = row.createCell(j);
@@ -562,22 +635,25 @@ public class Report {
                     sheet.autoSizeColumn(j);
                 }
             }
-            for(int j = 0; j < columnTitles.length; j++) {
+            for (int j = 0; j < columnTitles.length; j++) {
                 sheet.getRow(0).getCell(j).setCellValue(columnTitles[j]);
             }
             int i = 1;
             int j = 0;
             int taxSumm = 0;
             int priceSum = 0;
-            int basePriceSum = 0;
+            double basePriceSum = 0;
             double commisionsSum = 0;
             int count = 1;
-
+            double priceSUMUSD = 0;
+            double price = 0;
             rs.beforeFirst();
+
             while (rs.next()) {
+
                 blankID = rs.getString(1);
-                price = rs.getInt(3);
-                currency  = rs.getString(4);
+                price = rs.getDouble(3);
+                currency = rs.getString(4);
                 conversionRate = rs.getDouble(5);
                 cash = rs.getString(6);
                 card = rs.getString(7);
@@ -585,15 +661,16 @@ public class Report {
                 taxSum = rs.getDouble(9);
                 taxSumm += taxSum;
                 priceSum += price;
-                basePriceSum += price-taxSum;
+                basePriceSum += price - taxSum;
                 commisionsSum += commissionSum;
                 sheet.getRow(i).getCell(j).setCellValue(i);
                 j++;
-                sheet.getRow(i).getCell(j).setCellValue(blankID +"\n" );
+                sheet.getRow(i).getCell(j).setCellValue(blankID + "\n");
                 j++;
-                sheet.getRow(i).getCell(j).setCellValue(price-taxSum);
+                sheet.getRow(i).getCell(j).setCellValue(price - taxSum);
                 j++;
-                sheet.getRow(i).getCell(j).setCellValue(currency);
+                sheet.getRow(i).getCell(j).setCellValue(price/conversionRate);
+                priceSUMUSD += price/conversionRate;
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(conversionRate);
                 j++;
@@ -605,61 +682,64 @@ public class Report {
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(card);
                 j++;
-                sheet.getRow(i).getCell(j).setCellValue(commissionSum/price/0.8);
+                sheet.getRow(i).getCell(j).setCellValue(commissionSum / price / 0.8);
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue((commissionSum));
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(price);
 
-                j=0;
+                j = 0;
                 i++;
 
-            }for(int k = 0; k < columnTitles.length; k++) {
+            }
+            for (int k = 0; k < columnTitles.length; k++) {
                 sheet.autoSizeColumn(j);
             }
 
-            sheet.getRow(lastRow+1).getCell(0).setCellValue("TOTALS ");
-            sheet.getRow(lastRow+1).getCell(11).setCellValue(priceSum);
-            sheet.getRow(lastRow+1).getCell(2).setCellValue(basePriceSum);
-            sheet.getRow(lastRow+1).getCell(10).setCellValue(commisionsSum);
+            sheet.getRow(lastRow + 1).getCell(0).setCellValue("TOTALS ");
+            sheet.getRow(lastRow + 1).getCell(11).setCellValue(priceSum);
+            sheet.getRow(lastRow + 1).getCell(2).setCellValue(basePriceSum);
+            sheet.getRow(lastRow + 1).getCell(10).setCellValue(commisionsSum);
+            sheet.getRow(lastRow+1).getCell(3).setCellValue(priceSUMUSD);
 
             ///////////
-            sheet.createRow(lastRow+3).createCell(3);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+3, lastRow+3, 3, 4)); // StaffID
-            sheet.getRow(lastRow+3).getCell(3).setCellValue("StaffID  :  " + staffID);
+            sheet.createRow(lastRow + 3).createCell(3);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 3, lastRow + 3, 3, 4)); // StaffID
+            sheet.getRow(lastRow + 3).getCell(3).setCellValue("StaffID  :  " + staffID);
 
-            sheet.getRow(lastRow+3).createCell(5);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+3, lastRow+3, 5, 7)); // Date From
-            sheet.getRow(lastRow+3).getCell(5).setCellValue("Date From   :  "+ outputFormat.format(dateFromDate));
+            sheet.getRow(lastRow + 3).createCell(5);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 3, lastRow + 3, 5, 7)); // Date From
+            sheet.getRow(lastRow + 3).getCell(5).setCellValue("Date From   :  " + outputFormat.format(dateFromDate));
 
-            sheet.createRow(lastRow+4).createCell(5);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+4, lastRow+4, 5, 7)); // Date To
-            sheet.getRow(lastRow+4).getCell(5).setCellValue("Date to   :  "+ outputFormat.format(dateToDate));
+            sheet.createRow(lastRow + 4).createCell(5);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 4, lastRow + 4, 5, 7)); // Date To
+            sheet.getRow(lastRow + 4).getCell(5).setCellValue("Date to   :  " + outputFormat.format(dateToDate));
 
-            sheet.getRow(lastRow +4).createCell(3);
-            sheet.getRow(lastRow+4).getCell(3).setCellValue("Date :" + outputFormat.format(todaysDate));
+            sheet.getRow(lastRow + 4).createCell(3);
+            sheet.getRow(lastRow + 4).getCell(3).setCellValue("Date :" + outputFormat.format(todaysDate));
 
-            sheet.getRow(lastRow+3).createCell(9);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+3, lastRow+3, 9, 11)); // TOTAL COMMISSION AMOUNTS
-            sheet.getRow(lastRow+3).getCell(9).setCellValue("TOTAL COMMISSION AMOUNTS  :  "+ (commisionsSum));
+            sheet.getRow(lastRow + 3).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 3, lastRow + 3, 9, 11)); // TOTAL COMMISSION AMOUNTS
+            sheet.getRow(lastRow + 3).getCell(9).setCellValue("TOTAL COMMISSION AMOUNTS  :  " + (commisionsSum));
 
-            sheet.getRow(lastRow+4).createCell(9);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+4, lastRow+4, 9, 11)); // NET AMOUNTS FOR AGENTS DEBIT
-            sheet.getRow(lastRow+4).getCell(9).setCellValue("NET AMOUNTS FOR AGEMTS DEBIT  :  " + (basePriceSum - commisionsSum));
+            sheet.getRow(lastRow + 4).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 4, lastRow + 4, 9, 11)); // NET AMOUNTS FOR AGENTS DEBIT
+            sheet.getRow(lastRow + 4).getCell(9).setCellValue("NET AMOUNTS FOR AGEMTS DEBIT  :  " + (basePriceSum - commisionsSum));
 
-            sheet.createRow(lastRow+5).createCell(9);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+5, lastRow+5, 9, 11)); // TOTAL BANK REMMITTANCE TO AIRVIA
-            sheet.getRow(lastRow+5).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA  :  " + (priceSum - commisionsSum));
+            sheet.createRow(lastRow + 5).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 5, lastRow + 5, 9, 11)); // TOTAL BANK REMMITTANCE TO AIRVIA
+            sheet.getRow(lastRow + 5).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA  :  " + (priceSum - commisionsSum));
 
 
 //        sheet.getRow(1).getCell(0).setCellValue("1");
+            signature(sheet,lastRow+2,0,"INDIVIDUAL INTERLINE SALES REPORT",staffID);
 
-            for(int x = 0; x < columnTitles.length; x++) {
+            for (int x = 0; x < columnTitles.length; x++) {
                 sheet.autoSizeColumn(x);
             }
             // write the workbook to a file
             try {
-                FileOutputStream outputStream = new FileOutputStream("IndividualInterline.xlsx");
+                FileOutputStream outputStream = new FileOutputStream("reports/"+staffID+"-"+"IndividualInterline"+datefrom+"-"+dateTo+".xlsx");
                 workbook.write(outputStream);
                 workbook.close();
             } catch (IOException e) {
@@ -672,7 +752,8 @@ public class Report {
             e.printStackTrace();
         }
     }
-    public void globalInterLineSalesReport(){
+
+    public void globalInterLineSalesReport() {
         //global interline
         workbook = new XSSFWorkbook();
 
@@ -681,7 +762,7 @@ public class Report {
 
         // create a header row
         headerRow = sheet.createRow(0);
-        String[] columnTitles = {"NO. ","NO.OF. S. ","STAFF ID", "BASE PRICE USD", "TAX SUM","CASH PAYMENT ","CARD PAYMENT", "10 % COMMISSION RATE ",  " 15 % COMMISSION RATE"," 20 % COMMISSION RATE","TOTAL PAID","TOTAL COMMISSION" };
+        String[] columnTitles = {"NO. ", "NO.OF. S. ", "STAFF ID", "BASE PRICE GBP","IN-USD", "CONVERSION RATE", "TAX SUM", "CASH PAYMENT ", "CARD PAYMENT", "10 % COMMISSION RATE ", " 12 % COMMISSION RATE", " 15 % COMMISSION RATE", "TOTAL PAID", "TOTAL COMMISSION"};
         String setmode = "SET sql_mode = '';";
         String sql3 = "" +
                 "SELECT \n" +
@@ -710,7 +791,42 @@ public class Report {
                 "WHERE sale.saleID IN (\n" +
                 "    SELECT distinct saleID FROM soldBlanks WHERE blankID LIKE '4%'\n" +
                 "  )" +
-                "   AND date >= '"+datefrom+"' AND date <= '"+dateTo+"'" +
+                "   AND date >= '" + datefrom + "' AND date <= '" + dateTo + "'" +
+                "  GROUP BY  conversionRate,paymentType, commissionSum, staffID\n" +
+                ") AS subquery\n" +
+                "GROUP BY subquery.staffID; ";
+
+        String sql4 = "SELECT\n" +
+                "SUM(subquery.num_sales) AS total_sales,\n" +
+                "subquery.staffID,\n" +
+                "SUM(subquery.base_pricesum) as total_basesum,\n" +
+                "subquery.currency,\n" +
+                "subquery.conversionRate,\n" +
+                "SUM(subquery.sum_tax) as total_tax,\n" +
+                "SUM(CASE WHEN subquery.paymentType = 'cash' THEN subquery.price_total ELSE 0 END) AS payed_in_cash,\n" +
+                "SUM(CASE WHEN subquery.paymentType = 'card' THEN subquery.price_total ELSE 0 END) AS payed_in_card,\n" +
+                "SUM(CASE WHEN subquery.commission_ratio = 0.1 THEN subquery.commissionSum ELSE 0 END) AS commission_10_percent,\n" +
+                "SUM(CASE WHEN subquery.commission_ratio = 0.12 THEN subquery.commissionSum ELSE 0 END) AS commission_12_percent,\n" +
+                "SUM(CASE WHEN subquery.commission_ratio = 0.15 THEN subquery.commissionSum ELSE 0 END) AS commission_15_percent,\n" +
+                "SUM(subquery.price_total),\n" +
+                "SUM(commissionSum) as total_commission\n" +
+                "FROM (\n" +
+                "  SELECT \n" +
+                "    COUNT(saleID) AS num_sales, \n" +
+                "    staffID,\n" +
+                "    currency,\n" +
+                "    conversionRate,\n" +
+                "    SUM(price)-SUM(taxSum) AS base_pricesum,\n" +
+                "    SUM(taxSum) AS sum_tax,\n" +
+                "    paymentType,\n" +
+                "    SUM(commissionSum) AS commissionSum,\n" +
+                "    SUM(price) AS price_total,\n" +
+                "    SUM(commissionSum)/SUM(price)/0.8 AS commission_ratio\n" +
+                "  FROM sale\n" +
+                "WHERE sale.saleID IN (\n" +
+                "    SELECT distinct saleID FROM soldBlanks WHERE blankID LIKE '4%'\n" +
+                "  )\n" +
+                "   AND date >= "+datefrom+" AND date <= "+datefrom+"" +
                 "  GROUP BY  conversionRate,paymentType, commissionSum, staffID\n" +
                 ") AS subquery\n" +
                 "GROUP BY subquery.staffID; ";
@@ -720,7 +836,7 @@ public class Report {
         ResultSet rs;
         try {
             db.connect();
-             PreparedStatement stmt = db.getConnection().prepareStatement(setmode);
+            PreparedStatement stmt = db.getConnection().prepareStatement(setmode);
 //             PreparedStatement querys = db.connection.prepareStatement(sql3);
 //            String query = querys.toString();
 //            System.out.println("Executing query: " + query);
@@ -728,13 +844,13 @@ public class Report {
 //             querys.executeUpdate();
 //             String query = db.statement.executeQuery(sql3);
 //            System.out.println(query);
-            rs = db.executeQuery(sql3);
+            rs = db.executeQuery(sql4);
 
 
             rs.last();
             int lastRow = rs.getRow();
             System.out.println(lastRow);
-            for (int i = 0; i < lastRow+2; i++) {
+            for (int i = 0; i < lastRow + 2; i++) {
                 row = sheet.createRow(i);
                 for (int j = 0; j < columnTitles.length; j++) {
                     cell = row.createCell(j);
@@ -746,7 +862,7 @@ public class Report {
                     sheet.autoSizeColumn(j);
                 }
             }
-            for(int j = 0; j < columnTitles.length; j++) {
+            for (int j = 0; j < columnTitles.length; j++) {
                 sheet.getRow(0).getCell(j).setCellValue(columnTitles[j]);
             }
             int i = 1;
@@ -754,7 +870,8 @@ public class Report {
             int taxSumm = 0;
             int priceSum = 0;
             int basePriceSum = 0;
-            double commissionsSum=0;
+            double commissionsSum = 0;
+            double priceSUMUSD =0;
             int count = 1;
             rs.beforeFirst();
             while (rs.next()) {
@@ -763,33 +880,41 @@ public class Report {
                 System.out.println(queryStaffID);
                 Double base_price = rs.getDouble(3);
                 System.out.println(base_price);
-                taxSum  = rs.getDouble(4);
+                currency = rs.getString(4);
                 System.out.println(taxSum);
-                int payedCash = rs.getInt(5);
+                conversionRate = rs.getDouble(5);
+                System.out.println(conversionRate);
+                taxSum = rs.getInt(6);
+                System.out.println(taxSum);
+                int payedCash = rs.getInt(7);
                 System.out.println(payedCash);
-                int payedCard = rs.getInt(6);
+                int payedCard = rs.getInt(8);
                 System.out.println(payedCard);
-                Double commission10 = rs.getDouble(7);
+                Double commission10 = rs.getDouble(9);
                 System.out.println(commission10);
-                Double commission15 = rs.getDouble(8);
+                Double commission15 = rs.getDouble(10);
                 System.out.println(commission15);
-                Double commission20 = rs.getDouble(9);
+                Double commission20 = rs.getDouble(11);
                 System.out.println(commission20);
-                Double totalPaid = rs.getDouble(10);
+                Double totalPaid = rs.getDouble(12);
                 System.out.println(totalPaid);
-                Double totalCommission = rs.getDouble(11);
+                Double totalCommission = rs.getDouble(13);
                 System.out.println(totalCommission);
                 taxSumm += taxSum;
-                priceSum += payedCash+payedCard;
+                priceSum += payedCash + payedCard;
                 basePriceSum += base_price;
-                commissionsSum += commission10+commission15+commission20;
                 sheet.getRow(i).getCell(j).setCellValue(i);
                 j++;
-                sheet.getRow(i).getCell(j).setCellValue(numberOfSales );
+                sheet.getRow(i).getCell(j).setCellValue(numberOfSales);
                 j++;
-                sheet.getRow(i).getCell(j).setCellValue(queryStaffID +"\n" );
+                sheet.getRow(i).getCell(j).setCellValue(queryStaffID + "\n");
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(base_price);
+                j++;
+                sheet.getRow(i).getCell(j).setCellValue(base_price/conversionRate);
+                priceSUMUSD += price/conversionRate;
+                j++;
+                sheet.getRow(i).getCell(j).setCellValue(conversionRate);/////////////////////////////////////////////////////
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(taxSum);
                 j++;
@@ -806,57 +931,61 @@ public class Report {
                 sheet.getRow(i).getCell(j).setCellValue(totalPaid);
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(totalCommission);
+                commissionsSum+=totalCommission;
                 j++;
-                j=0;
+                j = 0;
                 i++;
 
-            }for(int k = 0; k < columnTitles.length; k++) {
+            }
+            for (int k = 0; k < columnTitles.length; k++) {
                 sheet.autoSizeColumn(j);
             }
 
-            sheet.getRow(lastRow+1).getCell(0).setCellValue("TOTALS ");
-            sheet.getRow(lastRow+1).getCell(3).setCellValue(basePriceSum);
-            sheet.getRow(lastRow+1).getCell(4).setCellValue(taxSumm);
-            sheet.getRow(lastRow+1).getCell(10).setCellValue(priceSum);
-            sheet.getRow(lastRow+1).getCell(11).setCellValue(commissionsSum);
+            sheet.getRow(lastRow + 1).getCell(0).setCellValue("TOTALS ");
+            sheet.getRow(lastRow + 1).getCell(3).setCellValue(basePriceSum);
+            sheet.getRow(lastRow + 1).getCell(6).setCellValue(taxSumm);
+            sheet.getRow(lastRow + 1).getCell(12).setCellValue(priceSum);
+            sheet.getRow(lastRow+1).getCell(4).setCellValue(priceSUMUSD);
+            sheet.getRow(lastRow + 1).getCell(13).setCellValue(commissionsSum);
 
             ///
-            sheet.createRow(lastRow+3).createCell(3);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+3, lastRow+3, 3, 4)); // StaffID
+            sheet.createRow(lastRow + 3).createCell(3);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 3, lastRow + 3, 3, 4)); // StaffID
 
 
-            sheet.getRow(lastRow+3).createCell(5);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+3, lastRow+3, 5, 7)); // Date From
-            sheet.getRow(lastRow+3).getCell(5).setCellValue("Date From   :  "+ outputFormat.format(dateFromDate));
+            sheet.getRow(lastRow + 3).createCell(5);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 3, lastRow + 3, 5, 7)); // Date From
+            sheet.getRow(lastRow + 3).getCell(5).setCellValue("Date From   :  " + outputFormat.format(dateFromDate));
 
-            sheet.createRow(lastRow+4).createCell(5);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+4, lastRow+4, 5, 7)); // Date To
-            sheet.getRow(lastRow+4).getCell(5).setCellValue("Date to   :  "+ outputFormat.format(dateToDate));
+            sheet.createRow(lastRow + 4).createCell(5);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 4, lastRow + 4, 5, 7)); // Date To
+            sheet.getRow(lastRow + 4).getCell(5).setCellValue("Date to   :  " + outputFormat.format(dateToDate));
 
-            sheet.getRow(lastRow +4).createCell(3);
-            sheet.getRow(lastRow+4).getCell(3).setCellValue("Date :" + outputFormat.format(todaysDate));
+            sheet.getRow(lastRow + 4).createCell(3);
+            sheet.getRow(lastRow + 4).getCell(3).setCellValue("Date :" + outputFormat.format(todaysDate));
 
-            sheet.getRow(lastRow+3).createCell(9);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+3, lastRow+3, 9, 11)); // TOTAL COMMISSION AMOUNTS
-            sheet.getRow(lastRow+3).getCell(9).setCellValue("TOTAL COMMISSION AMOUNTS  :  "+ (commissionsSum));
+            sheet.getRow(lastRow + 3).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 3, lastRow + 3, 9, 11)); // TOTAL COMMISSION AMOUNTS
+            sheet.getRow(lastRow + 3).getCell(9).setCellValue("TOTAL COMMISSION AMOUNTS  :  " + (commissionsSum));
 
-            sheet.getRow(lastRow+4).createCell(9);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+4, lastRow+4, 9, 11)); // NET AMOUNTS FOR AGENTS DEBIT
-            sheet.getRow(lastRow+4).getCell(9).setCellValue("NET AMOUNTS FOR AGEMTS DEBIT  :  " + (basePriceSum - commissionsSum));
+            sheet.getRow(lastRow + 4).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 4, lastRow + 4, 9, 11)); // NET AMOUNTS FOR AGENTS DEBIT
+            sheet.getRow(lastRow + 4).getCell(9).setCellValue("NET AMOUNTS FOR AGEMTS DEBIT  :  " + (basePriceSum - commissionsSum));
 
-            sheet.createRow(lastRow+5).createCell(9);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+5, lastRow+5, 9, 11)); // TOTAL BANK REMMITTANCE TO AIRVIA
-            sheet.getRow(lastRow+5).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA  :  " + (priceSum - commissionsSum));
+            sheet.createRow(lastRow + 5).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 5, lastRow + 5, 9, 11)); // TOTAL BANK REMMITTANCE TO AIRVIA
+            sheet.getRow(lastRow + 5).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA  :  " + (priceSum - commissionsSum));
 
             ///
+            signature(sheet,lastRow+6,0,"GLOBAL INTERLINE SALES REPORT",staffID);
 //        sheet.getRow(1).getCell(0).setCellValue("1");
 
-            for(int x = 0; x < columnTitles.length; x++) {
+            for (int x = 0; x < columnTitles.length; x++) {
                 sheet.autoSizeColumn(x);
             }
             // write the workbook to a file
             try {
-                FileOutputStream outputStream = new FileOutputStream("GlobalInterline.xlsx");
+                FileOutputStream outputStream = new FileOutputStream("reports/GlobalInterline"+datefrom+"-"+dateTo+".xlsx");
                 workbook.write(outputStream);
                 workbook.close();
             } catch (IOException e) {
@@ -870,7 +999,7 @@ public class Report {
         }
     }
 
-    public void domesticIndividualReport(){
+    public void domesticIndividualReport() {
         workbook = new XSSFWorkbook();
 
         // create a new sheet
@@ -878,7 +1007,7 @@ public class Report {
 
         // create a header row
         headerRow = sheet.createRow(0);
-        String[] columnTitles = {"NO. ","BLANKS", "BASE PRICE USD", "PRICE CURRNECY", "CONVERSION RATE", "TAXES", "TAX RATE",
+        String[] columnTitles = {"NO. ", "BLANKS", "BASE PRICE USD", "PRICE CURRNECY", "CONVERSION RATE", "TAXES", "TAX RATE",
                 "CASH", "CARD NUMBER", "COMMISSION RATE", "COMMISSION SUM", "TOTAL AMOUNTS PAID"};
         String sql = "SELECT \n" +
                 "  GROUP_CONCAT(b.blankID) as blankIDs, \n" +
@@ -894,9 +1023,9 @@ public class Report {
                 "FROM sale s\n" +
                 "LEFT JOIN soldBlanks b ON s.saleID = b.saleID\n" +
                 "WHERE \n" +
-                "  s.staffID = '"+ staffID +"' AND \n" +
+                "  s.staffID = '" + staffID + "' AND \n" +
                 "SUBSTR(blankID, 1, 1) = '2' or SUBSTR(blankID, 1, 1) = '1' AND" +
-                "  s.date BETWEEN '"+datefrom+"' AND '"+dateTo+"'\n" +
+                "  s.date BETWEEN '" + datefrom + "' AND '" + dateTo + "'\n" +
                 "GROUP BY s.saleID\n" +
                 "HAVING num_blanks > 1 OR num_blanks = 1;";
         DBConnect db = new DBConnect();
@@ -909,7 +1038,7 @@ public class Report {
             rs.last();
             int lastRow = rs.getRow();
 
-            for (int i = 0; i < lastRow+2; i++) {
+            for (int i = 0; i < lastRow + 2; i++) {
                 row = sheet.createRow(i);
                 for (int j = 0; j < columnTitles.length; j++) {
                     cell = row.createCell(j);
@@ -921,7 +1050,7 @@ public class Report {
                     sheet.autoSizeColumn(j);
                 }
             }
-            for(int j = 0; j < columnTitles.length; j++) {
+            for (int j = 0; j < columnTitles.length; j++) {
                 sheet.getRow(0).getCell(j).setCellValue(columnTitles[j]);
             }
             int i = 1;
@@ -936,7 +1065,7 @@ public class Report {
             while (rs.next()) {
                 blankID = rs.getString(1);
                 price = rs.getInt(3);
-                currency  = rs.getString(4);
+                currency = rs.getString(4);
                 conversionRate = rs.getDouble(5);
                 cash = rs.getString(6);
                 card = rs.getString(7);
@@ -944,13 +1073,13 @@ public class Report {
                 taxSum = rs.getDouble(9);
                 taxSumm += taxSum;
                 priceSum += price;
-                basePriceSum += price-taxSum;
+                basePriceSum += price - taxSum;
                 commisionsSum += commissionSum;
                 sheet.getRow(i).getCell(j).setCellValue(i);
                 j++;
-                sheet.getRow(i).getCell(j).setCellValue(blankID +"\n" );
+                sheet.getRow(i).getCell(j).setCellValue(blankID + "\n");
                 j++;
-                sheet.getRow(i).getCell(j).setCellValue(price-taxSum);
+                sheet.getRow(i).getCell(j).setCellValue(price - taxSum);
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(currency);
                 j++;
@@ -964,61 +1093,63 @@ public class Report {
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(card);
                 j++;
-                sheet.getRow(i).getCell(j).setCellValue(commissionSum/price/0.8);
+                sheet.getRow(i).getCell(j).setCellValue(commissionSum / price / 0.8);
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue((commissionSum));
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(price);
 
-                j=0;
+                j = 0;
                 i++;
 
-            }for(int k = 0; k < columnTitles.length; k++) {
+            }
+            for (int k = 0; k < columnTitles.length; k++) {
                 sheet.autoSizeColumn(j);
             }
 
-            sheet.getRow(lastRow+1).getCell(0).setCellValue("TOTALS ");
-            sheet.getRow(lastRow+1).getCell(11).setCellValue(priceSum);
-            sheet.getRow(lastRow+1).getCell(2).setCellValue(basePriceSum);
-            sheet.getRow(lastRow+1).getCell(10).setCellValue(commisionsSum);
+            sheet.getRow(lastRow + 1).getCell(0).setCellValue("TOTALS ");
+            sheet.getRow(lastRow + 1).getCell(11).setCellValue(priceSum);
+            sheet.getRow(lastRow + 1).getCell(2).setCellValue(basePriceSum);
+            sheet.getRow(lastRow + 1).getCell(10).setCellValue(commisionsSum);
 
             ///////////
-            sheet.createRow(lastRow+3).createCell(3);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+3, lastRow+3, 3, 4)); // StaffID
-            sheet.getRow(lastRow+3).getCell(3).setCellValue("StaffID  :  " + staffID);
+            sheet.createRow(lastRow + 3).createCell(3);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 3, lastRow + 3, 3, 4)); // StaffID
+            sheet.getRow(lastRow + 3).getCell(3).setCellValue("StaffID  :  " + staffID);
 
-            sheet.getRow(lastRow+3).createCell(5);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+3, lastRow+3, 5, 7)); // Date From
-            sheet.getRow(lastRow+3).getCell(5).setCellValue("Date From   :  "+ outputFormat.format(dateFromDate));
+            sheet.getRow(lastRow + 3).createCell(5);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 3, lastRow + 3, 5, 7)); // Date From
+            sheet.getRow(lastRow + 3).getCell(5).setCellValue("Date From   :  " + outputFormat.format(dateFromDate));
 
-            sheet.createRow(lastRow+4).createCell(5);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+4, lastRow+4, 5, 7)); // Date To
-            sheet.getRow(lastRow+4).getCell(5).setCellValue("Date to   :  "+ outputFormat.format(dateToDate));
+            sheet.createRow(lastRow + 4).createCell(5);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 4, lastRow + 4, 5, 7)); // Date To
+            sheet.getRow(lastRow + 4).getCell(5).setCellValue("Date to   :  " + outputFormat.format(dateToDate));
 
-            sheet.getRow(lastRow +4).createCell(3);
-            sheet.getRow(lastRow+4).getCell(3).setCellValue("Date :" + outputFormat.format(todaysDate));
+            sheet.getRow(lastRow + 4).createCell(3);
+            sheet.getRow(lastRow + 4).getCell(3).setCellValue("Date :" + outputFormat.format(todaysDate));
 
-            sheet.getRow(lastRow+3).createCell(9);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+3, lastRow+3, 9, 11)); // TOTAL COMMISSION AMOUNTS
-            sheet.getRow(lastRow+3).getCell(9).setCellValue("TOTAL COMMISSION AMOUNTS  :  "+ (commisionsSum));
+            sheet.getRow(lastRow + 3).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 3, lastRow + 3, 9, 11)); // TOTAL COMMISSION AMOUNTS
+            sheet.getRow(lastRow + 3).getCell(9).setCellValue("TOTAL COMMISSION AMOUNTS  :  " + (commisionsSum));
 
-            sheet.getRow(lastRow+4).createCell(9);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+4, lastRow+4, 9, 11)); // NET AMOUNTS FOR AGENTS DEBIT
-            sheet.getRow(lastRow+4).getCell(9).setCellValue("NET AMOUNTS FOR AGEMTS DEBIT  :  " + (basePriceSum - commisionsSum));
+            sheet.getRow(lastRow + 4).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 4, lastRow + 4, 9, 11)); // NET AMOUNTS FOR AGENTS DEBIT
+            sheet.getRow(lastRow + 4).getCell(9).setCellValue("NET AMOUNTS FOR AGEMTS DEBIT  :  " + (basePriceSum - commisionsSum));
 
-            sheet.createRow(lastRow+5).createCell(9);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+5, lastRow+5, 9, 11)); // TOTAL BANK REMMITTANCE TO AIRVIA
-            sheet.getRow(lastRow+5).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA  :  " + (priceSum - commisionsSum));
+            sheet.createRow(lastRow + 5).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 5, lastRow + 5, 9, 11)); // TOTAL BANK REMMITTANCE TO AIRVIA
+            sheet.getRow(lastRow + 5).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA  :  " + (priceSum - commisionsSum));
 
 
 //        sheet.getRow(1).getCell(0).setCellValue("1");
+            signature(sheet,lastRow+6,0,"INDIVIDUAL DOMESTIC SALES REPORT",staffID);
 
-            for(int x = 0; x < columnTitles.length; x++) {
+            for (int x = 0; x < columnTitles.length; x++) {
                 sheet.autoSizeColumn(x);
             }
             // write the workbook to a file
             try {
-                FileOutputStream outputStream = new FileOutputStream("IndividualDomestic.xlsx");
+                FileOutputStream outputStream = new FileOutputStream("reports/"+staffID+"-"+"IndividualDomestic"+datefrom+"-"+dateTo+".xlsx");
                 workbook.write(outputStream);
                 workbook.close();
             } catch (IOException e) {
@@ -1031,7 +1162,8 @@ public class Report {
             e.printStackTrace();
         }
     }
-    public void globalDomesticSalesReport(){
+
+    public void globalDomesticSalesReport() {
         //global interline
         workbook = new XSSFWorkbook();
 
@@ -1040,7 +1172,7 @@ public class Report {
 
         // create a header row
         headerRow = sheet.createRow(0);
-        String[] columnTitles = {"NO. ","NO.OF. S. ","STAFF ID", "BASE PRICE USD", "TAX SUM","CASH PAYMENT ","CARD PAYMENT", "5 % COMMISSION RATE ",  " 9 % COMMISSION RATE","TOTAL PAID","TOTAL COMMISSION" };
+        String[] columnTitles = {"NO. ", "NO.OF. S. ", "STAFF ID", "BASE PRICE USD", "TAX SUM", "CASH PAYMENT ", "CARD PAYMENT", "5 % COMMISSION RATE ", " 9 % COMMISSION RATE", "TOTAL PAID", "TOTAL COMMISSION"};
         String setmode = "SET sql_mode = '';";
         String sql3 = "" +
                 "SELECT \n" +
@@ -1068,7 +1200,7 @@ public class Report {
                 "WHERE sale.saleID IN (\n" +
                 "    SELECT distinct saleID FROM soldBlanks WHERE blankID LIKE '2%' or blankID LIKE '1%'\n" +
                 "  )" +
-                "   AND date >= '"+datefrom+"' AND date <= '"+dateTo+"'" +
+                "   AND date >= '" + datefrom + "' AND date <= '" + dateTo + "'" +
                 "  GROUP BY  conversionRate,paymentType, commissionSum, staffID\n" +
                 ") AS subquery\n" +
                 "GROUP BY subquery.staffID; ";
@@ -1079,20 +1211,14 @@ public class Report {
         try {
             db.connect();
             PreparedStatement stmt = db.getConnection().prepareStatement(setmode);
-//             PreparedStatement querys = db.connection.prepareStatement(sql3);
-//            String query = querys.toString();
-//            System.out.println("Executing query: " + query);
-//             stmt.executeUpdate();
-//             querys.executeUpdate();
-//             String query = db.statement.executeQuery(sql3);
-//            System.out.println(query);
+            stmt.executeUpdate();
             rs = db.executeQuery(sql3);
 
 
             rs.last();
             int lastRow = rs.getRow();
             System.out.println(lastRow);
-            for (int i = 0; i < lastRow+2; i++) {
+            for (int i = 0; i < lastRow + 2; i++) {
                 row = sheet.createRow(i);
                 for (int j = 0; j < columnTitles.length; j++) {
                     cell = row.createCell(j);
@@ -1104,7 +1230,7 @@ public class Report {
                     sheet.autoSizeColumn(j);
                 }
             }
-            for(int j = 0; j < columnTitles.length; j++) {
+            for (int j = 0; j < columnTitles.length; j++) {
                 sheet.getRow(0).getCell(j).setCellValue(columnTitles[j]);
             }
             int i = 1;
@@ -1112,7 +1238,7 @@ public class Report {
             int taxSumm = 0;
             int priceSum = 0;
             int basePriceSum = 0;
-            double commissionsSum=0;
+            double commissionsSum = 0;
             int count = 1;
             rs.beforeFirst();
             while (rs.next()) {
@@ -1121,7 +1247,7 @@ public class Report {
                 System.out.println(queryStaffID);
                 Double base_price = rs.getDouble(3);
                 System.out.println(base_price);
-                taxSum  = rs.getDouble(4);
+                taxSum = rs.getDouble(4);
                 System.out.println(taxSum);
                 int payedCash = rs.getInt(5);
                 System.out.println(payedCash);
@@ -1136,14 +1262,14 @@ public class Report {
                 Double totalCommission = rs.getDouble(10);
                 System.out.println(totalCommission);
                 taxSumm += taxSum;
-                priceSum += payedCash+payedCard;
+                priceSum += payedCash + payedCard;
                 basePriceSum += base_price;
-                commissionsSum += commission10+commission15;
+                commissionsSum += commission10 + commission15;
                 sheet.getRow(i).getCell(j).setCellValue(i);
                 j++;
-                sheet.getRow(i).getCell(j).setCellValue(numberOfSales );
+                sheet.getRow(i).getCell(j).setCellValue(numberOfSales);
                 j++;
-                sheet.getRow(i).getCell(j).setCellValue(queryStaffID +"\n" );
+                sheet.getRow(i).getCell(j).setCellValue(queryStaffID + "\n");
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(base_price);
                 j++;
@@ -1161,56 +1287,58 @@ public class Report {
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(totalCommission);
                 j++;
-                j=0;
+                j = 0;
                 i++;
 
-            }for(int k = 0; k < columnTitles.length; k++) {
+            }
+            for (int k = 0; k < columnTitles.length; k++) {
                 sheet.autoSizeColumn(j);
             }
 
-            sheet.getRow(lastRow+1).getCell(0).setCellValue("TOTALS ");
-            sheet.getRow(lastRow+1).getCell(3).setCellValue(basePriceSum);
-            sheet.getRow(lastRow+1).getCell(4).setCellValue(taxSumm);
-            sheet.getRow(lastRow+1).getCell(9).setCellValue(priceSum);
-            sheet.getRow(lastRow+1).getCell(10).setCellValue(commissionsSum);
+            sheet.getRow(lastRow + 1).getCell(0).setCellValue("TOTALS ");
+            sheet.getRow(lastRow + 1).getCell(3).setCellValue(basePriceSum);
+            sheet.getRow(lastRow + 1).getCell(4).setCellValue(taxSumm);
+            sheet.getRow(lastRow + 1).getCell(9).setCellValue(priceSum);
+            sheet.getRow(lastRow + 1).getCell(10).setCellValue(commissionsSum);
 
             ///
-            sheet.createRow(lastRow+3).createCell(3);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+3, lastRow+3, 3, 4)); // StaffID
+            sheet.createRow(lastRow + 3).createCell(3);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 3, lastRow + 3, 3, 4)); // StaffID
 
 
-            sheet.getRow(lastRow+3).createCell(5);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+3, lastRow+3, 5, 7)); // Date From
-            sheet.getRow(lastRow+3).getCell(5).setCellValue("Date From   :  "+ outputFormat.format(dateFromDate));
+            sheet.getRow(lastRow + 3).createCell(5);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 3, lastRow + 3, 5, 7)); // Date From
+            sheet.getRow(lastRow + 3).getCell(5).setCellValue("Date From   :  " + outputFormat.format(dateFromDate));
 
-            sheet.createRow(lastRow+4).createCell(5);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+4, lastRow+4, 5, 7)); // Date To
-            sheet.getRow(lastRow+4).getCell(5).setCellValue("Date to   :  "+ outputFormat.format(dateToDate));
+            sheet.createRow(lastRow + 4).createCell(5);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 4, lastRow + 4, 5, 7)); // Date To
+            sheet.getRow(lastRow + 4).getCell(5).setCellValue("Date to   :  " + outputFormat.format(dateToDate));
 
-            sheet.getRow(lastRow +4).createCell(3);
-            sheet.getRow(lastRow+4).getCell(3).setCellValue("Date :" + outputFormat.format(todaysDate));
+            sheet.getRow(lastRow + 4).createCell(3);
+            sheet.getRow(lastRow + 4).getCell(3).setCellValue("Date :" + outputFormat.format(todaysDate));
 
-            sheet.getRow(lastRow+3).createCell(9);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+3, lastRow+3, 9, 11)); // TOTAL COMMISSION AMOUNTS
-            sheet.getRow(lastRow+3).getCell(9).setCellValue("TOTAL COMMISSION AMOUNTS  :  "+ (commissionsSum));
+            sheet.getRow(lastRow + 3).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 3, lastRow + 3, 9, 11)); // TOTAL COMMISSION AMOUNTS
+            sheet.getRow(lastRow + 3).getCell(9).setCellValue("TOTAL COMMISSION AMOUNTS  :  " + (commissionsSum));
 
-            sheet.getRow(lastRow+4).createCell(9);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+4, lastRow+4, 9, 11)); // NET AMOUNTS FOR AGENTS DEBIT
-            sheet.getRow(lastRow+4).getCell(9).setCellValue("NET AMOUNTS FOR AGEMTS DEBIT  :  " + (basePriceSum - commissionsSum));
+            sheet.getRow(lastRow + 4).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 4, lastRow + 4, 9, 11)); // NET AMOUNTS FOR AGENTS DEBIT
+            sheet.getRow(lastRow + 4).getCell(9).setCellValue("NET AMOUNTS FOR AGEMTS DEBIT  :  " + (basePriceSum - commissionsSum));
 
-            sheet.createRow(lastRow+5).createCell(9);
-            sheet.addMergedRegion(new CellRangeAddress(lastRow+5, lastRow+5, 9, 11)); // TOTAL BANK REMMITTANCE TO AIRVIA
-            sheet.getRow(lastRow+5).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA  :  " + (priceSum - commissionsSum));
+            sheet.createRow(lastRow + 5).createCell(9);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow + 5, lastRow + 5, 9, 11)); // TOTAL BANK REMMITTANCE TO AIRVIA
+            sheet.getRow(lastRow + 5).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA  :  " + (priceSum - commissionsSum));
 
             ///
 //        sheet.getRow(1).getCell(0).setCellValue("1");
+            signature(sheet,lastRow+6,0,"GLOBAL DOMESTIC SALES REPORT",staffID);
 
-            for(int x = 0; x < columnTitles.length; x++) {
+            for (int x = 0; x < columnTitles.length; x++) {
                 sheet.autoSizeColumn(x);
             }
             // write the workbook to a file
             try {
-                FileOutputStream outputStream = new FileOutputStream("GlobalDomestic.xlsx");
+                FileOutputStream outputStream = new FileOutputStream("reports/GlobalDomestic"+datefrom+"-"+dateTo+".xlsx");
                 workbook.write(outputStream);
                 workbook.close();
             } catch (IOException e) {
@@ -1224,82 +1352,83 @@ public class Report {
         }
     }
 
-    public void generateInterlineSalesReportTemplatePerAdvisor(){
-        workbook = new XSSFWorkbook();
-
-        // create a new sheet
-        sheet = workbook.createSheet("Sheet1");
-
-        // create a header row
-         headerRow = sheet.createRow(0);
-
-        // add column titles to header row
-        String[] columnTitles = {"NO. ","BLANKS", "PRICE USD", "PRICE CURRNECY", "CONVERSION RATE", "TAXES", "TAX RATE",
-                "CASH", "CARD NUMBER", "COMMISSION RATE", "COMMISSION SUM", "TOTAL AMOUNTS PAID"};
-//        int rowCount = 10;
-//        int columnCount = columnTitles.length;
-//        Row firstRow = sheet.createRow(0);
-//        for(int j = 0; j < columnCount; j++) {
-//            Cell cell = firstRow.createCell(j);
-//            cell.setCellValue(columnTitles[j]);
-//        }
-//        for(int i = 1; i < rowCount; i++) {
-//            Row row = sheet.createRow(i);
-//            for(int j = 0; j < columnCount; j++) {
-//                Cell cell = row.createCell(j);
-//                cell.setCellValue("Cell " + j + "," + i);
+//    public void generateInterlineSalesReportTemplatePerAdvisor() {
+//        workbook = new XSSFWorkbook();
+//
+//        // create a new sheet
+//        sheet = workbook.createSheet("Sheet1");
+//
+//        // create a header row
+//        headerRow = sheet.createRow(0);
+//
+//        // add column titles to header row
+//        String[] columnTitles = {"NO. ", "BLANKS", "PRICE USD", "PRICE CURRNECY", "CONVERSION RATE", "TAXES", "TAX RATE",
+//                "CASH", "CARD NUMBER", "COMMISSION RATE", "COMMISSION SUM", "TOTAL AMOUNTS PAID"};
+////        int rowCount = 10;
+////        int columnCount = columnTitles.length;
+////        Row firstRow = sheet.createRow(0);
+////        for(int j = 0; j < columnCount; j++) {
+////            Cell cell = firstRow.createCell(j);
+////            cell.setCellValue(columnTitles[j]);
+////        }
+////        for(int i = 1; i < rowCount; i++) {
+////            Row row = sheet.createRow(i);
+////            for(int j = 0; j < columnCount; j++) {
+////                Cell cell = row.createCell(j);
+////                cell.setCellValue("Cell " + j + "," + i);
+////            }
+////        }/////////////
+//        for (int i = 0; i < 10; i++) {
+//            row = sheet.createRow(i);
+//            for (int j = 0; j < columnTitles.length; j++) {
+//                cell = row.createCell(j);
+//                cell.setCellValue("Cell " + i + "," + j);
+//                // Set center alignment and autosize the column width
+//                CellStyle cellStyle = workbook.createCellStyle();
+//                cellStyle.setAlignment(HorizontalAlignment.CENTER);
+//                cell.setCellStyle(cellStyle);
+//                sheet.autoSizeColumn(j);
 //            }
-//        }/////////////
-        for (int i = 0; i < 10; i++) {
-            row = sheet.createRow(i);
-            for (int j = 0; j < columnTitles.length; j++) {
-                cell = row.createCell(j);
-                cell.setCellValue("Cell " + i + "," + j);
-                // Set center alignment and autosize the column width
-                CellStyle cellStyle = workbook.createCellStyle();
-                cellStyle.setAlignment(HorizontalAlignment.CENTER);
-                cell.setCellStyle(cellStyle);
-                sheet.autoSizeColumn(j);
-            }
-        }
-        for(int j = 0; j < columnTitles.length; j++) {
-            sheet.getRow(0).getCell(j).setCellValue(columnTitles[j]);
-        }
-
-        /////////////
-        for(int j = 0; j < columnTitles.length; j++) {
-            sheet.autoSizeColumn(j);
-        }
-        sheet.getRow(9).getCell(0).setCellValue("TOTALS ");
-
-        sheet.createRow(11).createCell(9);
-        sheet.addMergedRegion(new CellRangeAddress(11, 11, 9, 10));//COMMISSIONS
-        sheet.getRow(11).getCell(9).setCellValue("TOTAL COMMISSION AMOUNTS");
-
-        sheet.createRow(12).createCell(9);
-        sheet.addMergedRegion(new CellRangeAddress(12, 12, 9, 10));//COMMISSIONS
-        sheet.getRow(12).getCell(9).setCellValue("NET AMOUNTS FOR AGEMTS DEBIT");
-
-        sheet.createRow(13).createCell(9);
-        sheet.addMergedRegion(new CellRangeAddress(13, 13, 9, 10));//COMMISSIONS
-        sheet.getRow(13).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA");
-
-//        sheet.getRow(1).getCell(0).setCellValue("1");
-
-
-//        populateSalesReport(sheet);
-        for(int j = 0; j < columnTitles.length; j++) {
-            sheet.autoSizeColumn(j);
-        }
-        // write the workbook to a file
-        try {
-            FileOutputStream outputStream = new FileOutputStream("excel-sheet.xlsx");
-            workbook.write(outputStream);
-            workbook.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//        }
+//        for (int j = 0; j < columnTitles.length; j++) {
+//            sheet.getRow(0).getCell(j).setCellValue(columnTitles[j]);
+//        }
+//
+//        /////////////
+//        for (int j = 0; j < columnTitles.length; j++) {
+//            sheet.autoSizeColumn(j);
+//        }
+//        sheet.getRow(9).getCell(0).setCellValue("TOTALS ");
+//
+//        sheet.createRow(11).createCell(9);
+//        sheet.addMergedRegion(new CellRangeAddress(11, 11, 9, 10));//COMMISSIONS
+//        sheet.getRow(11).getCell(9).setCellValue("TOTAL COMMISSION AMOUNTS");
+//
+//        sheet.createRow(12).createCell(9);
+//        sheet.addMergedRegion(new CellRangeAddress(12, 12, 9, 10));//COMMISSIONS
+//        sheet.getRow(12).getCell(9).setCellValue("NET AMOUNTS FOR AGEMTS DEBIT");
+//
+//        sheet.createRow(13).createCell(9);
+//        sheet.addMergedRegion(new CellRangeAddress(13, 13, 9, 10));//COMMISSIONS
+//        sheet.getRow(13).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA");
+//
+////        sheet.getRow(1).getCell(0).setCellValue("1");
+//
+//
+////        populateSalesReport(sheet);
+//        for (int j = 0; j < columnTitles.length; j++) {
+//            sheet.autoSizeColumn(j);
+//        }
+//        // write the workbook to a file
+//        try {
+//            FileOutputStream outputStream = new FileOutputStream("excel-sheet.xlsx");
+//            workbook.write(outputStream);
+//            workbook.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
 }
 
 
