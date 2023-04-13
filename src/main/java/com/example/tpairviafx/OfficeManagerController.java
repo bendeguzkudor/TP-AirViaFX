@@ -38,6 +38,8 @@ public class OfficeManagerController implements Initializable {
     @FXML
     private TableView blanksTableView;
     @FXML
+    private TextField customerSearchTextField;
+    @FXML
     private TextField searchBlankIDTextField;
     ObservableList<Blank> blankObservableList = FXCollections.observableArrayList();
     private ObservableList<Blank> selectedBlanksList;
@@ -98,6 +100,34 @@ public class OfficeManagerController implements Initializable {
         this.staffID = staffID;
     }
 
+    //////////////////////////////////
+    @FXML
+    private TableColumn<SaleForm, Integer> customercolumn1;
+
+    @FXML
+    private TableColumn<SaleForm, String> firstnamecolumn1;
+
+    @FXML
+    private TableColumn<SaleForm, String> lastnamecolumn1;
+
+    @FXML
+    private TableColumn<SaleForm, Integer> pricecolumn1;
+
+    @FXML
+    private TableColumn<SaleForm, Integer> saleIDColumn1;
+
+    @FXML
+    private TableColumn<SaleForm, Integer> staffIDColumn1;
+
+    ObservableList<SaleForm> saleObservableList = FXCollections.observableArrayList();
+    private ObservableList<SaleForm> selectedSaleList;
+    @FXML
+    private TableView saleTableView;
+    @FXML
+    private TextField searchTextfield;
+
+    /////////////////////////////////
+
 
     private int staffID;
     private String chosenBlank;
@@ -124,6 +154,7 @@ public class OfficeManagerController implements Initializable {
 
         blankChoiceBox.getItems().addAll(blankTypes);
         blankChoiceBox.setOnAction(this::getblankChosen);
+        populateSaleTable();
 
     }
     public void addStaffToChoiceBox(){
@@ -397,6 +428,80 @@ public class OfficeManagerController implements Initializable {
 
     }
     public void generatePDF(){
+
+    }
+    public  void populateSaleTable(){
+        saleObservableList.clear();
+        DBConnect db = new DBConnect();
+
+//        ResultSet rs;
+        String sql = "SELECT staffID, sale.saleID, sale.price , sale.customerID, customer.firstname, customer.lastname FROM sale\n" +
+                "                JOIN customer ON sale.customerID = customer.id where refund = -1;";
+        ResultSet rs;
+
+        try{
+            db.connect();
+            rs = db.executeQuery(sql);
+            while(rs.next()){
+                Integer queryStaffID = rs.getInt("staffID");
+                System.out.println(queryStaffID);
+                Integer querySaleID = rs.getInt(2);
+                System.out.println(querySaleID);
+                Integer queryprice = rs.getInt(3);
+                System.out.println(queryprice);
+                Integer queryCustomerID = rs.getInt(4);
+                String queryfirstname = rs.getString(5);
+                String querylastname = rs.getString(6);
+
+                //Populate the list
+                saleObservableList.add(new SaleForm(queryStaffID, querySaleID,queryprice,queryCustomerID, queryfirstname,querylastname));
+            }
+            staffIDColumn1.setCellValueFactory(new PropertyValueFactory<>("staffID"));
+            saleIDColumn1.setCellValueFactory(new PropertyValueFactory<>("saleID"));
+            pricecolumn1.setCellValueFactory(new PropertyValueFactory<>("price"));
+            customercolumn1.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+            firstnamecolumn1.setCellValueFactory(new PropertyValueFactory<>("firstname"));
+            lastnamecolumn1.setCellValueFactory(new PropertyValueFactory<>("lastname"));
+
+
+
+            saleTableView.setItems(saleObservableList);
+
+            FilteredList<SaleForm> filteredData = new FilteredList<>(saleObservableList, b->true);
+            customerSearchTextField.textProperty().addListener((observable, oldValue, newValue)->{
+                filteredData.setPredicate(salesearchmodel -> {
+                    if(newValue.isEmpty() || newValue.isBlank() || newValue == null){
+                        return true;
+                    }
+                    String searchkeyword = newValue.toLowerCase();
+                    if(salesearchmodel.getFirstname().toLowerCase().indexOf(searchkeyword) > -1){
+                        return true;
+
+                    }else
+                        return salesearchmodel.getLastname().toLowerCase().indexOf(searchkeyword) > -1;
+                });
+            });
+            SortedList<SaleForm> sortedData = new SortedList<>(filteredData);
+            sortedData.comparatorProperty().bind(saleTableView.comparatorProperty());
+            saleTableView.setItems(sortedData);
+            selectedSaleList = saleTableView.getSelectionModel().getSelectedItems();
+//            System.out.println("selected customer");
+
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }finally {
+            db.closeConnection();
+        }
+    }
+    public void approveRefund() throws SQLException {
+        int saleID = selectedSaleList.get(0).getSaleID();
+        String sql = "UPDATE sale set refund = 1 where refund = -1 and saleID = "+saleID+";";
+        DBConnect db = new DBConnect();
+        db.connect();
+        PreparedStatement pstmt = db.getConnection().prepareStatement(sql);
+        int result = pstmt.executeUpdate();
+        System.out.println(result);
+        populateSaleTable();
 
     }
 

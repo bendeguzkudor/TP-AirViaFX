@@ -9,10 +9,10 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.OfficeManagerController">
+<AnchorPane prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: lightgrey;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.OfficeManagerController">
    <children>
-      <Button fx:id="logoutButton" layoutX="924.0" layoutY="14.0" mnemonicParsing="false" onAction="#logOut" text="Log Out" />
-      <AnchorPane layoutX="17.0" layoutY="16.0" prefHeight="294.0" prefWidth="516.0" style="-fx-background-color: lightblue;">
+      <Button fx:id="logoutButton" layoutX="933.0" layoutY="4.0" mnemonicParsing="false" onAction="#logOut" style="-fx-background-color: #3FB93B;" text="Log Out" />
+      <AnchorPane layoutX="17.0" layoutY="51.0" prefHeight="314.0" prefWidth="436.0" style="-fx-background-color: #31AED1;">
          <children>
             <TableView fx:id="staffTableView" layoutX="21.0" layoutY="76.0" prefHeight="189.0" prefWidth="270.0">
               <columns>
@@ -21,27 +21,29 @@
               </columns>
             </TableView>
             <TextField fx:id="searchTextField" layoutX="36.0" layoutY="40.0" promptText="Search Staff by name" />
-            <Button fx:id="assignButton" layoutX="380.0" layoutY="158.0" mnemonicParsing="false" onAction="#assignBlanks" text="Assign" />
-            <ChoiceBox fx:id="blankChoiceBox" layoutX="332.0" layoutY="52.0" prefWidth="150.0" />
-            <TextField fx:id="amountTextField" layoutX="391.0" layoutY="94.0" prefHeight="26.0" prefWidth="35.0" />
+            <Button fx:id="assignButton" layoutX="322.0" layoutY="157.0" mnemonicParsing="false" onAction="#assignBlanks" style="-fx-background-color: #3FB93B;" text="Assign" />
+            <ChoiceBox fx:id="blankChoiceBox" layoutX="298.0" layoutY="52.0" prefHeight="27.0" prefWidth="118.0" />
+            <TextField fx:id="amountTextField" layoutX="333.0" layoutY="106.0" prefHeight="26.0" prefWidth="35.0" />
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="15.0" layoutY="327.0" prefHeight="332.0" prefWidth="421.0" style="-fx-background-color: pink;">
+      <AnchorPane layoutX="17.0" layoutY="395.0" prefHeight="383.0" prefWidth="426.0" style="-fx-background-color: #31AED1;">
          <children>
             <Label layoutX="14.0" layoutY="5.0" text="Generate Report" />
             <ChoiceBox fx:id="typeChoiceBox" layoutX="36.0" layoutY="55.0" prefWidth="150.0" />
             <Label layoutX="21.0" layoutY="32.0" text="Select type" />
             <ChoiceBox fx:id="advisorChoiceBox" layoutX="260.0" layoutY="55.0" prefWidth="150.0" />
             <Label layoutX="217.0" layoutY="32.0" text="Select Advisor" />
-            <DatePicker fx:id="dateFromDatePicker" layoutX="17.0" layoutY="139.0" />
-            <DatePicker fx:id="dateToDatePicker" layoutX="227.0" layoutY="140.0" />
-            <Button layoutX="190.0" layoutY="231.0" mnemonicParsing="false" onAction="#generateReport" text="Generate" />
+            <DatePicker fx:id="dateFromDatePicker" layoutX="22.0" layoutY="200.0" />
+            <DatePicker fx:id="dateToDatePicker" layoutX="220.0" layoutY="197.0" />
+            <Button layoutX="170.0" layoutY="295.0" mnemonicParsing="false" onAction="#generateReport" style="-fx-background-color: #3FB93B;" text="Generate" />
+            <Label layoutX="72.0" layoutY="153.0" text="Date From" />
+            <Label layoutX="295.0" layoutY="154.0" text="Date To" />
          </children>
       </AnchorPane>
-      <Button fx:id="manageCustomerDiscountButton" layoutX="576.0" layoutY="33.0" mnemonicParsing="false" onAction="#manageCustomerDiscount" text="Manage Customer Discount" />
-      <AnchorPane layoutX="486.0" layoutY="325.0" prefHeight="380.0" prefWidth="483.0" style="-fx-background-color: lightgreen;">
+      <Button fx:id="manageCustomerDiscountButton" layoutX="423.0" layoutY="11.0" mnemonicParsing="false" onAction="#manageCustomerDiscount" style="-fx-background-color: #3FB93B;" text="Manage Customer Discount" />
+      <AnchorPane layoutX="483.0" layoutY="397.0" prefHeight="382.0" prefWidth="486.0" style="-fx-background-color: #31AED1;">
          <children>
-            <TableView fx:id="blanksTableView" layoutX="21.0" layoutY="45.0" prefHeight="258.0" prefWidth="437.0">
+            <TableView fx:id="blanksTableView" layoutX="23.0" layoutY="72.0" prefHeight="258.0" prefWidth="437.0">
                <columns>
                   <TableColumn fx:id="blankIDColumn" prefWidth="75.0" text="Blank ID" />
                   <TableColumn fx:id="assignedToColumn" prefWidth="75.0" text="Assigned To" />
@@ -50,10 +52,28 @@
                   <TableColumn fx:id="dateAssignedColumn" prefWidth="104.60641479492188" text="Date Assigned" />
                </columns>
             </TableView>
-            <ChoiceBox fx:id="reAssignTochoiceBox" layoutX="207.0" layoutY="317.0" prefHeight="27.0" prefWidth="109.0" />
-            <Button layoutX="344.0" layoutY="318.0" mnemonicParsing="false" onAction="#reAssign" text="Re-Assign" />
-            <TextField fx:id="searchBlankIDTextField" layoutX="70.0" layoutY="5.0" />
-            <Label layoutX="20.0" layoutY="10.0" text="Search" />
+            <ChoiceBox fx:id="reAssignTochoiceBox" layoutX="176.0" layoutY="335.0" prefHeight="27.0" prefWidth="109.0" />
+            <Button layoutX="344.0" layoutY="331.0" mnemonicParsing="false" onAction="#reAssign" style="-fx-background-color: #3FB93B;" text="Re-Assign" />
+            <TextField fx:id="searchBlankIDTextField" layoutX="69.0" layoutY="41.0" />
+            <Label layoutX="23.0" layoutY="47.0" text="Search" />
+            <Label layoutX="8.0" layoutY="6.0" text="Manage Blanks" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="483.0" layoutY="51.0" prefHeight="314.0" prefWidth="491.0" style="-fx-background-color: #31AED1;">
+         <children>
+            <TableView fx:id="saleTableView" layoutX="19.0" layoutY="57.0" prefHeight="210.0" prefWidth="457.0">
+               <columns>
+                  <TableColumn fx:id="staffIDColumn1" prefWidth="75.0" text="Staff ID" />
+                  <TableColumn fx:id="saleIDColumn1" prefWidth="75.0" text="Sale ID" />
+                  <TableColumn fx:id="pricecolumn1" prefWidth="75.0" text="Price GBP" />
+                  <TableColumn fx:id="customercolumn1" prefWidth="75.0" text="Customer ID" />
+                  <TableColumn fx:id="firstnamecolumn1" prefWidth="75.0" text="First Name" />
+                  <TableColumn fx:id="lastnamecolumn1" prefWidth="75.0" text="Last Name" />
+               </columns>
+            </TableView>
+            <Button layoutX="160.0" layoutY="276.0" mnemonicParsing="false" onAction="#approveRefund" style="-fx-background-color: #3FB93B;" text="Approve Selected for refund" />
+            <TextField fx:id="customerSearchTextField" layoutX="20.0" layoutY="21.0" />
+            <Label layoutX="168.0" layoutY="7.0" text="Manage Refund Requests" />
          </children>
       </AnchorPane>
    </children>

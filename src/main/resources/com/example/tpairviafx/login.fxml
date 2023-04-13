@@ -15,7 +15,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.LoginController">
    <left>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: black;" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #31AED1;" BorderPane.alignment="CENTER">
          <children>
             <Label alignment="CENTER" layoutX="3.0" layoutY="57.0" prefHeight="17.0" prefWidth="197.0" text="AirVia " textAlignment="CENTER" textFill="WHITE">
                <font>
@@ -25,7 +25,7 @@
                   <DropShadow blurType="ONE_PASS_BOX" />
                </effect>
             </Label>
-            <Label alignment="CENTER" layoutX="3.0" layoutY="149.0" prefHeight="17.0" prefWidth="197.0" text="Manegement System" textAlignment="CENTER" textFill="WHITE">
+            <Label alignment="CENTER" layoutX="3.0" layoutY="149.0" prefHeight="19.0" prefWidth="210.0" text="Air Ticket Sales System" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Verdana Bold" size="15.0" />
                </font>
@@ -34,7 +34,7 @@
                </effect>
             </Label>
             <Line endX="80.0" layoutX="101.0" layoutY="125.0" startX="-80.0" stroke="WHITE" strokeWidth="3.0" style="background: white;" />
-            <ImageView fitHeight="202.0" fitWidth="275.0" layoutY="198.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="212.0" fitWidth="244.0" layoutY="188.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../../../logo.png" />
                </image>
@@ -45,7 +45,7 @@
    <right>
       <AnchorPane prefHeight="400.0" prefWidth="399.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" layoutX="79.0" layoutY="65.0" prefHeight="41.0" prefWidth="219.0" text="Secure Login" textAlignment="CENTER">
+            <Label alignment="CENTER" layoutX="79.0" layoutY="65.0" prefHeight="41.0" prefWidth="219.0" text="Secure Login" textAlignment="CENTER" textFill="#31aed1">
                <font>
                   <Font name="Verdana Bold" size="23.0" />
                </font>
@@ -71,12 +71,12 @@
             </Label>
             <TextField fx:id="usernameTextField" layoutX="115.0" layoutY="165.0" prefHeight="26.0" prefWidth="174.0" promptText="Username" />
             <PasswordField fx:id="passwordField" layoutX="116.0" layoutY="218.0" prefHeight="26.0" prefWidth="173.0" promptText="Password" />
-            <Button fx:id="loginButton" layoutX="102.0" layoutY="262.0" mnemonicParsing="false" onAction="#loginButtonOnAction" prefHeight="30.0" prefWidth="196.0" style="-fx-background-color: #040404;" text="Login" textFill="WHITE">
+            <Button fx:id="loginButton" layoutX="102.0" layoutY="262.0" mnemonicParsing="false" onAction="#loginButtonOnAction" prefHeight="30.0" prefWidth="196.0" style="-fx-background-color: #31AED1;" text="Login" textFill="WHITE">
                <font>
                   <Font name="Verdana Bold" size="18.0" />
                </font>
             </Button>
-            <Button fx:id="cancelButton" layoutX="100.0" layoutY="320.0" mnemonicParsing="false" onAction="#cancelButtonOnAction" prefHeight="30.0" prefWidth="196.0" style="-fx-background-color: #040404;" text="Cancel" textFill="WHITE">
+            <Button fx:id="cancelButton" layoutX="100.0" layoutY="320.0" mnemonicParsing="false" onAction="#cancelButtonOnAction" prefHeight="30.0" prefWidth="196.0" style="-fx-background-color: #31AED1;" text="Cancel" textFill="WHITE">
                <font>
                   <Font name="Verdana Bold" size="18.0" />
                </font>

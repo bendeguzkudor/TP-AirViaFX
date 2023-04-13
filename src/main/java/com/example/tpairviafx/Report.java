@@ -106,7 +106,7 @@ public class Report {
             row = sheet.createRow(i);
             for (int j = 0; j < 16; j++) {
                 cell = row.createCell(j);
-                cell.setCellValue("Cell " + i + "," + j);
+//                cell.setCellValue("Cell " + i + "," + j);
                 // Set center alignment and autosize the column width
                 CellStyle cellStyle = workbook.createCellStyle();
                 cellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -487,7 +487,7 @@ public class Report {
             row = sheet.createRow(i);
             for (int j = 0; j < 21; j++) {
                 cell = row.createCell(j);
-                cell.setCellValue("Cell " + i + "," + j);
+//                cell.setCellValue("Cell " + i + "," + j);
 
                 CellStyle cellStyle = workbook.createCellStyle();
                 cellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -586,7 +586,11 @@ public class Report {
 
     public void individualInterlineSalesReport() {
         workbook = new XSSFWorkbook();
-
+        Font font = workbook.createFont();
+        font.setFontHeightInPoints((short) 13);
+        CellStyle cstyle = workbook.createCellStyle();
+        cstyle.setFont(font);
+        cstyle.setAlignment(HorizontalAlignment.CENTER);
         // create a new sheet
         sheet = workbook.createSheet("Sheet1");
 
@@ -627,7 +631,7 @@ public class Report {
                 row = sheet.createRow(i);
                 for (int j = 0; j < columnTitles.length; j++) {
                     cell = row.createCell(j);
-                    cell.setCellValue("Cell " + i + "," + j);
+//                    cell.setCellValue("Cell " + i + "," + j);
                     // Set center alignment and autosize the column width
                     CellStyle cellStyle = workbook.createCellStyle();
                     cellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -698,6 +702,7 @@ public class Report {
 
             sheet.getRow(lastRow + 1).getCell(0).setCellValue("TOTALS ");
             sheet.getRow(lastRow + 1).getCell(11).setCellValue(priceSum);
+            sheet.getRow(lastRow + 1).getCell(5).setCellValue(taxSumm);
             sheet.getRow(lastRow + 1).getCell(2).setCellValue(basePriceSum);
             sheet.getRow(lastRow + 1).getCell(10).setCellValue(commisionsSum);
             sheet.getRow(lastRow+1).getCell(3).setCellValue(priceSUMUSD);
@@ -730,9 +735,13 @@ public class Report {
             sheet.addMergedRegion(new CellRangeAddress(lastRow + 5, lastRow + 5, 9, 11)); // TOTAL BANK REMMITTANCE TO AIRVIA
             sheet.getRow(lastRow + 5).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA  :  " + (priceSum - commisionsSum));
 
+            sheet.createRow(lastRow+7).createCell(5);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow+7,lastRow+8, 5,8));
+            sheet.getRow(lastRow+7).getCell(5).setCellValue("INDIVIDUAL INTERLINE SALES REPORT");
+            sheet.getRow(lastRow+7).getCell(5).setCellStyle(cstyle);
+
 
 //        sheet.getRow(1).getCell(0).setCellValue("1");
-            signature(sheet,lastRow+2,0,"INDIVIDUAL INTERLINE SALES REPORT",staffID);
 
             for (int x = 0; x < columnTitles.length; x++) {
                 sheet.autoSizeColumn(x);
@@ -756,6 +765,11 @@ public class Report {
     public void globalInterLineSalesReport() {
         //global interline
         workbook = new XSSFWorkbook();
+        Font font = workbook.createFont();
+        font.setFontHeightInPoints((short) 15);
+        CellStyle cstyle = workbook.createCellStyle();
+        cstyle.setFont(font);
+        cstyle.setAlignment(HorizontalAlignment.CENTER);
 
         // create a new sheet
         sheet = workbook.createSheet("Sheet1");
@@ -826,7 +840,7 @@ public class Report {
                 "WHERE sale.saleID IN (\n" +
                 "    SELECT distinct saleID FROM soldBlanks WHERE blankID LIKE '4%'\n" +
                 "  )\n" +
-                "   AND date >= "+datefrom+" AND date <= "+datefrom+"" +
+                "   AND date >= "+datefrom+" AND date <= "+dateTo+"" +
                 "  GROUP BY  conversionRate,paymentType, commissionSum, staffID\n" +
                 ") AS subquery\n" +
                 "GROUP BY subquery.staffID; ";
@@ -854,7 +868,7 @@ public class Report {
                 row = sheet.createRow(i);
                 for (int j = 0; j < columnTitles.length; j++) {
                     cell = row.createCell(j);
-                    cell.setCellValue("Cell " + i + "," + j);
+//                    cell.setCellValue("Cell " + i + "," + j);
                     // Set center alignment and autosize the column width
                     CellStyle cellStyle = workbook.createCellStyle();
                     cellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -912,7 +926,7 @@ public class Report {
                 sheet.getRow(i).getCell(j).setCellValue(base_price);
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(base_price/conversionRate);
-                priceSUMUSD += price/conversionRate;
+                priceSUMUSD += base_price/conversionRate;
                 j++;
                 sheet.getRow(i).getCell(j).setCellValue(conversionRate);/////////////////////////////////////////////////////
                 j++;
@@ -977,7 +991,10 @@ public class Report {
             sheet.getRow(lastRow + 5).getCell(9).setCellValue("TOTAL BANK REMMITTANCE TO AIRVIA  :  " + (priceSum - commissionsSum));
 
             ///
-            signature(sheet,lastRow+6,0,"GLOBAL INTERLINE SALES REPORT",staffID);
+            sheet.createRow(lastRow+7).createCell(5);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow+7,lastRow+8, 5,8));
+            sheet.getRow(lastRow+7).getCell(5).setCellValue("GLOBAL INTERLINE SALES REPORT");
+            sheet.getRow(lastRow+7).getCell(5).setCellStyle(cstyle);
 //        sheet.getRow(1).getCell(0).setCellValue("1");
 
             for (int x = 0; x < columnTitles.length; x++) {
@@ -1001,6 +1018,12 @@ public class Report {
 
     public void domesticIndividualReport() {
         workbook = new XSSFWorkbook();
+        Font font = workbook.createFont();
+        font.setFontHeightInPoints((short) 15);
+        CellStyle cstyle = workbook.createCellStyle();
+        cstyle.setFont(font);
+        cstyle.setAlignment(HorizontalAlignment.CENTER);
+
 
         // create a new sheet
         sheet = workbook.createSheet("Sheet1");
@@ -1042,7 +1065,7 @@ public class Report {
                 row = sheet.createRow(i);
                 for (int j = 0; j < columnTitles.length; j++) {
                     cell = row.createCell(j);
-                    cell.setCellValue("Cell " + i + "," + j);
+//                    cell.setCellValue("Cell " + i + "," + j);
                     // Set center alignment and autosize the column width
                     CellStyle cellStyle = workbook.createCellStyle();
                     cellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -1142,7 +1165,10 @@ public class Report {
 
 
 //        sheet.getRow(1).getCell(0).setCellValue("1");
-            signature(sheet,lastRow+6,0,"INDIVIDUAL DOMESTIC SALES REPORT",staffID);
+            sheet.createRow(lastRow+7).createCell(5);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow+7,lastRow+8, 5,8));
+            sheet.getRow(lastRow+7).getCell(5).setCellValue("INDIVIDUAL DOMESTIC SALES REPORT");
+            sheet.getRow(lastRow+7).getCell(5).setCellStyle(cstyle);
 
             for (int x = 0; x < columnTitles.length; x++) {
                 sheet.autoSizeColumn(x);
@@ -1166,6 +1192,11 @@ public class Report {
     public void globalDomesticSalesReport() {
         //global interline
         workbook = new XSSFWorkbook();
+        Font font = workbook.createFont();
+        font.setFontHeightInPoints((short) 15);
+        CellStyle cstyle = workbook.createCellStyle();
+        cstyle.setFont(font);
+        cstyle.setAlignment(HorizontalAlignment.CENTER);
 
         // create a new sheet
         sheet = workbook.createSheet("Sheet1");
@@ -1222,7 +1253,7 @@ public class Report {
                 row = sheet.createRow(i);
                 for (int j = 0; j < columnTitles.length; j++) {
                     cell = row.createCell(j);
-                    cell.setCellValue("Cell " + i + "," + j);
+//                    cell.setCellValue("Cell " + i + "," + j);
                     // Set center alignment and autosize the column width
                     CellStyle cellStyle = workbook.createCellStyle();
                     cellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -1331,7 +1362,10 @@ public class Report {
 
             ///
 //        sheet.getRow(1).getCell(0).setCellValue("1");
-            signature(sheet,lastRow+6,0,"GLOBAL DOMESTIC SALES REPORT",staffID);
+            sheet.createRow(lastRow+7).createCell(5);
+            sheet.addMergedRegion(new CellRangeAddress(lastRow+7,lastRow+8, 5,8));
+            sheet.getRow(lastRow+7).getCell(5).setCellValue("GLOBAL DOMESTIC SALES REPORT");
+            sheet.getRow(lastRow+7).getCell(5).setCellStyle(cstyle);
 
             for (int x = 0; x < columnTitles.length; x++) {
                 sheet.autoSizeColumn(x);

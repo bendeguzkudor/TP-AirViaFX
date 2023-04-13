@@ -107,7 +107,7 @@ public class LoginController {
     public void loadAdmin() throws IOException {
         Stage stage = (Stage) loginButton.getScene().getWindow();
         fxmlLoader = new FXMLLoader(Application.class.getResource("Admin.fxml"));
-        scene = new Scene(fxmlLoader.load(), 1000, 800);
+        scene = new Scene(fxmlLoader.load(), 850, 700);
         adminController = fxmlLoader.getController();
         adminController.setStage(stage);
         stage.setScene(scene);

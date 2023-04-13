@@ -132,7 +132,8 @@ public class AdminController implements Initializable {
     public static void main(String[] args) throws IOException, InterruptedException {
         // ,/usr/local/mysql-8.0.32-macos13-x86_64/bin/mysqldump
 //     dbConnect.backupDatabase10("smcse-stuproj00.city.ac.uk",3306,"in2018g05_a","lPP1uVU0","in2018g05","/Users/bedikudor/Documents/tpairviafx/TP-AirViaFX/src/DB_Backup/backup"+randomnumber+".sql");
-
+    DBConnect dbConnect = new DBConnect();
+    dbConnect.restoreDatabase("smcse-stuproj00.city.ac.uk in2018g05","in2018g05_a", "lPP1uVU0", "in2018g05","/Users/bedikudor/Documents/tpairviafx/TP-AirViaFX/src/DB_Backup/backup91.sql");
     }
     public void setCommission(){
         String sql = "UPDATE commission_rates SET "+commissionChoiceBox.getValue().toLowerCase()+" = "+Double.parseDouble(commissionTextField.getText())+"";

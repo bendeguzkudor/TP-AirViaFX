@@ -10,19 +10,19 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.AdminController">
+<AnchorPane prefHeight="700.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tpairviafx.AdminController">
    <children>
-      <AnchorPane layoutX="14.0" layoutY="5.0" prefHeight="245.0" prefWidth="398.0" style="-fx-background-color: lightblue;">
+      <AnchorPane layoutX="14.0" layoutY="5.0" prefHeight="245.0" prefWidth="398.0" style="-fx-background-color: #31AED1;">
          <children>
             <Label layoutX="7.0" layoutY="6.0" text="Add blanks to stock" />
             <Label layoutX="10.0" layoutY="61.0" text="Choose blank type" />
             <TextField fx:id="amountTextField" layoutX="234.0" layoutY="78.0" prefHeight="27.0" prefWidth="38.0" />
             <Label fx:id="amountTextLabel" layoutX="199.0" layoutY="61.0" text="Amount" />
-            <Button fx:id="addButton" layoutX="288.0" layoutY="79.0" mnemonicParsing="false" onAction="#addBlanks" text="Add" />
+            <Button fx:id="addButton" layoutX="288.0" layoutY="79.0" mnemonicParsing="false" onAction="#addBlanks" style="-fx-background-color: #3FB93B;" text="Add" />
             <ChoiceBox fx:id="choiceBox2" layoutX="65.0" layoutY="81.0" prefWidth="150.0" />
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="13.0" layoutY="255.0" prefHeight="424.0" prefWidth="815.0" style="-fx-background-color: lightgreen;">
+      <AnchorPane layoutX="13.0" layoutY="255.0" prefHeight="424.0" prefWidth="815.0" style="-fx-background-color: #31AED1;">
          <children>
             <TableView fx:id="blanksTableView" layoutX="29.0" layoutY="120.0" prefHeight="261.0" prefWidth="465.0">
               <columns>
@@ -33,20 +33,20 @@
                   <TableColumn fx:id="dateAssignedColumn" prefWidth="104.60641479492188" text="Date Assigned" />
               </columns>
             </TableView>
-            <TextField fx:id="searchBlankIDTextField" layoutX="62.0" layoutY="51.0" promptText="Search Blank ID" />
-            <TextField fx:id="searchStaffIDBlankFIeld" layoutX="290.0" layoutY="51.0" promptText="Search Staff ID" />
-            <Button fx:id="removeBlankButton" layoutX="531.0" layoutY="155.0" mnemonicParsing="false" onAction="#removeBlank" text="Remove Blank" />
+            <TextField fx:id="searchBlankIDTextField" layoutX="62.0" layoutY="51.0" promptText="Search Blank ID" style="-fx-background-color: grey;" />
+            <TextField fx:id="searchStaffIDBlankFIeld" layoutX="290.0" layoutY="51.0" promptText="Search Staff ID" style="-fx-background-color: grey;" />
+            <Button fx:id="removeBlankButton" layoutX="531.0" layoutY="155.0" mnemonicParsing="false" onAction="#removeBlank" style="-fx-background-color: #3FB93B;" text="Remove Blank" />
          </children>
       </AnchorPane>
-      <Button layoutX="899.0" layoutY="26.0" mnemonicParsing="false" onAction="#logOut" text="LogOut" />
-      <AnchorPane layoutX="419.0" layoutY="8.0" prefHeight="241.0" prefWidth="233.0" style="-fx-background-color: red;">
+      <Button layoutX="751.0" layoutY="29.0" mnemonicParsing="false" onAction="#logOut" style="-fx-background-color: #3FB93B;" text="LogOut" />
+      <AnchorPane layoutX="419.0" layoutY="8.0" prefHeight="241.0" prefWidth="233.0" style="-fx-background-color: #31AED1;">
          <children>
             <Label layoutX="18.0" layoutY="16.0" text="Edit commission rates" />
             <ChoiceBox fx:id="commissionChoiceBox" layoutX="42.0" layoutY="58.0" prefWidth="150.0" />
-            <TextField fx:id="commissionTextField" alignment="CENTER" layoutX="69.0" layoutY="107.0" prefHeight="25.0" prefWidth="95.0" promptText="Rate" />
-            <Button layoutX="90.0" layoutY="167.0" mnemonicParsing="false" onAction="#setCommission" text="Set" />
+            <TextField fx:id="commissionTextField" alignment="CENTER" layoutX="69.0" layoutY="107.0" prefHeight="25.0" prefWidth="95.0" promptText="Rate" style="-fx-background-color: grey;" />
+            <Button layoutX="90.0" layoutY="167.0" mnemonicParsing="false" onAction="#setCommission" style="-fx-background-color: #3FB93B;" text="Set" />
          </children>
       </AnchorPane>
-      <Button fx:id="backUpButton" layoutX="828.0" layoutY="84.0" mnemonicParsing="false" onAction="#backupDatabase" text="Back up" />
+      <Button fx:id="backUpButton" layoutX="717.0" layoutY="85.0" mnemonicParsing="false" onAction="#backupDatabase" style="-fx-background-color: #3FB93B;" text="Back up Database" />
    </children>
 </AnchorPane>

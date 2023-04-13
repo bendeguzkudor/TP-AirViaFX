@@ -136,6 +136,7 @@ public class TravelAdvisorController implements Initializable {
 //    private ObservableList<FlightModel> flightsOnBlankList;
 
     private ManualTicketingController manualTicketingController;
+    private ManageSalesController manageSaleController;
 
 
     private String salePayment;
@@ -643,6 +644,19 @@ public class TravelAdvisorController implements Initializable {
         if (discountAlert.getResult() == okbutton){
             System.out.println("OK");
         }
+    }
+    public void manageSales() throws IOException {
+        Stage stage = new Stage();
+        fxmlLoader = new FXMLLoader(Application.class.getResource("ManageSales.fxml"));
+        scene = new Scene(fxmlLoader.load(), 600, 400);
+        stage.setScene(scene);
+        manageSaleController = fxmlLoader.getController();
+        manageSaleController.setStaffID(this.staffID);
+        manageSaleController.setPreviousScene(this.scene);
+        System.out.println(manageSaleController.getStaffID());
+
+        stage.show();
+
     }
 
 }
