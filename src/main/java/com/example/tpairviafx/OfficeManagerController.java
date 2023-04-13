@@ -172,6 +172,10 @@ public class OfficeManagerController implements Initializable {
              dateFrom = (dateFromDatePicker.getValue().format(dtf));
              dateTo = (dateToDatePicker.getValue().format(dtf));
             System.out.println(dateFrom+ " -  " + dateTo);
+            if (typeChosen.equals("Stock Turnover")){
+                Report report = new Report(dateFrom,dateTo,staffID);
+                report.createTicketStockTurnOverReport();
+            }
             if (advisorChoiceBox.getSelectionModel().isEmpty()){
                 System.out.println("empty");
                 // global

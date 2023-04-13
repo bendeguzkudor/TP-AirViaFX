@@ -24,7 +24,7 @@
             </Label>
             <Label fx:id="nameLabel" alignment="CENTER" layoutX="74.0" layoutY="11.0" prefHeight="28.0" prefWidth="186.0" text="Logged in ">
                <font>
-                  <Font name="Verdana Bold" size="22.0" />
+                  <Font name="Verdana Bold" size="14.0" />
                </font>
             </Label>
             <Label fx:id="roleLabel" alignment="CENTER" layoutX="56.0" layoutY="48.0" prefHeight="26.0" prefWidth="163.0" text="Logged in ">

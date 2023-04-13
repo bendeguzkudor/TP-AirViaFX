@@ -65,7 +65,7 @@ public class Report {
     private Date todaysDate;
 
     public static void main(String[] args) throws Exception {
-        Report report = new Report("20230401", "20230430", 888);
+        Report report = new Report("20230401", "20230430", 250);
 //        report.queryAssignedBlanks();
         report.createTicketStockTurnOverReport();
 //        report.generateSalesReport2();
@@ -587,7 +587,7 @@ public class Report {
     public void individualInterlineSalesReport() {
         workbook = new XSSFWorkbook();
         Font font = workbook.createFont();
-        font.setFontHeightInPoints((short) 13);
+        font.setFontHeightInPoints((short) 10);
         CellStyle cstyle = workbook.createCellStyle();
         cstyle.setFont(font);
         cstyle.setAlignment(HorizontalAlignment.CENTER);
@@ -766,7 +766,7 @@ public class Report {
         //global interline
         workbook = new XSSFWorkbook();
         Font font = workbook.createFont();
-        font.setFontHeightInPoints((short) 15);
+        font.setFontHeightInPoints((short) 12);
         CellStyle cstyle = workbook.createCellStyle();
         cstyle.setFont(font);
         cstyle.setAlignment(HorizontalAlignment.CENTER);
@@ -1019,7 +1019,7 @@ public class Report {
     public void domesticIndividualReport() {
         workbook = new XSSFWorkbook();
         Font font = workbook.createFont();
-        font.setFontHeightInPoints((short) 15);
+        font.setFontHeightInPoints((short) 12);
         CellStyle cstyle = workbook.createCellStyle();
         cstyle.setFont(font);
         cstyle.setAlignment(HorizontalAlignment.CENTER);
@@ -1193,7 +1193,7 @@ public class Report {
         //global interline
         workbook = new XSSFWorkbook();
         Font font = workbook.createFont();
-        font.setFontHeightInPoints((short) 15);
+        font.setFontHeightInPoints((short) 12);
         CellStyle cstyle = workbook.createCellStyle();
         cstyle.setFont(font);
         cstyle.setAlignment(HorizontalAlignment.CENTER);

@@ -308,11 +308,13 @@ public class Blank {
             case "Domestic":
                 if(noOfFlights == 2){
                     sql = "SELECT blankID FROM blanks WHERE SUBSTR(blankID, 1, 3) = '201' AND staffID ='"+ staffID +"'AND sold != 1";
-                }else{
+                }else if(noOfFlights == 1){
                     sql = "SELECT blankID FROM blanks WHERE SUBSTR(blankID, 1, 3) = '101' AND staffID ='"+ staffID +"'AND sold != 1";
-                }
+                }//Added break after demo, this is why it was not working for domestic flights in the demo. fixed when i got home
+                break;
             case "MCO":
                 sql = "SELECT blankID FROM blanks WHERE (SUBSTR(blankID, 1, 3) = '451' or SUBSTR(blankID, 1, 3) = '452') AND staffID ='"+ staffID +"'AND sold != 1";
+                break;
         }
         DBConnect db = new DBConnect();
         try {
