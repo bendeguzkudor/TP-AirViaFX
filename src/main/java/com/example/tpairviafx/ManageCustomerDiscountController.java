@@ -19,6 +19,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+/** Controller class that manages the Customer discount editing GUI */
+
 public class ManageCustomerDiscountController implements Initializable {
 
     @FXML
@@ -67,6 +69,10 @@ public class ManageCustomerDiscountController implements Initializable {
 
     private Scene previousScene;
 
+    /**
+
+     Populates the customer table with data from the database and sets up dynamic search functionality.
+     */
     public  void populateCustomerTable(){
         customerObservableList.clear();
         DBConnect db = new DBConnect();
@@ -125,6 +131,13 @@ public class ManageCustomerDiscountController implements Initializable {
             db.closeConnection();
         }
     }
+    /**
+
+     Resets the discount for the selected customer to zero by updating the customer's record in the database.
+     If no customer is selected, nothing happens.
+     After the update, the customer table is repopulated and the text fields for the different discount levels are cleared.
+     @throws SQLException if a database access error occurs
+     */
     public void resetDiscount() throws SQLException {
         if (!selectedCustomerList.isEmpty()){
 
@@ -149,6 +162,14 @@ public class ManageCustomerDiscountController implements Initializable {
         }
 
     }
+
+    /**
+
+     Sets the fixed discount for the selected customer in the database and updates the customer table view.
+     If the selected customer has already received other types of discounts (below1000, between1and2000, morethan2000),
+     the fixed discount cannot be set and the method does nothing.
+     @throws SQLException if an error occurs while accessing the database
+     */
     public void setFixed() throws SQLException {
         if (!selectedCustomerList.isEmpty()
                 && selectedCustomerList.get(0).getBelow1000() == 0
@@ -168,6 +189,13 @@ public class ManageCustomerDiscountController implements Initializable {
 
         }
     }
+    /**
+
+     Sets the fleixlbe discount for the selected customer in the database and updates the customer table view.
+     If the selected customer has already received fixed discount
+     the flexible discount cannot be set and the method does nothing.
+     @throws SQLException if an error occurs while accessing the database
+     */
     public void setFlexible() throws SQLException {
         if (!selectedCustomerList.isEmpty()
                 && selectedCustomerList.get(0).getFixeddiscount() == 0){
@@ -191,11 +219,13 @@ public class ManageCustomerDiscountController implements Initializable {
         populateCustomerTable();
         }
     }
+    /**Method that gets called when pressing the cancel button , closes the stage*/
     public void cancel(){
         Stage stage = (Stage) searchnameTextfield.getScene().getWindow();
         stage.close();
     }
 
+    /**Initialize method to populate the tableview*/
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateCustomerTable();

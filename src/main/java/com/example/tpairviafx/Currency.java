@@ -16,7 +16,10 @@ import java.util.*;
 
 import java.util.HashMap;
 import java.util.Map;
+
+/** Class for getting updated accurate conversion rates */
     public class Currency {
+        /**Field for the URL for the exchange rate API with the key*/
 
         private static final String api = "https://openexchangerates.org/api/latest.json?app_id=5738214a5d4041059d56b94f7893352c&base=USD&symbolGBP";
         // 5738214a5d4041059d56b94f7893352c Exchangerates api key
@@ -33,6 +36,15 @@ import java.util.Map;
             Currency currency = new Currency();
             System.out.println(currency.getConversion(100)/100);
         }
+
+        /**
+
+         This method retrieves the conversion rate of GBP to the local currency from an external API,
+         then uses the rate to convert the given amount from GBP to the local currency.
+         @param amount the amount to convert, in GBP
+         @return the converted amount, in the local currency
+         @throws IOException if there is an error in connecting to the external API or if the API response does not contain the conversion rate
+         */
         public double getConversion(double amount) throws IOException {
             URL url = new URL(api);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

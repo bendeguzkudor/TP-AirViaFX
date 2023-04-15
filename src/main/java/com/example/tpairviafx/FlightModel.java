@@ -3,6 +3,8 @@ package com.example.tpairviafx;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
+/** Class to model flights */
 public class FlightModel {
 
     private Integer flightNumber;
@@ -19,6 +21,18 @@ public class FlightModel {
 
     private String flightType;
 
+
+    /**
+
+     Constructs a FlightModel object with the given parameters.
+     @param flightNumber the flight number of the flight
+     @param departure the departure location of the flight
+     @param arrival the arrival location of the flight
+     @param date the date of the flight
+     @param time the time of the flight
+     @param price the price of the flight
+     @throws SQLException if there is an error accessing the database
+     */
     public FlightModel(Integer flightNumber, String departure, String arrival, String date, String time, Integer price) throws SQLException {
         this.flightNumber = flightNumber;
         this.departure = departure;
@@ -28,6 +42,10 @@ public class FlightModel {
         this.price = price;
 
     }
+    /**
+     Retrieves the flight type of this flight from the database and sets it to the flightType attribute.
+     @throws SQLException if a database access error occurs
+     */
     public void retrieveFlightType() throws SQLException {
         String ft ;
         DBConnect db = new DBConnect();
@@ -53,6 +71,8 @@ public class FlightModel {
     public int getFlightNumber() {
         return flightNumber;
     }
+
+    /**Prints a flight objects details, used when testing */
     public void printFlightDetails(){
 
         System.out.println("Departure: "+ departure+ " Arrival: " + arrival + " Price: "+ price);

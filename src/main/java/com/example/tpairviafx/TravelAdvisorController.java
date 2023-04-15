@@ -30,6 +30,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+/** Controller class for the Travel Advisor stage*/
+
 public class TravelAdvisorController implements Initializable {
     private DateTimeFormatter dtf;
 
@@ -179,6 +181,9 @@ public class TravelAdvisorController implements Initializable {
 
 //
 
+/**
+
+ Initializes the controller class. Populates the tables, sets the event handlers, and instantiates the arrays*/
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
 //        selectMaxSaleID();
@@ -202,6 +207,12 @@ public class TravelAdvisorController implements Initializable {
 
     }
 
+    /**
+     Generates a sales report based on the selected report type (Interline or Domestic) and date range (from dateFromDatePicker to dateToDatePicker).
+     If all required fields are selected, a Report object is created and the appropriate method is called based on the report type.
+     If not all required fields are selected, no report is generated.
+     @throws ParseException if there is an error parsing the dates
+     */
     public void generateReport() throws ParseException {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
         String dateFrom="";
@@ -230,6 +241,8 @@ public class TravelAdvisorController implements Initializable {
     public void getCurrencyChosen(ActionEvent e){
         currencyChosen = (String) currencyChoicebox.getValue();
     }
+
+    /** Gets the payment type selected*/
     public void getPayment(){
         if (cashRadioButton.isSelected()){
             salePayment = "Cash";
@@ -240,6 +253,7 @@ public class TravelAdvisorController implements Initializable {
             cardNumberTextField.setDisable(false);
         }
     }
+    /** Gets the MCO type selected*/
     public void getMCO(){
         if (extraluggageRadiobutton.isSelected()){
             descruptionChosen = "Extra Luggage";
@@ -251,9 +265,15 @@ public class TravelAdvisorController implements Initializable {
             System.out.println(descruptionChosen);
         }
     }
+    /** Logs the user out */
     public void logOut() throws IOException {
         Application.logOut(stage);
     }
+
+    /**
+     * Opens a new stage for recording a new customer and sets the scene
+     * @throws IOException If the CustomerRegisterForm.fxml file is not found or cannot be loaded.
+     */
     public void recordNewCustomer() throws IOException {
         Stage stage = new Stage();
         fxmlLoader = new FXMLLoader(Application.class.getResource("CustomerRegisterForm.fxml"));
@@ -263,6 +283,10 @@ public class TravelAdvisorController implements Initializable {
         customerRegisterFormController.setPreviousScene(this.scene);
         stage.show();
     }
+    /**
+     * Opens a new stage for manual ticketing.
+     * @throws IOException If the ManualTicketing.fxml file is not found or cannot be loaded.
+     */
     public void manualTicketing() throws IOException {
         Stage stage = new Stage();
         fxmlLoader = new FXMLLoader(Application.class.getResource("ManualTicketing.fxml"));
@@ -274,6 +298,13 @@ public class TravelAdvisorController implements Initializable {
         System.out.println(staffID);
         stage.show();
     }
+    /**
+
+     This method populates flight table view with flight data from the database, and implements search functionality based on the
+     departure and arrival. The method also sets up the cell value factories for each column in the table view,
+     and sorts the data based on the selected column.
+     @throws RuntimeException if a SQL exception is thrown while executing the database query
+     */
     public void populateFlightsTable(){
         DBConnect db = new DBConnect();
 //        ResultSet rs;
@@ -331,6 +362,13 @@ public class TravelAdvisorController implements Initializable {
         }
 
     }
+    /**
+
+     This method populates customer table view with customer data from a database, and implements search functionality customer name
+     . The method also sets up the cell value factories for each column in the table view,
+     and sorts the data based on the selected column.
+     @throws RuntimeException if a SQL exception is thrown while executing the database query
+     */
     public  void populateCustomerTable(){
         customerObservableList.clear();
         DBConnect db = new DBConnect();
@@ -406,6 +444,7 @@ public class TravelAdvisorController implements Initializable {
         }
 
     }
+    /** Gets the selected customer, prompts the user if said customer has discount */
     public void selectCustomer(){
         selectedCustomerList = customerTableView.getSelectionModel().getSelectedItems();
         customer = selectedCustomerList.get(0);
@@ -432,6 +471,12 @@ public class TravelAdvisorController implements Initializable {
             System.out.println(x);
         }
     }
+    /**
+     This method creates a new Blank object with the staff ID, flight type and flights in the flightsToBlank list,
+     and adds it to the blanks list. It also refreshes the currentBlankTableView and adds the new Blank to the cart table.
+     If no blank is available, it displays an alert and does not add the blank.
+     @throws SQLException if an SQL exception occurs while retrieving the blank ID from the database
+     */
     public void addToBlank() throws SQLException {
 //        blanks.add(new Blank())
         if(!flightsToBlank.isEmpty()) {
@@ -455,6 +500,12 @@ public class TravelAdvisorController implements Initializable {
 
     }
 
+    /**
+     This method creates a new Blank object with the staff ID, destination "MCO", blank type, and luggage description entered
+     by the user. It then adds the Blank to the blanks list and refreshes the currentBlankTableView and the cart table.
+     If no blank is available, it displays an alert and does not add the blank.
+     @throws SQLException if an SQL exception occurs while retrieving the blank ID from the database
+     */
     public void addExtraLuggage() throws SQLException {
         if (otherRadiobutton.isSelected()){
             descruptionChosen = otherTextfield.getText();
@@ -479,6 +530,11 @@ public class TravelAdvisorController implements Initializable {
         }
 
     }
+    /**
+
+     This method adds the FlightModel object from the selectedFlightsList to the flightsToBlank list.
+     It then retrieves the flight type of the selected flight and adds it to the add to blank table.
+     */
     public void addFlightsToFlights() throws SQLException {
         if(!selectedFlightsList.isEmpty()){
         flightsToBlank.add(selectedFlightsList.get(0));
@@ -488,6 +544,14 @@ public class TravelAdvisorController implements Initializable {
         }
     }
 
+    /**
+     Processes a sale if a customer and sale payment method have been selected. Adds all blanks in the current cart to an
+     ArrayList of Blank objects and creates a new Sale object using the staff ID, current date, selected customer, selected
+     sale payment method, and ArrayList of blanks. The sale ID is then set to the maximum sale ID retrieved from the database
+     plus one, and the sale is pushed to the database. The method then pushes the sale to the "sold_blanks" table in the
+     database, clears the blankArrayList and blanks List, refreshes the cartTable and populates the customerTable.
+     @throws SQLException If there is an error accessing the database
+     */
     public void sell() throws SQLException {
        if(customer != null && salePayment != null) {
            for (Blank x : blanks) {
@@ -521,6 +585,11 @@ public class TravelAdvisorController implements Initializable {
     public void printCart(){
 //        blank.printFlights();
     }
+    /**
+
+     Adds a flight to the table view for the current blank.
+     @param flightModel The flight to be added to the table view.
+     */
     public void addToBlankTable(FlightModel flightModel){
 
         flightsOnBlankList.add(flightModel);
@@ -532,12 +601,24 @@ public class TravelAdvisorController implements Initializable {
         currentBlankTableView.setItems(flightsOnBlankList);
 
     }
+    /**
+
+     Adds a Blank object to the cart table view.
+     @param blank the Blank object to be added to the cart table view
+     */
     public void addBlankToCartTable(Blank blank){
         cartBlankIDColumn.setCellValueFactory(new PropertyValueFactory<>("blankID"));
         priceTableColumn.setCellValueFactory(new PropertyValueFactory<>("priceGBP"));
         cartTable.setItems(blanks);
 
     }
+    /**
+
+     This method is responsible for searching flights based on the user input of departure, arrival, and date. It retrieves
+     the flights from the database and populates a TableView with the matching results. The method also stores the selected
+     flights in a list for further use.
+     @throws SQLException if an error occurs while executing the SQL query
+     */
     public void searchFlight() throws SQLException {
         departure = departureTextField.getText();
         arrival = arrivalTextField.getText();
@@ -594,7 +675,12 @@ public class TravelAdvisorController implements Initializable {
 
     }
 
+    /**
 
+     Displays the name and role of the user.
+     @param name the name of the user
+     @param role the role of the user: 1 for Travel Advisor, 2 for Office Manager, 3 for Admin
+     */
     public void displayNameAndRole(String name, int role){
 
         switch (role){
@@ -615,6 +701,11 @@ public class TravelAdvisorController implements Initializable {
         this.staffID = staffID;
 
     }
+    /**
+
+     Displays an alert to inform the user that a discount is applicable for the current customer, and prompts the user
+     to apply or discard the discount for the current sale.
+     */
     public void discountAlert(){
         Alert discountAlert = new Alert(Alert.AlertType.CONFIRMATION);
         discountAlert.setTitle("Discount");
@@ -632,6 +723,11 @@ public class TravelAdvisorController implements Initializable {
         }
 
     }
+    /**
+
+     Displays an alert when there are no more blanks left for ticketing.
+     Prompts the user with a confirmation dialog box with the message "There are no more blanks left that would fit this ticketing.
+     */
     public void noBlankAlert(){
         Alert discountAlert = new Alert(Alert.AlertType.CONFIRMATION);
         discountAlert.setTitle("NO BLANKS LEFT");
@@ -645,6 +741,15 @@ public class TravelAdvisorController implements Initializable {
             System.out.println("OK");
         }
     }
+    /**
+
+     This method is responsible for opening the Manage Sales window. It loads the ManageSales.fxml file using an FXMLLoader
+     and sets the scene to the loaded fxml. It also sets the staffID and previousScene variables of the ManageSalesController.
+     The staffID is set to the current staff member's ID and the previousScene is set to the current scene. This method
+     is called when the "Manage Sales" button is clicked in the main window.
+     @throws IOException if there is an error loading the ManageSales.fxml file
+     */
+
     public void manageSales() throws IOException {
         Stage stage = new Stage();
         fxmlLoader = new FXMLLoader(Application.class.getResource("ManageSales.fxml"));

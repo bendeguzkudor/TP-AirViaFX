@@ -1,5 +1,7 @@
 package com.example.tpairviafx;
 
+
+/** Class to represent sales in the tableview*/
 public class SaleForm {
     private int staffID;
     private int saleID;
@@ -56,6 +58,12 @@ public class SaleForm {
 
     private String firstname;
     private String lastname;
+
+    /**
+
+     SaleForm represents a form for displaying the details of a sale.
+     It contains information staff ID, sale ID, customer ID, price, firstname and lastname.
+     */
     public SaleForm(int staffID, int saleID, int price, int customerID, String firstname, String lastname){
         this.staffID = staffID;
         this.saleID = saleID;

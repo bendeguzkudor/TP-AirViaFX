@@ -21,6 +21,8 @@ import java.sql.Statement;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+/** Controller class for the admin stage */
+
 public class AdminController implements Initializable {
 
     @FXML
@@ -72,6 +74,14 @@ public class AdminController implements Initializable {
     private ObservableList<Blank> selectedBlanksList;
     private String chosenCommission;
 
+
+
+    /**
+     Initializes the controller class.
+     This method is automatically called by the FXMLLoader when the corresponding FXML file is loaded.
+     It sets up the UI elements and populates the choice boxes.
+     It also sets up event handlers for the choice boxes and populates the table with existing blank entries.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
 
@@ -99,6 +109,14 @@ public class AdminController implements Initializable {
 
 
     }
+    /**
+
+     Adds a specified amount of blanks to the database.
+     The starting blank ID is set to be the maximum blank ID plus one.
+     The staff ID and sold status are set to default values.
+     The date added is set to the current date.
+     @throws SQLException If there is an error executing the SQL statement.
+     */
     public void addBlanks(){
         System.out.println("addblanks");
         System.out.println(blankID);
@@ -129,12 +147,15 @@ public class AdminController implements Initializable {
 
     }
 
+
     public static void main(String[] args) throws IOException, InterruptedException {
         // ,/usr/local/mysql-8.0.32-macos13-x86_64/bin/mysqldump
 //     dbConnect.backupDatabase10("smcse-stuproj00.city.ac.uk",3306,"in2018g05_a","lPP1uVU0","in2018g05","/Users/bedikudor/Documents/tpairviafx/TP-AirViaFX/src/DB_Backup/backup"+randomnumber+".sql");
     DBConnect dbConnect = new DBConnect();
     dbConnect.restoreDatabase("smcse-stuproj00.city.ac.uk in2018g05","in2018g05_a", "lPP1uVU0", "in2018g05","/Users/bedikudor/Documents/tpairviafx/TP-AirViaFX/src/DB_Backup/backup91.sql");
     }
+
+    /** This method updates the commission rates for the system. Which is from GUI input*/
     public void setCommission(){
         String sql = "UPDATE commission_rates SET "+commissionChoiceBox.getValue().toLowerCase()+" = "+Double.parseDouble(commissionTextField.getText())+"";
         DBConnect db = new DBConnect();
@@ -148,11 +169,20 @@ public class AdminController implements Initializable {
             }
             db.closeConnection();
     }
+    /**This method refreshed the blanks table when a change has been made*/
     public void refreshTable(){
         blankObservableList.clear();
         populateBlankTable();
         blanksTableView.refresh();
     }
+
+    /**
+
+     Retrieves the maximum blank ID from the database based on the chosen blank type.
+     Initializes the value to the starting value of the blank type if there are no existing blank IDs of that type in the database.
+     @return A Long value representing the maximum blank ID.
+     */
+
 
     public Long getMaxBlank(){
         long maxBlankID = 0;
@@ -216,6 +246,15 @@ public class AdminController implements Initializable {
         return maxBlankID;
 
     }
+
+    /**
+
+     Populates the TableView with Blank objects queried from the database. Also sets up filtering and sorting for the TableView.
+     Sets up the PropertyValueFactory for each column to map to the corresponding Blank object property.
+     Adds a listener to the searchBlankIDTextField to filter the data in the TableView based on the entered text.
+     Finally, sets the items of the TableView to the sorted data and assigns the selected items to the selectedBlanksList.
+     @throws RuntimeException if there is an SQL exception when executing the query or when closing the database connection
+     */
     public void populateBlankTable(){
         DBConnect db = new DBConnect();
 //        ResultSet rs;
@@ -271,33 +310,38 @@ public class AdminController implements Initializable {
 
 
     }
+    /** Method for logging out , switches the stage to login screen */
     public void logOut() throws IOException {
         Application.logOut(stage);
     }
+    /**
+
+     Removes a selected blank from the database and refreshes the table.
+     @throws SQLException if a database access error occurs or this method is called on a closed connection
+     */
     public void removeBlank() throws SQLException {
 
         String sql = "DELETE FROM blanks WHERE blankID = ?";
         System.out.println(blankID);
         System.out.println(selectedBlanksList.get(0).getBlankID());
 
-// Create a PreparedStatement object
+
         DBConnect db = new DBConnect();
         db.connect();
         PreparedStatement pstmt = db.getConnection().prepareStatement(sql);
 
-// Set the parameter value
         pstmt.setLong(1, selectedBlanksList.get(0).getBlankID());
 
-// Execute the DELETE query
+
         int rowsDeleted = pstmt.executeUpdate();
 
-// Check if any rows were deleted
+
         if (rowsDeleted > 0) {
             System.out.println("Rows deleted successfully!");
         } else {
             System.out.println("No rows were deleted.");
         }
-// Close the resources
+
         pstmt.close();
         db.closeConnection();
         int selectedIndex = blanksTableView.getSelectionModel().getSelectedIndex();
@@ -305,6 +349,8 @@ public class AdminController implements Initializable {
         refreshTable();
 
     }
+
+    /** Backs up the database to src folder DB_Backup folder*/
     public void backupDatabase() throws IOException, InterruptedException {
         DBConnect dbConnect = new DBConnect();
         dbConnect.connect();

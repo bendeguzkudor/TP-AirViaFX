@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+
+/** Controller class for the customer registration form */
 public class CustomerRegisterFormController {
 
     @FXML
@@ -47,7 +49,12 @@ public class CustomerRegisterFormController {
 
 
 
+    /**
 
+     Records a new customer with the details entered in the GUI text fields. The method creates a new Customer object with the
+     details entered in the text fields and saves the object in the database using the Customer.recordCustomer() method.
+     After successfully recording the customer, it repopulates the customer table view in the GUI and closes the current window.
+     */
 public void record(){
 
     Customer.recordCustomer(new Customer(firstNameTextField.getText(), lastNameTextField.getText(),emailTextField.getText(),mobileTextField.getText(),0.0,0.0,0.0,0.0));

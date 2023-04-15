@@ -10,6 +10,9 @@ import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.sql.*;
 
+
+/** Class that handles databse connectivity
+ * Uses synchronized methods to ensure that only one thread can execute */
 public class DBConnect {
 //    final String DRIVER = "com.mysql.jdbc.Driver";
 //    final String url = "jdbc:mysql://localhost:3306/AirVia";
@@ -25,6 +28,13 @@ public class DBConnect {
 
     public DBConnect() {}
 
+    /**
+
+     Connects to the database using the provided URL, username, and password.
+     If the connection is already established and not closed, does nothing.
+     Creates a statement with TYPE_SCROLL_INSENSITIVE and CONCUR_READ_ONLY options.
+     Throws any exception that occurs during the process.
+     */
     public synchronized void connect() {
         try {
             if (connection == null || connection.isClosed()) {
@@ -36,12 +46,17 @@ public class DBConnect {
         }
     }
 
+    /** Used for testing methods within this class*/
     public static void main(String[] args) {
         DBConnect db = new DBConnect();
         db.connect();
         Restoredbfromsql("DB_Backup/backup91.sql");
     }
 
+    /**
+
+     Closes the connection to the database and releases any resources associated with it.
+     */
     public synchronized void closeConnection() {
         try {
             if (statement != null) {
@@ -55,10 +70,18 @@ public class DBConnect {
         }
     }
 
+    /** Returns the current DBConnect objects connection.
+     * Used for prepared statements */
     public synchronized Connection getConnection() {
         return connection;
     }
 
+    /**
+
+     Executes the given SQL query and returns a ResultSet object that contains the data produced by the given query.
+     @param query the SQL query to be executed
+     @return a ResultSet object that contains the data produced by the given query, or null if an exception occurs
+     */
     public synchronized ResultSet executeQuery(String query) {
         ResultSet resultSet = null;
         try {
@@ -69,6 +92,11 @@ public class DBConnect {
         return resultSet;
     }
 
+    /**
+     Executes the given SQL statement and returns the number of rows affected.
+     @param query the SQL statement to be executed
+     @return the number of rows affected by the statement
+     */
     public synchronized int executeUpdate(String query) {
         int rowsUpdated = 0;
         try {
@@ -79,6 +107,17 @@ public class DBConnect {
         return rowsUpdated;
     }
 
+    /**
+     This method creates a backup of a MySQL database using the mysqldump command.
+     @param host the host address of the MySQL server
+     @param port the port number of the MySQL server
+     @param user the username to connect to the MySQL server
+     @param password the password to connect to the MySQL server
+     @param databaseName the name of the database to backup
+     @param backupFilePath the file path where the backup file will be saved
+     @throws IOException if an I/O error occurs during the backup process
+     @throws InterruptedException if the process executing the backup command is interrupted
+     */
     public void backupDatabase10(String host, int port, String user, String password, String databaseName, String backupFilePath) throws IOException, InterruptedException {
         String[] command = {
                 "/usr/local/mysql-8.0.32-macos13-x86_64/bin/mysqldump",
@@ -105,6 +144,8 @@ public class DBConnect {
             System.out.println("Database backup successful");
         }
     }
+
+    /** Method to restore database form SQL file*/
     public static void Restoredbfromsql(String s) {
         try {
             /*NOTE: String s is the mysql file name including the .sql in its name*/

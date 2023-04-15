@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/** Class to model blank as an object*/
 public class Blank {
 
 
@@ -137,6 +138,13 @@ public class Blank {
     private String description;
 
 
+    /**
+
+     Represents a Blank object used for ticket bookings.
+     @param blankType the type of blank domestic, mco or interline
+     @param flights an ArrayList of FlightModel objects representing the flights  on this blank
+     @throws SQLException if there is an error accessing the database
+     */
     public Blank(int staffID, String blankType, ArrayList<FlightModel> flights) throws SQLException {
         this.description = "";
         this.flights = flights;
@@ -151,6 +159,7 @@ public class Blank {
 
 
     }
+    /** Constructor for blank model to set in tableview*/
     public Blank(Long blankID,int staffID,  String dateAssigned,int sold, String dateAdded ){
         this.blankID = blankID;
         this.staffID = staffID;
@@ -159,9 +168,8 @@ public class Blank {
         this.dateAdded = dateAdded;
         this.description = "";
 
-
-
     }
+    /** Constructor for MCO Blanks*/
     public Blank(Long blankID, int staffID, String type,String flightType, String description){
         this.priceGBP = 30;
         this.blankID = blankID;
@@ -178,6 +186,11 @@ public class Blank {
 
 
     }
+
+    /**
+
+     Retrieves the interline and domestic commission rates from the database and sets them as instance variables.
+     */
     public void getCommissionRates(){
         String sql = "Select * from commission_rates";
         DBConnect dbConnect = new DBConnect();
@@ -208,6 +221,7 @@ public class Blank {
 //            commissionrate =  domesticCommissionRate;
 //        }
 //    }
+    /** This is a method to set each blanks commission rate */
     public void calculateCommission(String type){
         if (type.equals("Interline")){
 //            this.commissionAmount = (priceUSD*0.8) * interlineCommissionRate;
@@ -218,6 +232,7 @@ public class Blank {
         }
 
     }
+    /** This method that gets the next 444 (manual ticketing) blank for the travel advisor that is operating currently*/
     public static Long getManualTicketingBlank(int staffID) throws SQLException {
         long blankID = 0L;
         String sql = "SELECT MIN(blankID) FROM blanks WHERE SUBSTR(blankID, 1, 3) = '440' AND staffID = "+staffID+" AND sold != 1;";
@@ -248,13 +263,14 @@ public class Blank {
         return blankID;
 
     }
+    /** This method calculates the total price of each blank by iterating through the arraylist of flights and getting the prices*/
     public void calcSum(ArrayList<FlightModel> flights){
         for(FlightModel x : flights){
             this.priceGBP += x.getPrice();
         }
 
 
-
+        /** This method prints out the details held by each blank object, used for testing when implementing features*/
     }    public void printBlankDetails(){
         for(FlightModel x : flights){
             x.printFlightDetails();
@@ -263,7 +279,7 @@ public class Blank {
                     "  blankType:  "+this.blankType+
                     "  blankID:  "+this.blankID+
                     "  Local Currency:  "+this.localCurrency+
-                    "  paymentType:  "+paymentTypeT(this.paymentType)+
+//                    "  paymentType:  "+paymentTypeT(this.paymentType)+
                     "  CommissionRate : "+ commisionRate+
                     "  Customer:  "+this.customer);
     }
@@ -271,6 +287,7 @@ public class Blank {
 
 
 //    }
+//    */
     public void addFlightToBlank(FlightModel flight) {
         if(flights.size() < 4){
 
@@ -280,6 +297,7 @@ public class Blank {
             //tooManyLegsError(); // throw an error when trying to add more flight legs than 4;
         }
     }
+
     public String paymentTypeT(int i){
         String s = "";
         switch (i){
@@ -294,7 +312,9 @@ public class Blank {
     }
 
 
-
+    /** This method retrieves the next available blank for the current selection of tickets
+     * takes flight as an argument which is to determine the appropriate blank, for the type and amount of flighst
+     * returns a blankID long*/
     public  Long retrieveBlankID(String flightType) throws SQLException {
         Long blankID = 0L;
         switch (flightType){
@@ -311,7 +331,7 @@ public class Blank {
                 }else if(noOfFlights == 1){
                     sql = "SELECT blankID FROM blanks WHERE SUBSTR(blankID, 1, 3) = '101' AND staffID ='"+ staffID +"'AND sold != 1";
                 }//Added break after demo, this is why it was not working for domestic flights in the demo. fixed when i got home
-                break;
+//                break;
             case "MCO":
                 sql = "SELECT blankID FROM blanks WHERE (SUBSTR(blankID, 1, 3) = '451' or SUBSTR(blankID, 1, 3) = '452') AND staffID ='"+ staffID +"'AND sold != 1";
                 break;
@@ -348,6 +368,8 @@ public class Blank {
 //        blank.getCommissionRates();
 //        System.out.println(blank.findCommissionRate("Interline"));
     }
+
+    /** Marks the blank used sets the date used to current date */
     public void markBlankAsUsed(Blank blank) throws SQLException {
 
         blankID = blank.getBlankID();

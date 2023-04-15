@@ -29,7 +29,7 @@ import org.apache.pdfbox.pdfwriter.ContentStreamWriter;
 
 import org.apache.poi.xwpf.usermodel.Document;
 
-
+/**Class for generating the sales and ticket stock turnover report. Uses Apache POI Libary */
 public class Report {
 
     Integer amount = null;
@@ -81,6 +81,13 @@ public class Report {
 
     }
 
+    /**
+     Constructor for generating a sales report for a given date range and staff ID.
+     @param datefrom start date of the date range in format "yyyy-MM-dd" converts to yyyyMMdd
+     @param dateTo end date of the date range in format "yyyy-MM-dd" converts to yyyyMMdd
+     @param staffID ID of the staff member for whom the report is being generated
+     @throws ParseException if the input dates are not in the correct format
+     */
     public Report(String datefrom, String dateTo, int staffID) throws ParseException {
         this.datefrom = datefrom;
         this.dateTo = dateTo;
@@ -92,6 +99,17 @@ public class Report {
         System.out.println(todaysDate);
     }
 
+
+    /**
+
+    This method creates a Ticket Stock Turnover Report in an Excel workbook. It creates a new sheet in the workbook
+    and generates a report on the turnover of ticket stocks. The method populates the sheet with data on the
+    RECEIVED BLANKS, ASSIGNED/USED BLANKS, and FINAL AMOUNTS of ticket stocks.
+     The method also retrieves data from a database using the
+    queryAssignedBlanks() method and populates the sheet with this data. Finally,
+     the method adds a title to the report,
+    the dates that the report covers, and the current date.
+    */
     public void createTicketStockTurnOverReport() {
         workbook = new XSSFWorkbook();
         Font font = workbook.createFont();
@@ -192,6 +210,7 @@ public class Report {
         System.out.println("Table.xlsx created successfully!");
 
     }
+    /** Not used */
     public void signature (Sheet sheet, int lastrow, int middle, String title, int staffID){
         lastrow = lastrow+3;
         Font font = workbook.createFont();
@@ -222,6 +241,16 @@ public class Report {
         sheet.getRow(lastrow + 3).getCell(7).setCellValue("Date :" + outputFormat.format(todaysDate));
 
     }
+
+    /**
+
+     This method queries the database for information related to blanks . It uses the DBConnect class
+     to connect to the database, and runs 6 different SQL queries to obtain information about assigned blanks,
+     newly added blanks, blanks assigned from newly added blanks, and blanks assigned to advisors.Finally, the blanks stage at the end of the report period.
+     The method takes no input parameters, but uses the instance variables "dateFrom" and "dateTo" to specify the date range for
+     which to obtain data. The results of each query are stored in ResultSet objects and can be accessed by the caller
+     through appropriate methods.
+     */
 
     public void queryAssignedBlanks() {
         DBConnect db = new DBConnect();
@@ -478,6 +507,7 @@ public class Report {
         }
     }
 
+    /** Template for sales report, not used*/
     public void generateSalesReport() {
         workbook = new XSSFWorkbook();
 
@@ -583,6 +613,17 @@ public class Report {
         }
 
     }
+    /**
+     Generates an individual interline sales report in an Excel spreadsheet. The report includes information such as
+     the number of blanks sold, base price in GBP and USD, conversion rate, taxes, tax rate, payment type (cash or card),
+     card number, commission rate, commission sum, and total amounts paid. The data is retrieved from the database
+     and the report is created using Apache POI library. The generated spreadsheet contains a header row, a row for each
+     sale, and a row for totals. The totals row includes the sum of the base price, taxes, commissions, and total amounts
+     paid for all sales in the report period.
+     staffID the ID of the staff member whose sales should be included in the report
+     dateFrom the starting date of the report period (inclusive)
+     dateTo the ending date of the report period (inclusive)
+     */
 
     public void individualInterlineSalesReport() {
         workbook = new XSSFWorkbook();
@@ -761,6 +802,23 @@ public class Report {
             e.printStackTrace();
         }
     }
+
+
+    /**
+
+     Generates a global interline sales report and saves it as an Excel file.
+     The report includes the following data for each staff member:
+     Number of sales made
+     Staff ID
+     Total base price in GBP
+     Total tax sum
+     Total amount paid in cash
+     Total amount paid by card
+     Commission earned at 10%, 12%, and 15% rates
+     Total amount paid (base price + tax)
+     Total commission earned
+     The report is generated based on sales data from the database in a specified date range and is saved in an Excel file.
+     */
 
     public void globalInterLineSalesReport() {
         //global interline
@@ -1016,6 +1074,17 @@ public class Report {
         }
     }
 
+    /**
+
+     Generates a report for individual domestic sales, and saves it as a new Excel file that includes the staffID and the date range.
+     The report includes information such as the staff ID, blank IDs, base price, taxes, cash and card payments,
+     and commission rates and sums.
+     The report is based on a SQL query that retrieves sales data from a database. The query includes filters for the staff ID,
+     date range.
+     Data rows correspond to values for each sale.
+     @throws SQLException if there is an error executing the SQL query.
+     */
+
     public void domesticIndividualReport() {
         workbook = new XSSFWorkbook();
         Font font = workbook.createFont();
@@ -1189,6 +1258,21 @@ public class Report {
         }
     }
 
+    /**
+
+     Generates a global domestic sales report and saves it as an Excel file.
+     The report includes the following data for each staff member:
+     Number of sales made
+     Staff ID
+     Total base price in GBP
+     Total tax sum
+     Total amount paid in cash
+     Total amount paid by card
+     Commission earned at 5% and 9% rates
+     Total amount paid (base price + tax)
+     Total commission earned
+     The report is generated based on sales data from the database in a specified date range and is saved in an Excel file.
+     */
     public void globalDomesticSalesReport() {
         //global interline
         workbook = new XSSFWorkbook();

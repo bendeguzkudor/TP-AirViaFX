@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**  Main class to launch the application */
 public class Application extends javafx.application.Application {
     public static double interlineCommissionRate = 0.09;
 
@@ -31,6 +32,8 @@ public class Application extends javafx.application.Application {
 
     private LocalDateTime now;
     public static String date;
+
+    /** Start method used to start the Java fx application*/
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("login.fxml"));
@@ -39,12 +42,15 @@ public class Application extends javafx.application.Application {
         stage.setScene(scene);
         stage.show();
     }
+    /** Log out method to close the current stage and load the login stage on*/
     public static void logOut(Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader(Application.class.getResource("Login.fxml"));
         Parent root = loader.load();
         Scene loginScene = new Scene(root);
         stage.setScene(loginScene);
     }
+
+    /** Gets the current date and returns a formatted string yyyyMMdd */
     public static String getDate(){
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
         LocalDate date = LocalDate.now();
@@ -53,6 +59,7 @@ public class Application extends javafx.application.Application {
     }
 
 
+    /** Launches the application*/
     public static void main(String[] args) {
         launch();
     }

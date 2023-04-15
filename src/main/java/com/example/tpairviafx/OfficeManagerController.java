@@ -31,6 +31,8 @@ import java.util.ResourceBundle;
 
 
 
+/**Controller class to manage Office Manager stage   */
+
 
 public class OfficeManagerController implements Initializable {
     ObservableList<Staff> staffObservableList = FXCollections.observableArrayList();
@@ -140,6 +142,19 @@ public class OfficeManagerController implements Initializable {
     private String typeChosen;
 
 
+    /**
+     Initializes the controller by populating the various ChoiceBox and TableView objects with appropriate data.
+     This method first calls the populateStaffTable() method to populate the staffTableView object with staff member data.
+     It then calls the populateBlankTable() method to populate the blankTableView object with ticket blank data.
+     The report types are added to the typeChoiceBox object via the addAll() method.
+     When the user selects a report type from the typeChoiceBox, the getTypeChosen() method is called.
+     The staff members are added to the advisorChoiceBox and reAssignTochoiceBox objects via the addStaffToChoiceBox() method.
+     When the user selects a staff member from the advisorChoiceBox, the getAdvisorChosen() method is called.
+     When the user selects a staff member from the reAssignTochoiceBox, the setReassignToChosen() method is called.
+     The blank types are added to the blankChoiceBox object via the addAll() method.
+     When the user selects a blank type from the blankChoiceBox, the getblankChosen() method is called.
+     Finally, the populateSaleTable() method is called to populate the saleTableView object with sales data.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -157,12 +172,25 @@ public class OfficeManagerController implements Initializable {
         populateSaleTable();
 
     }
+
+    /**
+     Adds staff members to the advisorChoiceBox and reAssignTochoiceBox ChoiceBox objects.
+     This method loops through the staffObservableList and adds each staff member's ID to the advisorChoiceBox and reAssignTochoiceBox ChoiceBox objects as a string.
+     If the staffObservableList is empty, this method does not add any items to the ChoiceBox objects.
+     */
     public void addStaffToChoiceBox(){
         for (Staff x : staffObservableList){
             advisorChoiceBox.getItems().add(String.valueOf(x.getStaffID()));
             reAssignTochoiceBox.getItems().add(String.valueOf(x.getStaffID()));
         }
     }
+    /** Generates a report based on the selected criteria. This method first checks that both the "from" and "to" dates have been selected.
+     If the criteria includes generating a stock turnover report, it creates an instance of the Report class and calls the createTicketStockTurnOverReport() method.
+     If the criteria is for a global interline or domestic sales report, it creates an instance of the Report class with a staffID of 0 and calls the appropriate global report method.
+     If the criteria is for an individual interline or domestic sales report, it creates an instance of the Report class with a staffID corresponding to the selected advisor and calls the appropriate individual report method.
+     If any required criteria is missing, this method does not generate a report and simply prints a message to the console.
+     @throws ParseException if there is an error parsing the dates from the date picker
+     */
     public void generateReport() throws ParseException {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
         String dateFrom="";
@@ -211,6 +239,13 @@ public class OfficeManagerController implements Initializable {
         reassignto = reAssignTochoiceBox.getValue();
         System.out.println(reassignto);
     }
+
+    /**
+     Populates the staff table view with data retrieved from the database.
+     Uses a query to retrieve staff with a role of 1 (advisors).
+     Populates a staffObservableList with staff objects and sets the staffTableView items to this list.
+     Allows for filtering and sorting of the table view by name using searchTextField.
+     */
     public void populateStaffTable(){
         System.out.println("sadgf");
         DBConnect db = new DBConnect();
@@ -265,6 +300,15 @@ public class OfficeManagerController implements Initializable {
             db.closeConnection();
         }
     }
+    /**
+
+     Reassigns a blank ticket to a new staff member.
+     Gets the ID of the selected blank from selectedBlanksList.
+     Constructs a SQL update statement with the new staff member's ID (reassignto) and the selected blank ID.
+     Executes the statement and updates the database.
+     Calls populateBlankTable() to refresh the table view.
+     Throws an SQLException if there is an error executing the SQL statement.
+     */
     public void reAssign() throws SQLException {
         Long selectedBlankID = selectedBlanksList.get(0).getBlankID();
 
@@ -279,6 +323,12 @@ public class OfficeManagerController implements Initializable {
 
 
     }
+    /**
+     Assigns a range of blanks to a selected staff member and sets the date of assignment to the current date.
+     @throws SQLException if there is an error executing the SQL statement.
+     */
+
+
     public void assignBlanks(){
         System.out.println("addblanks");
         Long rangeFrom = getMinBlank();
@@ -311,6 +361,13 @@ public class OfficeManagerController implements Initializable {
             e.printStackTrace();}
 
     }
+    /**
+     This method retrieves the minimum blank ID available for the chosen blank type and with no staff assigned to it.
+     It uses a switch statement to determine the appropriate SQL statement based on the chosen blank type.
+     It then executes the SQL statement and retrieves the minimum blank ID from the result set.
+     Finally, it returns the minimum blank ID.
+     @return the minimum blank ID available for the chosen blank type and with no staff assigned to it
+     */
     public Long getMinBlank(){
         long minBlank = 0;
 //        System.out.println(type);
@@ -362,9 +419,16 @@ public class OfficeManagerController implements Initializable {
         System.out.println(minBlank);
         return minBlank;
     }
+
+    /**
+     Logs out the current user and returns to the login screen.
+     @throws IOException if an error occurs during the redirection to the login screen.
+     */
     public void logOut() throws IOException {
         Application.logOut(stage);
     }
+
+    /**  Opens the manage customer discount screen */
     public void manageCustomerDiscount() throws IOException {
         Stage stage = new Stage();
         fxmlLoader = new FXMLLoader(Application.class.getResource("ManageCustomerDiscount.fxml"));
@@ -375,6 +439,15 @@ public class OfficeManagerController implements Initializable {
         stage.show();
 
     }
+
+    /**
+     Populates the table view of the blanks with data from the database.
+     Clears the observable list of blanks, connects to the database, and executes a query to retrieve all blanks from the "blanks" table.
+     Then, each row of data is added to the observable list of blanks.
+     The observable list is used to populate the table view of the blanks.
+     Additionally, the method sets up a filter for searching the blanks by ID and allows the user to select one or multiple rows from the table.
+     @throws RuntimeException if there is a SQL exception.
+     */
     public void populateBlankTable(){
         DBConnect db = new DBConnect();
         blankObservableList.clear();
@@ -434,6 +507,11 @@ public class OfficeManagerController implements Initializable {
     public void generatePDF(){
 
     }
+    /**
+     Populates the Sale table view by querying the database and adding the resulting SaleForm objects to the saleObservableList.
+     Then, it sets the column values for the table and applies filtering and sorting to the table view.
+     Also, it sets the selectedSaleList to the currently selected items in the table view.
+     */
     public  void populateSaleTable(){
         saleObservableList.clear();
         DBConnect db = new DBConnect();
@@ -497,6 +575,14 @@ public class OfficeManagerController implements Initializable {
             db.closeConnection();
         }
     }
+
+    /**
+
+     Approves a refund for the selected sale in the sale table view.
+     Updates the database by setting the 'refund' column to 1 for the selected sale.
+     Then calls the method 'populateSaleTable()' to refresh the table view with the updated data.
+     @throws SQLException if a database access error occurs.
+     */
     public void approveRefund() throws SQLException {
         int saleID = selectedSaleList.get(0).getSaleID();
         String sql = "UPDATE sale set refund = 1 where refund = -1 and saleID = "+saleID+";";

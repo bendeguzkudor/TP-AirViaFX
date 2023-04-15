@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
+/** Class to model customers*/
 public class Customer {
     public String getFirstName() {
         return firstName;
@@ -134,6 +136,19 @@ public class Customer {
     private String phone;
 
 
+    /**
+
+     Creates a new Customer object with the given first name, last name, email, phone, fixed discount, discount for purchases below $1000,
+     discount for purchases between $1000 and $2000, and discount for purchases above $2000.
+     @param firstName the first name of the customer
+     @param lastName the last name of the customer
+     @param email the email address of the customer
+     @param phone the phone number of the customer
+     @param fixeddiscount the fixed discount percentage for the customer
+     @param below1000 the discount percentage for purchases below $1000 for the customer
+     @param between1and2000 the discount percentage for purchases between $1000 and $2000 for the customer
+     @param morethan2000 the discount percentage for purchases above $2000 for the customer
+     */
     public Customer(String firstName,String lastName,String email,String phone,double fixeddiscount, double below1000, double between1and2000, double morethan2000){
         latePaymentLimit = 30;
         this.firstName = firstName;
@@ -149,6 +164,10 @@ public class Customer {
 
 
     }
+    /** Constructor used for modeling the customer in a TableView
+     * @param firstName the first name of the customer
+     * @param lastName the last name of the customer
+     * @param customerID id of the customer*/
     public Customer(String firstName,String lastName, int customerID ){
         latePaymentLimit = 30;
         this.firstName = firstName;
@@ -156,6 +175,15 @@ public class Customer {
         this.customerID = customerID;
         this.queryDiscount = queryDiscount();
     }
+
+    /** Constructor used when modelling the customer discount editing interface
+     * @param firstName the first name of the customer
+     * @param lastName the last name of the customer
+     * @param customerID the unique identifier for the customer
+     * @param fixeddiscount the fixed discount amount for the customer
+     * @param below1000 the discount percentage for purchases below $1000 for the customer
+     * @param between1and2000 the discount percentage for purchases between $1000 and $2000 for the customer
+     * @param morethan2000 the discount percentage for purchases over $2000 for the customer */
     public Customer(String firstName,String lastName, int customerID, double fixeddiscount, double below1000, double between1and2000, double morethan2000 ){
         latePaymentLimit = 30;
         this.firstName = firstName;
@@ -166,6 +194,12 @@ public class Customer {
         this.between1and2000 = between1and2000;
         this.morethan2000 = morethan2000;
     }
+
+    /**
+
+     This method is used to record a new customer by inserting their information into the customer table in the database.
+     @param customer a Customer object containing the customer's information to be recorded
+     */
     public static void recordCustomer(Customer customer){
 
         DBConnect db = new DBConnect();
@@ -200,6 +234,11 @@ public class Customer {
             System.out.println(i);
         }
     }
+
+    /**
+     Queries the discount for the customer from the database based on their customer ID.
+     @return the discount value retrieved from the database
+     */
     public double queryDiscount(){
         String sql = "select fixeddiscount, below1000, between1and2000,morethan2000\n" +
                 "from customer where  id = "+ customerID +"; ";

@@ -20,6 +20,7 @@ import java.util.ResourceBundle;
 
 import static com.example.tpairviafx.Blank.getManualTicketingBlank;
 
+/** Controller class for the manual ticketing stage  */
 public class ManualTicketingController implements Initializable {
     public Scene getPreviousScene() {
         return previousScene;
@@ -117,6 +118,12 @@ public class ManualTicketingController implements Initializable {
     public ManualTicketingController(){
         System.out.println(staffID);
     }
+
+    /**
+     Populates the customer table with data from the database and sets up search and sorting functionality for the table.
+     The data is obtained from the "customer" table in the database using a SQL query.
+     The function also sets up listeners for the search field and sorting.
+     */
     public  void populateCustomerTable(){
         customerObservableList.clear();
         DBConnect db = new DBConnect();
@@ -168,6 +175,9 @@ public class ManualTicketingController implements Initializable {
             db.closeConnection();
         }
     }
+
+    /** This method is called when clicking the select customer button , places the selected customer into an arraylist and notifies the user if the said
+     * customer has discount available */
     public void selectCustomer(){
         System.out.println("hb");
         selectedCustomerList = customerTableView.getSelectionModel().getSelectedItems();
@@ -179,6 +189,8 @@ public class ManualTicketingController implements Initializable {
 
         System.out.println(customer.getCustomerID());
     }
+
+    /** Takes the payment method that was chosen in the radio buttons */
     public void getPayment(){
         if (cashRadiobutton.isSelected()){
             salePayment = "Cash";
@@ -197,6 +209,13 @@ public class ManualTicketingController implements Initializable {
             }
         });
     }
+    /**
+     Displays an alert to the user to confirm whether or not to apply a discount to a sale
+     based on a fixed discount plan of the customer.
+     If the user clicks on the Apply button, it prints "Applied" to the console.
+     If the user clicks on the Discard button, it sets the customer's query discount to 0 and
+     prints "Discarded" to the console.
+     */
     public void discountAlert(){
         Alert discountAlert = new Alert(Alert.AlertType.CONFIRMATION);
         discountAlert.setTitle("Discount");
@@ -213,6 +232,12 @@ public class ManualTicketingController implements Initializable {
             System.out.println("discarded");
         }
     }
+
+    /**
+
+     Adds a flight to the current blank table.
+     @param flightModel the flight to be added to the table
+     */
     public void addToBlankTable(FlightModel flightModel){
 
         flightsOnBlankList.add(flightModel);
@@ -224,12 +249,25 @@ public class ManualTicketingController implements Initializable {
         currentBlankTableView.setItems(flightsOnBlankList);
 
     }
+
+    /**
+
+     Adds a new flight to the flightsToBlank list using the information inputted by the user in the flight number, departure, arrival,
+     date, time, and price text fields in the GUI. Then calls the addToBlankTable method to update the table view with the new flight.
+     @throws SQLException if there is an error retrieving the flight from the database
+     */
     public void addFlightsToFlights() throws SQLException {
             flightsToBlank.add(new FlightModel(Integer.parseInt(flightnumbertextfield.getText()),departuretextfield.getText(),arrivaltextfield.getText(),String.valueOf(datepicker.getValue()), timetextfield.getText(), Integer.parseInt(pricetextfield.getText())));
 //            selectedFlightsList.get(0).retrieveFlightType();
             addToBlankTable(flightsToBlank.get(0));
         }
 
+    /**
+
+     Adds flights to a new blank ticket and updates the UI to display the new blank ticket ID.
+     If there are no more available blanks, a message is displayed to the user.
+     @throws SQLException if an error occurs while communicating with the database
+     */
     public void addToBlank() throws SQLException {
 //        blanks.add(new Blank())
         if(!flightsToBlank.isEmpty()) {
@@ -254,6 +292,14 @@ public class ManualTicketingController implements Initializable {
         }
 
     }
+    /**
+     Processes a sale if a customer and sale payment method have been selected. Adds all blanks in the current cart to an
+     ArrayList of Blank objects and creates a new Sale object using the staff ID, current date, selected customer, selected
+     sale payment method, and ArrayList of blanks. The sale ID is then set to the maximum sale ID retrieved from the database
+     plus one, and the sale is pushed to the database. The method then pushes the sale to the "sold_blanks" table in the
+     database, clears the blankArrayList and blanks List, refreshes the cartTable and populates the customerTable.
+     @throws SQLException If there is an error accessing the database
+     */
     public void sell() throws SQLException {
         if(customer != null ) {
 
@@ -281,6 +327,7 @@ public class ManualTicketingController implements Initializable {
 
 
 
+    /**Initialize method to populate the customer table and to instantiate the arraylists*/
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         flightsToBlank = new ArrayList<>();

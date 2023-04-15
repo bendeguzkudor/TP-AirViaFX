@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+
+/** Class to handle sales */
+
 public class Sale {
     private final int staffID;
 
@@ -41,6 +44,15 @@ public class Sale {
     private final String paymentType;
     private double initialPriceSum;
 
+    /**
+     Initializes a new Sale object with the provided staffID, date, customer, local currency, list of blanks, and payment type.
+     @param staffID the ID of the staff member who made the sale
+     @param date the date the sale was made
+     @param customer the customer who made the purchase
+     @param localCurrency the currency used in the sale
+     @param blanks an ArrayList of Blank objects representing the items sold in the sale
+     @param paymentType the type of payment used in the sale
+     */
     public Sale(int staffID, String date, Customer customer,String localCurrency, ArrayList<Blank> blanks, String paymentType){
         this.saleID = 1;
         this.blanks = blanks;
@@ -65,6 +77,11 @@ public class Sale {
     }
 
 
+    /**
+     Calculates the total sum of prices in GBP for a given ArrayList of Blank objects.
+     @param blanks An ArrayList of Blank objects for which the total price in GBP is to be calculated.
+     @return The sum of prices in GBP for the given ArrayList of Blank objects.
+     */
     public double calcSum(ArrayList<Blank> blanks){
         double priceSum =0;
         for(Blank x : blanks){
@@ -72,6 +89,12 @@ public class Sale {
         }
         return priceSum;
     }
+    /**
+
+     Applies the discount obtained from the Customer object to the price of the given list of Blanks.
+     @param blanks the list of Blanks to apply the discount to
+     @param customer the Customer object containing the discount information
+     */
     public void takeDiscountOff(ArrayList<Blank> blanks, Customer customer){
         for(Blank x : blanks){
             x.setPriceGBP((int) (x.getPriceGBP()*(1- customer.getQueryDiscount())));
@@ -79,6 +102,12 @@ public class Sale {
             System.out.println(customer.getQueryDiscount());
         }
     }
+    /**
+
+     Calculates the total commission sum for a list of blanks.
+     @param blanks the list of blanks to calculate commission for
+     @return the total commission sum for the given list of blanks
+     */
     public double  calcCommissionSum(ArrayList<Blank> blanks){
         double sum = 0;
         for(Blank x : blanks){
@@ -93,6 +122,14 @@ public class Sale {
                 " Customer name : "+customer.getName()+" CustomerID: "+customer.getCustomerID()+
                 " Commission sum: : "+commisionSum+"BlankID: " +printBlanks());
     }
+
+    /**
+     This method pushes the current sale object to the database by inserting its values into the "sale" table in the database.
+     It uses a prepared statement to  and sets the values of the parameters in the statement based on the
+     attributes of the current sale object.
+     @throws SQLException if a database access error occurs or this method is called on a closed connection.
+     */
+
     public void pushToDatabase() throws SQLException {
         String sql = "INSERT INTO sale (saleID, staffID, price,currency, date, customerID, paymentType,cardNumber," +
         "latePayment, commissionSum, taxSum, conversionRate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -130,7 +167,13 @@ public class Sale {
         }
     }
 
-    /** */
+
+    /**
+
+     Inserts sale information into the soldBlanks table in the database, including the sale ID, blank ID, and date used.
+     If the blank ID is greater than 450,which means it is an MCO blank it inserts the description of the blank as well.
+     @param description a String for the MCO blank description, otherwise null
+     */
     public void pushSaleToSoldBlanks(String description){
         date = Application.getDate();
         System.out.println("Pishintdasletoolsoldblanks");
@@ -172,6 +215,11 @@ public class Sale {
     }
 
 
+    /**
+     Selects the maximum sale ID from the sale table in the database.
+     @return the maximum sale ID as an integer.
+     @throws SQLException if there is an error in the SQL query.
+     */
         public int selectMaxSaleID() {
         String sql = "select max(saleID) from sale"; // "select max(saleID) as max_id from sale"
         DBConnect dbConnect = new DBConnect();

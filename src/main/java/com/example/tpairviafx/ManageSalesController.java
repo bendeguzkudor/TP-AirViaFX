@@ -18,6 +18,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+/**Controller class for the maneging  sales stage */
+
 public class ManageSalesController implements Initializable {
 
 
@@ -69,13 +71,24 @@ public class ManageSalesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 //        populateSaleTable();
-        System.out.println(staffID);
 
 
     }
+    /**Method that calls populateSaleTable to refresh it */
     public void refresh(){
         populateSaleTable();
     }
+
+
+    /**
+     Populates the sale table with data from the database based on the current staff member's ID and check for non refunded sales.
+     The data is retrieved from the database and added to the saleObservableList.
+     The columns of the table are then populated with the corresponding values from the SaleForm object.
+     The saleTableView is then set to display the populated data.
+     A search filter is added to allow for dynamic searching of the data in the table.
+     The selected items in the saleTableView are then stored in the selectedSaleList variable.
+     @throws SQLException if there is an error in the SQL query or database connection.
+     */
     public  void populateSaleTable(){
         saleObservableList.clear();
         DBConnect db = new DBConnect();
@@ -139,6 +152,12 @@ public class ManageSalesController implements Initializable {
             db.closeConnection();
         }
     }
+    /**
+     This method marks a selected sale for refund by updating the refund value in the sale table to -1.
+     It retrieves the sale ID of the selected sale from the selectedSaleList and uses it to update the sale table in the database.
+     After updating the sale table, the method calls the populateSaleTable() method to refresh the sale table view.
+     @throws SQLException if a database access error occurs or the SQL statement fails
+     */
     public void markForRefund() throws SQLException {
         int saleID = selectedSaleList.get(0).getSaleID();
         String sql = "UPDATE  sale set refund = -1 where saleID = "+saleID+"";
