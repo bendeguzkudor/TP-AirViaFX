@@ -228,38 +228,38 @@ public class Report {
         ResultSet rs;
 
         String blanksUsedWithinTheReportPeriod = "SELECT \n" +
-                "    MIN(blankID) AS start_range,\n" +
-                "    MAX(blankID) AS end_range,\n" +
-                "    COUNT(*) AS range_size\n" +
+                "    MIN(blankID) AS start_range,\n" +// return the ranges
+                "    MAX(blankID) AS end_range,\n" +//
+                "    COUNT(*) AS range_size\n" +//
                 "FROM (\n" +
-                "    SELECT \n" +
+                "    SELECT \n" +//
                 "        t.*,\n" +
-                "        @rn := IF(@prev_staff = staffID AND blankID = @prev_blank + 1, @rn, @rn + 1) AS range_group,\n" +
-                "        @prev_staff := staffID,\n" +
-                "        @prev_blank := blankID\n" +
-                "    FROM blanks t\n" +
-                "    CROSS JOIN (SELECT @rn := 0, @prev_staff := NULL, @prev_blank := NULL) vars\n" +
-                "    WHERE sold = 1 and (blankID LIKE '1%' OR blankID LIKE '2%' OR blankID LIKE '4%')\n" +
-                "    ORDER BY blankID\n" +
+                "        @rn := IF(@prev_staff = staffID AND blankID = @prev_blank + 1, @rn, @rn + 1) AS range_group,\n" +//
+                "        @prev_staff := staffID,\n" +/////////////////////////////////////////////////////////////////////////////////////////////
+                "        @prev_blank := blankID\n" +//
+                "    FROM blanks t\n" +//
+                "    CROSS JOIN (SELECT @rn := 0, @prev_staff := NULL, @prev_blank := NULL) vars\n" +//
+                "    WHERE sold = 1 and (blankID LIKE '1%' OR blankID LIKE '2%' OR blankID LIKE '4%')\n" +//
+                "    ORDER BY blankID\n" +//
                 ") t\n" +
-                "GROUP BY range_group\n" +
+                "GROUP BY range_group\n" +//
                 "HAVING COUNT(*) >= 1;"; //col4
 
 
         String blanksAdded = "SELECT \n" +
-                "    MIN(blankID) AS start_range,\n" +
-                "    MAX(blankID) AS end_range,\n" +
-                "    COUNT(*) AS range_size\n" +
-                "FROM (\n" +
+                "    MIN(blankID) AS start_range,\n" +//
+                "    MAX(blankID) AS end_range,\n" +//
+                "    COUNT(*) AS range_size\n" +//
+                "FROM (\n" +//
                 "    SELECT \n" +
-                "        t.*,\n" +
+                "        t.*,\n" +//
                 "        @rn := IF(blankID = @prev_blank + 1, @rn, @rn + 1) AS range_group,\n" +
-                "        @prev_blank := blankID\n" +
-                "    FROM blanks t\n" +
+                "        @prev_blank := blankID\n" +///////////////////////////////////////////////////////////////////////
+                "    FROM blanks t\n" +//
                 "    CROSS JOIN (SELECT @rn := 0, @prev_blank := NULL) vars\n" +
-                "\twhere\n" +
+                "\twhere\n" +//
                 "\tdateAdded >= "+datefrom+" and dateAdded <= "+dateTo+"" +
-                "    ORDER BY blankID\n" +
+                "    ORDER BY blankID\n" +//
                 ") t\n" +
                 "GROUP BY range_group \n" +
                 "HAVING COUNT(*) > 1\n" +
@@ -268,18 +268,18 @@ public class Report {
                 "\tstaffID,\n" +
                 "    MIN(blankID) AS start_range,\n" +
                 "    MAX(blankID) AS end_range,\n" +
-                "    COUNT(*) AS range_size\n" +
+                "    COUNT(*) AS range_size\n" +//
                 "FROM (\n" +
                 "    SELECT \n" +
-                "        t.*,\n" +
+                "        t.*,\n" +//
                 "        @rn := IF(@prev_staff = staffID AND blankID = @prev_blank + 1, @rn, @rn + 1) AS range_group,\n" +
                 "        @prev_staff := staffID,\n" +
-                "        @prev_blank := blankID\n" +
+                "        @prev_blank := blankID\n" +//
                 "    FROM blanks t\n" +
                 "    CROSS JOIN (SELECT @rn := 0, @prev_staff := NULL, @prev_blank := NULL) vars\n" +
-                "    WHERE dateAdded >= "+datefrom+" \n" +
-                "      AND dateAdded <= '"+dateTo+"' \n" +
-                "      AND dateAssigned >= '"+datefrom+"' \n" +
+                "    WHERE dateAdded >= "+datefrom+" \n" +////////////////////////////////////////////////////////////////////////
+                "      AND dateAdded <= '"+dateTo+"' \n" +//
+                "      AND dateAssigned >= '"+datefrom+"' \n" +//
                 "      AND dateAssigned <= '"+dateTo+"'\n" +
                 "      and staffID != 0\n" +
                 "    ORDER BY staffID, blankID\n" +
@@ -289,36 +289,36 @@ public class Report {
                 "ORDER BY staffID, start_range;";
         String blanksAssignedToAdvisors = "SELECT \n" +
                 "\tstaffID,\n" +
-                "    MIN(blankID) AS start_range,\n" +
-                "    MAX(blankID) AS end_range,\n" +
+                "    MIN(blankID) AS start_range,\n" +//
+                "    MAX(blankID) AS end_range,\n" +//
                 "    COUNT(*) AS range_size\n" +
                 "FROM (\n" +
                 "    SELECT \n" +
                 "        t.*,\n" +
                 "        @rn := IF(@prev_staff = staffID AND blankID = @prev_blank + 1, @rn, @rn + 1) AS range_group,\n" +
-                "        @prev_staff := staffID,\n" +
-                "        @prev_blank := blankID\n" +
-                "    FROM blanks t\n" +
+                "        @prev_staff := staffID,\n" +/////////////////////
+                "        @prev_blank := blankID\n" +/////////////////////
+                "    FROM blanks t\n" +/////////////////////////////////////////////
                 "    CROSS JOIN (SELECT @rn := 0, @prev_staff := NULL, @prev_blank := NULL) vars\n" +
-                "    WHERE staffID != 0\n" +
+                "    WHERE staffID != 0\n" +//////////////////////////////////////
                 "    AND dateAssigned >= '"+datefrom+"' \n" +
                 "    AND dateAssigned <= '"+dateTo+"' " +
                 "    ORDER BY staffID, blankID\n" +
                 ") t\n" +
                 "GROUP BY staffID, range_group \n" +
-                "HAVING COUNT(*) > 1\n" +
+                "HAVING COUNT(*) > 1\n" +///////////////
                 "ORDER BY staffID, start_range;";
-        String blanksAvaliableAtEndoF = "SELECT \n" +
+        String blanksAvaliableAtEndoF = "SELECT \n" +///////////////////
                 "    MIN(blankID) AS start_range,\n" +
                 "    MAX(blankID) AS end_range,\n" +
-                "    COUNT(*) AS range_size\n" +
+                "    COUNT(*) AS range_size\n" +/////////////////
                 "FROM (\n" +
                 "    SELECT \n" +
                 "        t.*,\n" +
                 "        @rn := IF(blankID = @prev_blank + 1, @rn, @rn + 1) AS range_group,\n" +
                 "        @prev_blank := blankID\n" +
-                "    FROM blanks t\n" +
-                "    CROSS JOIN (SELECT @rn := 0, @prev_blank := NULL) vars\n" +
+                "    FROM blanks t\n" +////////////////////////////
+                "    CROSS JOIN (SELECT @rn := 0, @prev_blank := NULL) vars\n" +////////////////////////
                 "\twhere\n" +
                 "\tsold != 1\n" +
                 "    ORDER BY blankID\n" +
@@ -333,11 +333,11 @@ public class Report {
                 "    COUNT(*) AS range_size\n" +
                 "FROM (\n" +
                 "    SELECT \n" +
-                "        t.*,\n" +
+                "        t.*,\n" +///////////////////////
                 "        @rn := IF(@prev_staff = staffID AND blankID = @prev_blank + 1, @rn, @rn + 1) AS range_group,\n" +
                 "        @prev_staff := staffID,\n" +
                 "        @prev_blank := blankID\n" +
-                "    FROM blanks t\n" +
+                "    FROM blanks t\n" +/////////////////////////////////////////////////////////////////////////////////////////////////////
                 "    CROSS JOIN (SELECT @rn := 0, @prev_staff := NULL, @prev_blank := NULL) vars\n" +
                 "    WHERE sold !=1 and staffID != 0\n" +
                 "    ORDER BY staffID, blankID\n" +
@@ -604,7 +604,7 @@ public class Report {
                 "  s.price, \n" +
                 "  s.currency, \n" +
                 "  s.conversionRate, \n" +
-                "  s.paymentType, \n" +
+                "  s.paymentType, \n" +//////////////////////////////////////////////////////////////////////////////////////////////////////
                 "  s.cardNumber, \n" +
                 "  s.commissionsum, \n" +
                 "  s.taxSum,  \n" +
@@ -790,7 +790,7 @@ public class Report {
                 "  SUM(CASE WHEN subquery.commission_ratio = 0.15 THEN subquery.commissionSum ELSE 0 END) AS commission_15_percent,\n" +
                 "  SUM(CASE WHEN subquery.commission_ratio = 0.2 THEN subquery.commissionSum ELSE 0 END) AS commission_20_percent,\n" +
                 "  SUM(subquery.price_total),\n" +
-                "  SUM(commissionSum) as total_commission\n" +
+                "  SUM(commissionSum) as total_commission\n" +////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 "FROM (\n" +
                 "  SELECT \n" +
                 "    COUNT(saleID) AS num_sales, \n" +
@@ -820,7 +820,7 @@ public class Report {
                 "SUM(CASE WHEN subquery.paymentType = 'cash' THEN subquery.price_total ELSE 0 END) AS payed_in_cash,\n" +
                 "SUM(CASE WHEN subquery.paymentType = 'card' THEN subquery.price_total ELSE 0 END) AS payed_in_card,\n" +
                 "SUM(CASE WHEN subquery.commission_ratio = 0.1 THEN subquery.commissionSum ELSE 0 END) AS commission_10_percent,\n" +
-                "SUM(CASE WHEN subquery.commission_ratio = 0.12 THEN subquery.commissionSum ELSE 0 END) AS commission_12_percent,\n" +
+                "SUM(CASE WHEN subquery.commission_ratio = 0.12 THEN subquery.commissionSum ELSE 0 END) AS commission_12_percent,\n" +///////////////////////////////////////////////////////
                 "SUM(CASE WHEN subquery.commission_ratio = 0.15 THEN subquery.commissionSum ELSE 0 END) AS commission_15_percent,\n" +
                 "SUM(subquery.price_total),\n" +
                 "SUM(commissionSum) as total_commission\n" +
@@ -838,7 +838,7 @@ public class Report {
                 "    SUM(commissionSum)/SUM(price)/0.8 AS commission_ratio\n" +
                 "  FROM sale\n" +
                 "WHERE sale.saleID IN (\n" +
-                "    SELECT distinct saleID FROM soldBlanks WHERE blankID LIKE '4%'\n" +
+                "    SELECT distinct saleID FROM soldBlanks WHERE blankID LIKE '4%'\n" +////////////////////////////////////////////
                 "  )\n" +
                 "   AND date >= "+datefrom+" AND date <= "+dateTo+"" +
                 "  GROUP BY  conversionRate,paymentType, commissionSum, staffID\n" +
@@ -958,7 +958,7 @@ public class Report {
             sheet.getRow(lastRow + 1).getCell(0).setCellValue("TOTALS ");
             sheet.getRow(lastRow + 1).getCell(3).setCellValue(basePriceSum);
             sheet.getRow(lastRow + 1).getCell(6).setCellValue(taxSumm);
-            sheet.getRow(lastRow + 1).getCell(12).setCellValue(priceSum);
+            sheet.getRow(lastRow + 1).getCell(12).setCellValue(priceSum);////////////////////////////////////////////////////////////////////////////////////////////////////
             sheet.getRow(lastRow+1).getCell(4).setCellValue(priceSUMUSD);
             sheet.getRow(lastRow + 1).getCell(13).setCellValue(commissionsSum);
 
@@ -1039,7 +1039,7 @@ public class Report {
                 "  s.currency, \n" +
                 "  s.conversionRate, \n" +
                 "  s.paymentType, \n" +
-                "  s.cardNumber, \n" +
+                "  s.cardNumber, \n" +//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 "  s.commissionsum, \n" +
                 "  s.taxSum,  \n" +
                 "  COUNT(b.blankID) as num_blanks\n" +
@@ -1130,7 +1130,7 @@ public class Report {
                 sheet.autoSizeColumn(j);
             }
 
-            sheet.getRow(lastRow + 1).getCell(0).setCellValue("TOTALS ");
+            sheet.getRow(lastRow + 1).getCell(0).setCellValue("TOTALS ");///////////////////////////////////////////////////////////////////////////////////////////////////////
             sheet.getRow(lastRow + 1).getCell(11).setCellValue(priceSum);
             sheet.getRow(lastRow + 1).getCell(2).setCellValue(basePriceSum);
             sheet.getRow(lastRow + 1).getCell(10).setCellValue(commisionsSum);
@@ -1207,12 +1207,12 @@ public class Report {
         String setmode = "SET sql_mode = '';";
         String sql3 = "" +
                 "SELECT \n" +
-                "  SUM(subquery.num_sales) AS total_sales, \n" +
+                "  SUM(subquery.num_sales) AS total_sales, \n" +// sum the number of sales from subquery
                 "  subquery.staffID, \n" +
                 "  SUM(subquery.base_pricesum) as total_basesum, \n" +
                 "  SUM(subquery.sum_tax) as total_tax,\n" +
                 "  SUM(CASE WHEN subquery.paymentType = 'cash' THEN subquery.price_total ELSE 0 END) AS payed_in_cash,\n" +
-                "  SUM(CASE WHEN subquery.paymentType = 'card' THEN subquery.price_total ELSE 0 END) AS payed_in_card,\n" +
+                "  SUM(CASE WHEN subquery.paymentType = 'card' THEN subquery.price_total ELSE 0 END) AS payed_in_card,\n" +////////////////////////////////////////////////////////////////////////////////////
                 "  SUM(CASE WHEN subquery.commission_ratio = 0.05 THEN subquery.commissionSum ELSE 0 END) AS commission_5_percent,\n" +
                 "  SUM(CASE WHEN subquery.commission_ratio = 0.09 THEN subquery.commissionSum ELSE 0 END) AS commission_9_percent,\n" +
                 "  SUM(subquery.price_total),\n" +
@@ -1225,7 +1225,7 @@ public class Report {
                 "    SUM(taxSum) AS sum_tax, \n" +
                 "    paymentType,\n" +
                 "    SUM(commissionSum) AS commissionSum,\n" +
-                "    SUM(price) AS price_total,\n" +
+                "    SUM(price) AS price_total,\n" +//////////////////////////////////////////////////////////////////////////////////////////////////////////
                 "    SUM(commissionSum)/SUM(price)/0.8 AS commission_ratio\n" +
                 "  FROM sale\n" +
                 "WHERE sale.saleID IN (\n" +
