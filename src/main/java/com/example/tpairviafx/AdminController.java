@@ -11,17 +11,16 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-import javax.xml.transform.Result;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-/** Controller class for the admin stage */
+/** Controller class for the admin stage
+ * @author  Bendeguz Kudor */
 
 public class AdminController implements Initializable {
 

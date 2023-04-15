@@ -18,7 +18,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-/**Controller class for the maneging  sales stage */
+/**Controller class for the maneging  sales stage
+ * @author  Bendeguz Kudor*/
 
 public class ManageSalesController implements Initializable {
 

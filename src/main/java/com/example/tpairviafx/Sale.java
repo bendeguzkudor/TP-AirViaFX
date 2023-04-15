@@ -7,7 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-/** Class to handle sales */
+/** Class to handle sales
+ * @author  Bendeguz Kudor*/
 
 public class Sale {
     private final int staffID;

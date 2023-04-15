@@ -12,26 +12,22 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import org.apache.poi.xwpf.usermodel.Document;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
 
 
 
-/**Controller class to manage Office Manager stage   */
+/**Controller class to manage Office Manager stage
+ * @author  Bendeguz Kudor */
 
 
 public class OfficeManagerController implements Initializable {

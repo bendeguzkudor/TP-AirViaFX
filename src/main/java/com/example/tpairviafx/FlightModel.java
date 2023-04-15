@@ -4,7 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-/** Class to model flights */
+/** Class to model flights
+ * @author  Bendeguz Kudor*/
 public class FlightModel {
 
     private Integer flightNumber;

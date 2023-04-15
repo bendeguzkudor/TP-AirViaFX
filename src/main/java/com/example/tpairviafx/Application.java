@@ -4,17 +4,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**  Main class to launch the application */
+/**  Main class to launch the application
+ * @author  Bendeguz Kudor*/
 public class Application extends javafx.application.Application {
     public static double interlineCommissionRate = 0.09;
 

@@ -1,6 +1,7 @@
 package com.example.tpairviafx;
 
-/**Class to hold staff information  */
+/**Class to hold staff information
+ * @author  Bendeguz Kudor */
 public class Staff {
     public int getStaffID() {
         return staffID;

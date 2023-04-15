@@ -13,7 +13,8 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**Controller class for login screen  */
+/**Controller class for login screen
+ * @author  Bendeguz Kudor */
 public class LoginController {
     private String username;
     private ResultSet rs;

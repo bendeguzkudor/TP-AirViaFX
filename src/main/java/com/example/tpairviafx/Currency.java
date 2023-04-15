@@ -1,23 +1,13 @@
 package com.example.tpairviafx;
 
 
-
-import org.apache.xmlbeans.impl.store.Cur;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Scanner;
 
-
-import java.util.*;
-
-import java.util.HashMap;
-import java.util.Map;
-
-/** Class for getting updated accurate conversion rates */
+/** Class for getting updated accurate conversion rates
+ * @author  Bendeguz Kudor*/
     public class Currency {
         /**Field for the URL for the exchange rate API with the key*/
 

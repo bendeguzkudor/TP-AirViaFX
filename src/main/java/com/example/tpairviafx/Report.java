@@ -1,7 +1,12 @@
 package com.example.tpairviafx;
 
 
-import java.io.*;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,26 +15,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.apache.pdfbox.printing.PDFPageable;
-import org.apache.pdfbox.rendering.PDFRenderer;
-import org.apache.pdfbox.util.Matrix;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.*;
-import org.apache.pdfbox.util.Matrix;
-
-import org.apache.pdfbox.pdfwriter.ContentStreamWriter;
-
-import org.apache.poi.xwpf.usermodel.Document;
-
-/**Class for generating the sales and ticket stock turnover report. Uses Apache POI Libary */
+/**Class for generating the sales and ticket stock turnover report. Uses Apache POI Libary
+ * @author  Bendeguz Kudor */
 public class Report {
 
     Integer amount = null;

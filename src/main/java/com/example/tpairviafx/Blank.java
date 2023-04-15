@@ -4,7 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-/** Class to model blank as an object*/
+/** Class to model blank as an object
+ * @author  Bendeguz Kudor*/
 public class Blank {
 
 

@@ -19,7 +19,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-/** Controller class that manages the Customer discount editing GUI */
+/** Controller class that manages the Customer discount editing GUI
+ * @author  Bendeguz Kudor */
 
 public class ManageCustomerDiscountController implements Initializable {
 

@@ -1,18 +1,17 @@
 package com.example.tpairviafx;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.sql.*;
 
 
 /** Class that handles databse connectivity
- * Uses synchronized methods to ensure that only one thread can execute */
+ * Uses synchronized methods to ensure that only one thread can execute
+ * @author  Bendeguz Kudor*/
 public class DBConnect {
 //    final String DRIVER = "com.mysql.jdbc.Driver";
 //    final String url = "jdbc:mysql://localhost:3306/AirVia";

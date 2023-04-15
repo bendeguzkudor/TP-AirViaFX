@@ -20,7 +20,8 @@ import java.util.ResourceBundle;
 
 import static com.example.tpairviafx.Blank.getManualTicketingBlank;
 
-/** Controller class for the manual ticketing stage  */
+/** Controller class for the manual ticketing stage
+ * @author  Bendeguz Kudor */
 public class ManualTicketingController implements Initializable {
     public Scene getPreviousScene() {
         return previousScene;

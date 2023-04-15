@@ -1,7 +1,8 @@
 package com.example.tpairviafx;
 
 
-/** Class to represent sales in the tableview*/
+/** Class to represent sales in the tableview
+ * @author  Bendeguz Kudor*/
 public class SaleForm {
     private int staffID;
     private int saleID;

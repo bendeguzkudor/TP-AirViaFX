@@ -5,7 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-/** Class to model customers*/
+/** Class to model customers
+ * @author  Bendeguz Kudor*/
 public class Customer {
     public String getFirstName() {
         return firstName;

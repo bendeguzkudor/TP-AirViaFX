@@ -1,6 +1,5 @@
 package com.example.tpairviafx;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -8,10 +7,10 @@ import javafx.stage.Stage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 
-/** Controller class for the customer registration form */
+/** Controller class for the customer registration form
+ * @author  Bendeguz Kudor*/
 public class CustomerRegisterFormController {
 
     @FXML

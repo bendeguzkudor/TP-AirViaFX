@@ -1,6 +1,7 @@
 package com.example.tpairviafx;
 
-/**This class is not used */
+/**This class is not used
+ * @author  Bendeguz Kudor*/
 public class Flight {
 
     private Integer flightNumber;
